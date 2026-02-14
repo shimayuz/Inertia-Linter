@@ -1,0 +1,446 @@
+{
+  "version": "2.0",
+  "last_updated": "2026-02-14",
+  "sources": [
+    {
+      "id": "AHA2022",
+      "title": "2022 AHA/ACC/HFSA Guideline for the Management of Heart Failure",
+      "doi": "10.1161/CIR.0000000000001063"
+    },
+    {
+      "id": "AHA2023",
+      "title": "2023 ACC Expert Consensus Decision Pathway on Management of Heart Failure With Reduced Ejection Fraction",
+      "doi": "10.1016/j.jacc.2023.10.024"
+    },
+    {
+      "id": "ESC2021",
+      "title": "2021 ESC Guidelines for the diagnosis and treatment of acute and chronic heart failure",
+      "doi": "10.1093/eurheartj/ehab368"
+    },
+    {
+      "id": "ESC2023",
+      "title": "2023 Focused Update of the 2021 ESC Guidelines for the diagnosis and treatment of acute and chronic heart failure",
+      "doi": "10.1093/eurheartj/ehad195"
+    },
+    {
+      "id": "ESC2024",
+      "title": "2024 ESC Guidelines for the management of chronic and acute heart failure",
+      "doi": "10.1093/eurheartj/ehae600"
+    },
+    {
+      "id": "ECDP2024",
+      "title": "2024 ACC Expert Consensus Decision Pathway for SGLT2 Inhibitors",
+      "doi": "10.1016/j.jacc.2024.01.001"
+    }
+  ],
+  "rules": [
+    {
+      "rule_id": "R-001",
+      "guideline_id": "AHA2022-001",
+      "pillar": "ARNI_ACEi_ARB",
+      "ef_categories": ["HFrEF"],
+      "description": "ARNI recommended for HFrEF to reduce morbidity and mortality",
+      "class": "I",
+      "loe": "A",
+      "conditions": {
+        "ef_max": 40,
+        "requires_current_acei_arb": false
+      },
+      "thresholds": {
+        "bp_low_sbp": 100,
+        "egfr_init": 20,
+        "egfr_cont": 15
+      },
+      "source_doi": "10.1161/CIR.0000000000001063"
+    },
+    {
+      "rule_id": "R-002",
+      "guideline_id": "ESC2021-001",
+      "pillar": "ARNI_ACEi_ARB",
+      "ef_categories": ["HFrEF"],
+      "description": "ARNI recommended as replacement for ACEi in HFrEF (stronger preference than AHA)",
+      "class": "I",
+      "loe": "B-R",
+      "conditions": {
+        "ef_max": 40,
+        "note": "ESC prefers ARNI over ACEi more strongly than AHA"
+      },
+      "thresholds": {
+        "bp_low_sbp": 100,
+        "egfr_init": 20,
+        "egfr_cont": 15
+      },
+      "source_doi": "10.1093/eurheartj/ehab368"
+    },
+    {
+      "rule_id": "R-003",
+      "guideline_id": "AHA2022-002",
+      "pillar": "ARNI_ACEi_ARB",
+      "ef_categories": ["HFmrEF"],
+      "description": "ARNI/ACEi/ARB may be considered in HFmrEF",
+      "class": "IIb",
+      "loe": "B-NR",
+      "conditions": {
+        "ef_min": 41,
+        "ef_max": 49
+      },
+      "thresholds": {
+        "bp_low_sbp": 100,
+        "egfr_init": 20,
+        "egfr_cont": 15
+      },
+      "source_doi": "10.1161/CIR.0000000000001063"
+    },
+    {
+      "rule_id": "R-004",
+      "guideline_id": "AHA2022-003",
+      "pillar": "BETA_BLOCKER",
+      "ef_categories": ["HFrEF"],
+      "description": "Evidence-based beta-blocker for HFrEF to reduce morbidity and mortality",
+      "class": "I",
+      "loe": "A",
+      "conditions": {
+        "ef_max": 40
+      },
+      "thresholds": {
+        "hr_low": 60,
+        "bp_low_sbp": 90
+      },
+      "source_doi": "10.1161/CIR.0000000000001063"
+    },
+    {
+      "rule_id": "R-005",
+      "guideline_id": "ESC2021-002",
+      "pillar": "BETA_BLOCKER",
+      "ef_categories": ["HFrEF"],
+      "description": "Evidence-based beta-blocker for HFrEF",
+      "class": "I",
+      "loe": "A",
+      "conditions": {
+        "ef_max": 40
+      },
+      "thresholds": {
+        "hr_low": 60,
+        "bp_low_sbp": 90
+      },
+      "source_doi": "10.1093/eurheartj/ehab368"
+    },
+    {
+      "rule_id": "R-006",
+      "guideline_id": "AHA2022-004",
+      "pillar": "BETA_BLOCKER",
+      "ef_categories": ["HFmrEF"],
+      "description": "Beta-blocker may be considered in HFmrEF",
+      "class": "IIb",
+      "loe": "B-NR",
+      "conditions": {
+        "ef_min": 41,
+        "ef_max": 49
+      },
+      "thresholds": {
+        "hr_low": 60,
+        "bp_low_sbp": 90
+      },
+      "source_doi": "10.1161/CIR.0000000000001063"
+    },
+    {
+      "rule_id": "R-007",
+      "guideline_id": "AHA2022-005",
+      "pillar": "MRA",
+      "ef_categories": ["HFrEF"],
+      "description": "MRA recommended for HFrEF NYHA II-IV to reduce morbidity and mortality",
+      "class": "I",
+      "loe": "A",
+      "conditions": {
+        "ef_max": 40,
+        "nyha_min": 2
+      },
+      "thresholds": {
+        "k_high": 5.0,
+        "egfr_init": 30,
+        "egfr_cont": 20
+      },
+      "source_doi": "10.1161/CIR.0000000000001063"
+    },
+    {
+      "rule_id": "R-008",
+      "guideline_id": "ESC2021-003",
+      "pillar": "MRA",
+      "ef_categories": ["HFrEF"],
+      "description": "MRA recommended for HFrEF to reduce hospitalization and death",
+      "class": "I",
+      "loe": "A",
+      "conditions": {
+        "ef_max": 40
+      },
+      "thresholds": {
+        "k_high": 5.0,
+        "egfr_init": 30,
+        "egfr_cont": 20
+      },
+      "source_doi": "10.1093/eurheartj/ehab368"
+    },
+    {
+      "rule_id": "R-009",
+      "guideline_id": "AHA2022-006",
+      "pillar": "MRA",
+      "ef_categories": ["HFmrEF"],
+      "description": "MRA may be considered in HFmrEF",
+      "class": "IIb",
+      "loe": "B-NR",
+      "conditions": {
+        "ef_min": 41,
+        "ef_max": 49
+      },
+      "thresholds": {
+        "k_high": 5.0,
+        "egfr_init": 30,
+        "egfr_cont": 20
+      },
+      "source_doi": "10.1161/CIR.0000000000001063"
+    },
+    {
+      "rule_id": "R-010",
+      "guideline_id": "AHA2022-007",
+      "pillar": "SGLT2i",
+      "ef_categories": ["HFrEF"],
+      "description": "SGLT2i recommended for HFrEF to reduce hospitalization and CV death",
+      "class": "I",
+      "loe": "A",
+      "conditions": {
+        "ef_max": 40
+      },
+      "thresholds": {
+        "egfr_init": 20,
+        "egfr_cont": 15
+      },
+      "source_doi": "10.1161/CIR.0000000000001063"
+    },
+    {
+      "rule_id": "R-011",
+      "guideline_id": "ESC2021-004",
+      "pillar": "SGLT2i",
+      "ef_categories": ["HFrEF"],
+      "description": "SGLT2i recommended for HFrEF",
+      "class": "I",
+      "loe": "A",
+      "conditions": {
+        "ef_max": 40
+      },
+      "thresholds": {
+        "egfr_init": 20,
+        "egfr_cont": 15
+      },
+      "source_doi": "10.1093/eurheartj/ehab368"
+    },
+    {
+      "rule_id": "R-012",
+      "guideline_id": "AHA2022-008",
+      "pillar": "SGLT2i",
+      "ef_categories": ["HFmrEF"],
+      "description": "SGLT2i can be beneficial in HFmrEF",
+      "class": "IIa",
+      "loe": "B-R",
+      "conditions": {
+        "ef_min": 41,
+        "ef_max": 49
+      },
+      "thresholds": {
+        "egfr_init": 20,
+        "egfr_cont": 15
+      },
+      "source_doi": "10.1161/CIR.0000000000001063"
+    },
+    {
+      "rule_id": "R-013",
+      "guideline_id": "AHA2022-009",
+      "pillar": "SGLT2i",
+      "ef_categories": ["HFpEF"],
+      "description": "SGLT2i can be beneficial in HFpEF (AHA: Class 2a)",
+      "class": "IIa",
+      "loe": "B-R",
+      "conditions": {
+        "ef_min": 50,
+        "note": "AHA grades HFpEF SGLT2i as Class 2a, LOE B"
+      },
+      "thresholds": {
+        "egfr_init": 20,
+        "egfr_cont": 15
+      },
+      "source_doi": "10.1161/CIR.0000000000001063"
+    },
+    {
+      "rule_id": "R-014",
+      "guideline_id": "ESC2023-001",
+      "pillar": "SGLT2i",
+      "ef_categories": ["HFpEF"],
+      "description": "SGLT2i recommended in HFpEF (ESC: Class I — stronger than AHA)",
+      "class": "I",
+      "loe": "A",
+      "conditions": {
+        "ef_min": 50,
+        "note": "ESC 2023 Focused Update grades HFpEF SGLT2i as Class I, LOE A"
+      },
+      "thresholds": {
+        "egfr_init": 20,
+        "egfr_cont": 15
+      },
+      "source_doi": "10.1093/eurheartj/ehad195"
+    },
+    {
+      "rule_id": "R-015",
+      "guideline_id": "ECDP2024-001",
+      "pillar": "SGLT2i",
+      "ef_categories": ["HFrEF", "HFmrEF", "HFpEF"],
+      "description": "SGLT2i across HF spectrum with specific eGFR guidance",
+      "class": "I",
+      "loe": "A",
+      "conditions": {
+        "note": "ACC ECDP 2024 provides agent-specific eGFR guidance for SGLT2i"
+      },
+      "thresholds": {
+        "egfr_init": 20,
+        "egfr_cont": 15
+      },
+      "source_doi": "10.1016/j.jacc.2024.01.001"
+    },
+    {
+      "rule_id": "R-016",
+      "guideline_id": "ESC2024-001",
+      "pillar": "MRA",
+      "ef_categories": ["HFmrEF", "HFpEF"],
+      "description": "Finerenone may be considered in HFmrEF/HFpEF with T2DM (ESC 2024)",
+      "class": "IIa",
+      "loe": "B-R",
+      "conditions": {
+        "ef_min": 41,
+        "requires_dm_type2": true,
+        "note": "Finerenone for HFmrEF/HFpEF based on FINEARTS-HF. AHA not yet graded."
+      },
+      "thresholds": {
+        "k_high": 5.0,
+        "egfr_init": 25,
+        "egfr_cont": 15
+      },
+      "source_doi": "10.1093/eurheartj/ehae600"
+    },
+    {
+      "rule_id": "R-017",
+      "guideline_id": "ESC2023-002",
+      "pillar": "SGLT2i",
+      "ef_categories": ["HFmrEF"],
+      "description": "SGLT2i recommended in HFmrEF (ESC: Class I)",
+      "class": "I",
+      "loe": "A",
+      "conditions": {
+        "ef_min": 41,
+        "ef_max": 49
+      },
+      "thresholds": {
+        "egfr_init": 20,
+        "egfr_cont": 15
+      },
+      "source_doi": "10.1093/eurheartj/ehad195"
+    },
+    {
+      "rule_id": "R-018",
+      "guideline_id": "ESC2021-005",
+      "pillar": "ARNI_ACEi_ARB",
+      "ef_categories": ["HFmrEF"],
+      "description": "ARNI/ACEi/ARB may be considered in HFmrEF (ESC)",
+      "class": "IIb",
+      "loe": "C-LD",
+      "conditions": {
+        "ef_min": 41,
+        "ef_max": 49
+      },
+      "thresholds": {
+        "bp_low_sbp": 100,
+        "egfr_init": 20,
+        "egfr_cont": 15
+      },
+      "source_doi": "10.1093/eurheartj/ehab368"
+    },
+    {
+      "rule_id": "R-019",
+      "guideline_id": "ESC2021-006",
+      "pillar": "BETA_BLOCKER",
+      "ef_categories": ["HFmrEF"],
+      "description": "Beta-blocker may be considered in HFmrEF (ESC)",
+      "class": "IIb",
+      "loe": "C-LD",
+      "conditions": {
+        "ef_min": 41,
+        "ef_max": 49
+      },
+      "thresholds": {
+        "hr_low": 60,
+        "bp_low_sbp": 90
+      },
+      "source_doi": "10.1093/eurheartj/ehab368"
+    },
+    {
+      "rule_id": "R-020",
+      "guideline_id": "ESC2021-007",
+      "pillar": "MRA",
+      "ef_categories": ["HFmrEF"],
+      "description": "MRA may be considered in HFmrEF (ESC)",
+      "class": "IIb",
+      "loe": "C-LD",
+      "conditions": {
+        "ef_min": 41,
+        "ef_max": 49
+      },
+      "thresholds": {
+        "k_high": 5.0,
+        "egfr_init": 30,
+        "egfr_cont": 20
+      },
+      "source_doi": "10.1093/eurheartj/ehab368"
+    }
+  ],
+  "pillar_thresholds": {
+    "ARNI_ACEi_ARB": {
+      "bp_low_sbp": 100,
+      "egfr_init": 20,
+      "egfr_cont": 15
+    },
+    "BETA_BLOCKER": {
+      "hr_low": 60,
+      "bp_low_sbp": 90
+    },
+    "MRA": {
+      "k_high": 5.0,
+      "egfr_init": 30,
+      "egfr_cont": 20
+    },
+    "SGLT2i": {
+      "egfr_init": 20,
+      "egfr_cont": 15
+    }
+  },
+  "stale_data_thresholds": {
+    "labs_max_days": 14,
+    "vitals_max_days": 30
+  },
+  "multi_guideline_differences": [
+    {
+      "topic": "SGLT2i in HFpEF",
+      "aha": { "class": "IIa", "loe": "B-R", "rule_id": "R-013" },
+      "esc": { "class": "I", "loe": "A", "rule_id": "R-014" },
+      "display": "AHA: Class 2a, LOE B | ESC: Class I, LOE A"
+    },
+    {
+      "topic": "Finerenone in HFmrEF/HFpEF",
+      "aha": { "class": null, "loe": null, "rule_id": null },
+      "esc": { "class": "IIa", "loe": "B-R", "rule_id": "R-016" },
+      "display": "ESC: Class IIa, LOE B (FINEARTS-HF) | AHA: Not yet graded"
+    },
+    {
+      "topic": "ARNI vs ACEi first-line in HFrEF",
+      "aha": { "note": "Class I for both ARNI and ACEi (can use either)" },
+      "esc": { "note": "ARNI preferred over ACEi (stronger recommendation)" },
+      "display": "AHA: ARNI or ACEi (Class I) | ESC: Prefer ARNI over ACEi"
+    }
+  ]
+}
