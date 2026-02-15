@@ -1,0 +1,411 @@
+{
+  "resourceType": "Bundle",
+  "id": "patient-003-everything",
+  "type": "searchset",
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:patient-demo-003",
+      "resource": {
+        "resourceType": "Patient",
+        "id": "demo-003",
+        "name": [
+          {
+            "family": "Yamamoto",
+            "given": ["Kenji"]
+          }
+        ],
+        "gender": "male",
+        "birthDate": "1954-11-08"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:condition-demo-003-hf",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "condition-demo-003-hf",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active",
+              "display": "Active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "84114007",
+              "display": "Heart failure"
+            }
+          ],
+          "text": "Heart failure"
+        },
+        "subject": {
+          "reference": "Patient/demo-003",
+          "display": "Kenji Yamamoto"
+        },
+        "onsetDateTime": "2021-09-10"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:obs-demo-003-lvef",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-demo-003-lvef",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "10230-1",
+              "display": "Left ventricular Ejection fraction"
+            }
+          ],
+          "text": "LVEF"
+        },
+        "subject": {
+          "reference": "Patient/demo-003",
+          "display": "Kenji Yamamoto"
+        },
+        "effectiveDateTime": "2026-02-14",
+        "valueQuantity": {
+          "value": 25,
+          "unit": "%",
+          "system": "http://unitsofmeasure.org",
+          "code": "%"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:obs-demo-003-sbp",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-demo-003-sbp",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8480-6",
+              "display": "Systolic blood pressure"
+            }
+          ],
+          "text": "SBP"
+        },
+        "subject": {
+          "reference": "Patient/demo-003",
+          "display": "Kenji Yamamoto"
+        },
+        "effectiveDateTime": "2026-02-14",
+        "valueQuantity": {
+          "value": 92,
+          "unit": "mmHg",
+          "system": "http://unitsofmeasure.org",
+          "code": "mm[Hg]"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:obs-demo-003-hr",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-demo-003-hr",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8867-4",
+              "display": "Heart rate"
+            }
+          ],
+          "text": "Heart rate"
+        },
+        "subject": {
+          "reference": "Patient/demo-003",
+          "display": "Kenji Yamamoto"
+        },
+        "effectiveDateTime": "2026-02-14",
+        "valueQuantity": {
+          "value": 72,
+          "unit": "/min",
+          "system": "http://unitsofmeasure.org",
+          "code": "/min"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:obs-demo-003-egfr",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-demo-003-egfr",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "33914-3",
+              "display": "Glomerular filtration rate/1.73 sq M.predicted"
+            }
+          ],
+          "text": "eGFR"
+        },
+        "subject": {
+          "reference": "Patient/demo-003",
+          "display": "Kenji Yamamoto"
+        },
+        "effectiveDateTime": "2026-02-14",
+        "valueQuantity": {
+          "value": 28,
+          "unit": "mL/min/1.73m2",
+          "system": "http://unitsofmeasure.org",
+          "code": "mL/min/{1.73_m2}"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:obs-demo-003-potassium",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-demo-003-potassium",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "6298-4",
+              "display": "Potassium [Moles/volume] in Blood"
+            }
+          ],
+          "text": "Potassium"
+        },
+        "subject": {
+          "reference": "Patient/demo-003",
+          "display": "Kenji Yamamoto"
+        },
+        "effectiveDateTime": "2026-02-14",
+        "valueQuantity": {
+          "value": 5.3,
+          "unit": "mmol/L",
+          "system": "http://unitsofmeasure.org",
+          "code": "mmol/L"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:obs-demo-003-bnp",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-demo-003-bnp",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "42176-8",
+              "display": "1,3-beta-D-glucan [Mass/volume] in Serum"
+            }
+          ],
+          "text": "BNP"
+        },
+        "subject": {
+          "reference": "Patient/demo-003",
+          "display": "Kenji Yamamoto"
+        },
+        "effectiveDateTime": "2026-02-14",
+        "valueQuantity": {
+          "value": 1200,
+          "unit": "pg/mL",
+          "system": "http://unitsofmeasure.org",
+          "code": "pg/mL"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:medrx-demo-003-sacval",
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "medrx-demo-003-sacval",
+        "status": "active",
+        "intent": "order",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "1656354",
+              "display": "Sacubitril/Valsartan"
+            }
+          ],
+          "text": "Sacubitril/Valsartan 24/26 mg oral tablet"
+        },
+        "subject": {
+          "reference": "Patient/demo-003",
+          "display": "Kenji Yamamoto"
+        },
+        "authoredOn": "2025-10-01",
+        "dosageInstruction": [
+          {
+            "text": "24/26 mg twice daily",
+            "timing": {
+              "repeat": {
+                "frequency": 2,
+                "period": 1,
+                "periodUnit": "d"
+              }
+            },
+            "doseAndRate": [
+              {
+                "doseQuantity": {
+                  "value": 24,
+                  "unit": "mg",
+                  "system": "http://unitsofmeasure.org",
+                  "code": "mg"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:medrx-demo-003-carvedilol",
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "medrx-demo-003-carvedilol",
+        "status": "active",
+        "intent": "order",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "20352",
+              "display": "Carvedilol"
+            }
+          ],
+          "text": "Carvedilol 6.25 mg oral tablet"
+        },
+        "subject": {
+          "reference": "Patient/demo-003",
+          "display": "Kenji Yamamoto"
+        },
+        "authoredOn": "2025-07-20",
+        "dosageInstruction": [
+          {
+            "text": "6.25 mg twice daily",
+            "timing": {
+              "repeat": {
+                "frequency": 2,
+                "period": 1,
+                "periodUnit": "d"
+              }
+            },
+            "doseAndRate": [
+              {
+                "doseQuantity": {
+                  "value": 6.25,
+                  "unit": "mg",
+                  "system": "http://unitsofmeasure.org",
+                  "code": "mg"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:medrx-demo-003-spironolactone",
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "medrx-demo-003-spironolactone",
+        "status": "active",
+        "intent": "order",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "9997",
+              "display": "Spironolactone"
+            }
+          ],
+          "text": "Spironolactone 12.5 mg oral tablet"
+        },
+        "subject": {
+          "reference": "Patient/demo-003",
+          "display": "Kenji Yamamoto"
+        },
+        "authoredOn": "2025-10-01",
+        "dosageInstruction": [
+          {
+            "text": "12.5 mg once daily",
+            "timing": {
+              "repeat": {
+                "frequency": 1,
+                "period": 1,
+                "periodUnit": "d"
+              }
+            },
+            "doseAndRate": [
+              {
+                "doseQuantity": {
+                  "value": 12.5,
+                  "unit": "mg",
+                  "system": "http://unitsofmeasure.org",
+                  "code": "mg"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:medrx-demo-003-dapagliflozin",
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "medrx-demo-003-dapagliflozin",
+        "status": "active",
+        "intent": "order",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "1488564",
+              "display": "Dapagliflozin"
+            }
+          ],
+          "text": "Dapagliflozin 10 mg oral tablet"
+        },
+        "subject": {
+          "reference": "Patient/demo-003",
+          "display": "Kenji Yamamoto"
+        },
+        "authoredOn": "2025-11-15",
+        "dosageInstruction": [
+          {
+            "text": "10 mg once daily",
+            "timing": {
+              "repeat": {
+                "frequency": 1,
+                "period": 1,
+                "periodUnit": "d"
+              }
+            },
+            "doseAndRate": [
+              {
+                "doseQuantity": {
+                  "value": 10,
+                  "unit": "mg",
+                  "system": "http://unitsofmeasure.org",
+                  "code": "mg"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -13,11 +13,7 @@ export const case2Patient: PatientSnapshot = {
   bnp: 220,
   dmType: 'type2',
   medications: [
-    {
-      pillar: 'ARNI_ACEi_ARB',
-      name: 'Valsartan 80mg',
-      doseTier: 'MEDIUM',
-    },
+    { pillar: 'ARNI_ACEi_ARB', name: 'Valsartan 80mg', doseTier: 'MEDIUM' },
     {
       pillar: 'BETA_BLOCKER',
       name: '',

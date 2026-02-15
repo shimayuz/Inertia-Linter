@@ -77,7 +77,26 @@
       "guideline_id": "AHA2022-002",
       "pillar": "ARNI_ACEi_ARB",
       "ef_categories": ["HFmrEF"],
-      "description": "ARNI/ACEi/ARB may be considered in HFmrEF",
+      "description": "ARNI may be considered in HFmrEF",
+      "class": "IIb",
+      "loe": "B-NR",
+      "conditions": {
+        "ef_min": 41,
+        "ef_max": 49
+      },
+      "thresholds": {
+        "bp_low_sbp": 100,
+        "egfr_init": 20,
+        "egfr_cont": 15
+      },
+      "source_doi": "10.1161/CIR.0000000000001063"
+    },
+    {
+      "rule_id": "R-003b",
+      "guideline_id": "AHA2022-002b",
+      "pillar": "ARNI_ACEi_ARB",
+      "ef_categories": ["HFmrEF"],
+      "description": "ACEi/ARB may be considered in HFmrEF",
       "class": "IIb",
       "loe": "B-NR",
       "conditions": {
@@ -347,12 +366,67 @@
       "guideline_id": "ESC2021-005",
       "pillar": "ARNI_ACEi_ARB",
       "ef_categories": ["HFmrEF"],
-      "description": "ARNI/ACEi/ARB may be considered in HFmrEF (ESC)",
+      "description": "ARNI may be considered in HFmrEF (ESC)",
       "class": "IIb",
       "loe": "C-LD",
       "conditions": {
         "ef_min": 41,
         "ef_max": 49
+      },
+      "thresholds": {
+        "bp_low_sbp": 100,
+        "egfr_init": 20,
+        "egfr_cont": 15
+      },
+      "source_doi": "10.1093/eurheartj/ehab368"
+    },
+    {
+      "rule_id": "R-018b",
+      "guideline_id": "ESC2021-005b",
+      "pillar": "ARNI_ACEi_ARB",
+      "ef_categories": ["HFmrEF"],
+      "description": "ACEi/ARB may be considered in HFmrEF (ESC)",
+      "class": "IIb",
+      "loe": "C-LD",
+      "conditions": {
+        "ef_min": 41,
+        "ef_max": 49
+      },
+      "thresholds": {
+        "bp_low_sbp": 100,
+        "egfr_init": 20,
+        "egfr_cont": 15
+      },
+      "source_doi": "10.1093/eurheartj/ehab368"
+    },
+    {
+      "rule_id": "R-021",
+      "guideline_id": "AHA2022-010",
+      "pillar": "ARNI_ACEi_ARB",
+      "ef_categories": ["HFrEF"],
+      "description": "ACEi recommended for HFrEF when ARNI is not tolerated or accessible",
+      "class": "I",
+      "loe": "A",
+      "conditions": {
+        "ef_max": 40
+      },
+      "thresholds": {
+        "bp_low_sbp": 100,
+        "egfr_init": 20,
+        "egfr_cont": 15
+      },
+      "source_doi": "10.1161/CIR.0000000000001063"
+    },
+    {
+      "rule_id": "R-022",
+      "guideline_id": "ESC2021-008",
+      "pillar": "ARNI_ACEi_ARB",
+      "ef_categories": ["HFrEF"],
+      "description": "ACEi/ARB for HFrEF when ARNI not tolerated (ESC)",
+      "class": "I",
+      "loe": "A",
+      "conditions": {
+        "ef_max": 40
       },
       "thresholds": {
         "bp_low_sbp": 100,

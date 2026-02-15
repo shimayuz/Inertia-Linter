@@ -13,11 +13,7 @@ export const case3Patient: PatientSnapshot = {
   bnp: 1200,
   dmType: 'none',
   medications: [
-    {
-      pillar: 'ARNI_ACEi_ARB',
-      name: 'Sacubitril/Valsartan 24/26mg',
-      doseTier: 'LOW',
-    },
+    { pillar: 'ARNI_ACEi_ARB', name: 'Sacubitril/Valsartan 24/26mg', doseTier: 'LOW' },
     {
       pillar: 'BETA_BLOCKER',
       name: 'Carvedilol 6.25mg',

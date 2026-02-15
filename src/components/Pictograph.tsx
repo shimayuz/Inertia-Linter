@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { RuleDerivedLabel } from './labels/RuleDerivedLabel'
 
 interface PictographProps {
@@ -57,12 +58,13 @@ export function Pictograph({
   trialSource,
   disclaimer,
 }: PictographProps) {
+  const { t } = useTranslation('ui')
   const icons = buildIconColors(total, benefitCount, harmCount)
 
   return (
     <div className="rounded-lg border border-gray-200 bg-white p-4 space-y-3">
       <h4 className="text-sm font-semibold text-gray-700">
-        Benefit / Risk Pictograph
+        {t('pictograph.title')}
       </h4>
 
       <div
@@ -86,12 +88,12 @@ export function Pictograph({
         </span>
         <span className="flex items-center gap-1">
           <span className="inline-block h-2.5 w-2.5 rounded-sm bg-gray-300" />
-          No event ({total - benefitCount - harmCount}/{total})
+          {t('pictograph.noEvent', { count: total - benefitCount - harmCount, total })}
         </span>
       </div>
 
       <p className="text-xs text-gray-500">
-        Source: {trialSource}
+        {t('pictograph.source', { source: trialSource })}
       </p>
 
       <p className="text-xs text-amber-700 bg-amber-50 rounded p-2">

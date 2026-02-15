@@ -16,7 +16,7 @@ export const DOSE_TIER_POINTS: Readonly<Record<DoseTier, number>> = {
 
 export const DOSE_TIER_LABELS: Readonly<Record<DoseTier, string>> = {
   NOT_PRESCRIBED: 'Not prescribed',
-  LOW: 'Low dose',
+  LOW: 'Minimum dose',
   MEDIUM: 'Medium dose',
-  HIGH: 'Target dose',
+  HIGH: 'Max dose',
 } as const

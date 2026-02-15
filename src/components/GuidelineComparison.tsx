@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import type { GuidelineComparison as GuidelineComparisonType } from '../types/guideline'
 import { RuleDerivedLabel } from './labels/RuleDerivedLabel'
 
@@ -37,6 +38,7 @@ function ComparisonCard({
 }: {
   readonly comparison: GuidelineComparisonType
 }) {
+  const { t } = useTranslation('ui')
   const borderClass = comparison.hasDifference
     ? 'border-amber-300 bg-amber-50/50'
     : 'border-gray-200 bg-white'
@@ -49,7 +51,7 @@ function ComparisonCard({
         </h5>
         {comparison.hasDifference && (
           <span className="inline-flex items-center rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-800">
-            Guidelines differ
+            {t('guideline.guidelinesDiffer')}
           </span>
         )}
       </div>
@@ -73,12 +75,14 @@ function ComparisonCard({
 export function GuidelineComparisonPanel({
   comparisons,
 }: GuidelineComparisonProps) {
+  const { t } = useTranslation('ui')
+
   if (comparisons.length === 0) return null
 
   return (
     <div className="space-y-3">
       <h4 className="text-sm font-semibold text-gray-700">
-        Multi-Guideline Comparison
+        {t('guideline.multiGuidelineComparison')}
       </h4>
 
       <div className="space-y-2">

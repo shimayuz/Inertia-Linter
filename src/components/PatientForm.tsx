@@ -1,45 +1,103 @@
+import { useEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { PatientSnapshot } from '../types/patient.ts'
+import type { ExtractionResult } from '../types/vision.ts'
+import type { PatientTimeline } from '../types/timeline.ts'
 import { PILLAR_LABELS } from '../types/pillar.ts'
-import { DOSE_TIERS, DOSE_TIER_LABELS } from '../types/dose-tier.ts'
+import { DOSE_TIERS } from '../types/dose-tier.ts'
 import { usePatientForm } from '../hooks/usePatientForm.ts'
 import { case1Patient } from '../data/cases/case1.ts'
 import { case2Patient } from '../data/cases/case2.ts'
 import { case3Patient } from '../data/cases/case3.ts'
+import { case1Timeline } from '../data/timelines/case1-timeline.ts'
+import { case2Timeline } from '../data/timelines/case2-timeline.ts'
+import { case3Timeline } from '../data/timelines/case3-timeline.ts'
+import { VisionExtractedLabel } from './labels/VisionExtractedLabel.tsx'
 
 interface PatientFormProps {
-  readonly onSubmit: (patient: PatientSnapshot) => void
+  readonly onSubmit: (patient: PatientSnapshot, timeline?: PatientTimeline) => void
   readonly isLoading?: boolean
+  readonly extractionResult?: ExtractionResult | null
+  readonly onTimelineSelect?: (timeline: PatientTimeline | null) => void
 }
 
 function FormField({
   label,
   error,
+  suffix,
   children,
 }: {
-  readonly label: string
+  readonly label: React.ReactNode
   readonly error?: string
+  readonly suffix?: string
   readonly children: React.ReactNode
 }) {
   return (
-    <div className="mb-2">
-      <label className="block text-xs font-medium text-gray-700 mb-0.5">
+    <div>
+      <label className="block text-xs font-medium text-gray-500 mb-1 tracking-wide">
         {label}
       </label>
-      {children}
-      {error && <p className="text-xs text-red-600 mt-0.5">{error}</p>}
+      {suffix ? (
+        <div className="input-with-suffix">
+          {children}
+          <span className="input-suffix">{suffix}</span>
+        </div>
+      ) : (
+        children
+      )}
+      {error && <p className="text-xs text-red-500 mt-0.5">{error}</p>}
     </div>
   )
 }
 
-function SectionHeader({ title }: { readonly title: string }) {
+function SectionCard({
+  title,
+  children,
+}: {
+  readonly title: string
+  readonly children: React.ReactNode
+}) {
   return (
-    <h3 className="text-sm font-semibold text-gray-800 border-b border-gray-200 pb-1 mb-2 mt-3 first:mt-0">
-      {title}
-    </h3>
+    <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 mb-3">
+      <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">
+        {title}
+      </h3>
+      {children}
+    </div>
   )
 }
 
-export function PatientForm({ onSubmit, isLoading = false }: PatientFormProps) {
+function FieldConfidenceBadge({ fieldName, confidence }: { readonly fieldName: string; readonly confidence?: ExtractionResult['confidence'] | null }) {
+  if (!confidence) return null
+  const status = confidence.fields[fieldName]
+  if (!status || status === 'missing') return null
+  const colors = status === 'extracted'
+    ? 'bg-emerald-100 text-emerald-700'
+    : 'bg-amber-100 text-amber-700'
+  return (
+    <span className={`ml-1.5 px-1.5 py-0.5 rounded-full text-[10px] font-medium ${colors}`}>
+      {status}
+    </span>
+  )
+}
+
+const PILLAR_ACCENT: Readonly<Record<string, string>> = {
+  ARNI_ACEi_ARB: 'border-l-blue-500',
+  BETA_BLOCKER: 'border-l-violet-500',
+  MRA: 'border-l-amber-500',
+  SGLT2i: 'border-l-emerald-500',
+}
+
+const PILLAR_DOT: Readonly<Record<string, string>> = {
+  ARNI_ACEi_ARB: 'bg-blue-500',
+  BETA_BLOCKER: 'bg-violet-500',
+  MRA: 'bg-amber-500',
+  SGLT2i: 'bg-emerald-500',
+}
+
+export function PatientForm({ onSubmit, isLoading = false, extractionResult, onTimelineSelect }: PatientFormProps) {
+  const { t } = useTranslation()
+  const { t: tc } = useTranslation('clinical')
   const {
     formState,
     errors,
@@ -47,18 +105,25 @@ export function PatientForm({ onSubmit, isLoading = false }: PatientFormProps) {
     handleMedicationChange,
     handleSubmit,
     loadCase,
+    loadPartialSnapshot,
     resetForm,
   } = usePatientForm()
 
+  const prevExtractionRef = useRef<ExtractionResult | null>(null)
+  useEffect(() => {
+    if (extractionResult && extractionResult !== prevExtractionRef.current && extractionResult.snapshot) {
+      loadPartialSnapshot(extractionResult.snapshot)
+      prevExtractionRef.current = extractionResult
+    }
+  }, [extractionResult, loadPartialSnapshot])
+
+  const inputBase = 'w-full px-3 py-2 text-sm bg-gray-50 border border-gray-200 rounded-lg transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 focus:bg-white placeholder:text-gray-300'
+
   const inputClass = (field: string) =>
-    `w-full px-2 py-1 text-sm border rounded focus:outline-none focus:ring-1 focus:ring-blue-500 ${
-      errors[field] ? 'border-red-500' : 'border-gray-300'
-    }`
+    `${inputBase} ${errors[field] ? 'border-red-400 bg-red-50/50 focus:ring-red-500/30 focus:border-red-400' : ''}`
 
   const selectClass = (field: string) =>
-    `w-full px-2 py-1 text-sm border rounded bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 ${
-      errors[field] ? 'border-red-500' : 'border-gray-300'
-    }`
+    `${inputBase} ${errors[field] ? 'border-red-400 bg-red-50/50 focus:ring-red-500/30 focus:border-red-400' : ''}`
 
   const onFormSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -69,263 +134,291 @@ export function PatientForm({ onSubmit, isLoading = false }: PatientFormProps) {
   }
 
   return (
-    <form onSubmit={onFormSubmit} className="p-3 space-y-1 overflow-y-auto h-full">
-      {/* Quick-fill buttons */}
-      <div className="mb-3">
-        <p className="text-xs font-medium text-gray-500 mb-1">Quick-fill demo cases:</p>
-        <div className="flex flex-wrap gap-1">
+    <form onSubmit={onFormSubmit} className="space-y-0 pb-4">
+      {/* Demo Presets */}
+      <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-3 mb-3">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-xs font-bold uppercase tracking-widest text-gray-400">
+            {t('form.demoPresets')}
+          </span>
           <button
             type="button"
-            onClick={() => { loadCase(case1Patient) }}
-            className="px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition-colors"
+            onClick={() => { resetForm(); onTimelineSelect?.(null) }}
+            className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
           >
-            Case 1: HFrEF
+            {t('form.reset')}
+          </button>
+        </div>
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={() => { loadCase(case1Patient); onTimelineSelect?.(case1Timeline) }}
+            className="flex-1 px-3 py-2 text-xs font-medium bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors border border-blue-100"
+          >
+            {t('form.case1')}
           </button>
           <button
             type="button"
-            onClick={() => { loadCase(case2Patient) }}
-            className="px-2 py-1 text-xs bg-green-100 text-green-700 rounded hover:bg-green-200 transition-colors"
+            onClick={() => { loadCase(case2Patient); onTimelineSelect?.(case2Timeline) }}
+            className="flex-1 px-3 py-2 text-xs font-medium bg-emerald-50 text-emerald-700 rounded-lg hover:bg-emerald-100 transition-colors border border-emerald-100"
           >
-            Case 2: HFpEF
+            {t('form.case2')}
           </button>
           <button
             type="button"
-            onClick={() => { loadCase(case3Patient) }}
-            className="px-2 py-1 text-xs bg-amber-100 text-amber-700 rounded hover:bg-amber-200 transition-colors"
+            onClick={() => { loadCase(case3Patient); onTimelineSelect?.(case3Timeline) }}
+            className="flex-1 px-3 py-2 text-xs font-medium bg-amber-50 text-amber-700 rounded-lg hover:bg-amber-100 transition-colors border border-amber-100"
           >
-            Case 3: Multi-blocker
-          </button>
-          <button
-            type="button"
-            onClick={resetForm}
-            className="px-2 py-1 text-xs bg-gray-100 text-gray-600 rounded hover:bg-gray-200 transition-colors"
-          >
-            Reset
+            {t('form.case3')}
           </button>
         </div>
       </div>
 
+      {extractionResult?.confidence && (
+        <div className="mb-3 flex items-center gap-2">
+          <VisionExtractedLabel />
+          <span className="text-xs text-gray-400">
+            {t('form.confidence', { level: extractionResult.confidence.overall })}
+          </span>
+        </div>
+      )}
+
       {/* Patient Vitals */}
-      <SectionHeader title="Patient Vitals" />
+      <SectionCard title={t('form.vitals')}>
+        <div className="grid grid-cols-2 gap-3">
+          <FormField label={<>EF<FieldConfidenceBadge fieldName="ef" confidence={extractionResult?.confidence} /></>} error={errors['ef']} suffix="%">
+            <input
+              type="number"
+              value={formState.ef}
+              onChange={(e) => { handleChange('ef', e.target.value) }}
+              placeholder="30"
+              min={1}
+              max={99}
+              className={inputClass('ef')}
+            />
+          </FormField>
 
-      <div className="grid grid-cols-2 gap-2">
-        <FormField label="EF (%)" error={errors['ef']}>
-          <input
-            type="number"
-            value={formState.ef}
-            onChange={(e) => { handleChange('ef', e.target.value) }}
-            placeholder="1-99"
-            min={1}
-            max={99}
-            className={inputClass('ef')}
-          />
-        </FormField>
+          <FormField label={<>NYHA<FieldConfidenceBadge fieldName="nyhaClass" confidence={extractionResult?.confidence} /></>} error={errors['nyhaClass']}>
+            <select
+              value={formState.nyhaClass}
+              onChange={(e) => { handleChange('nyhaClass', e.target.value) }}
+              className={selectClass('nyhaClass')}
+            >
+              <option value="1">{t('form.nyhaClass', { num: 'I' })}</option>
+              <option value="2">{t('form.nyhaClass', { num: 'II' })}</option>
+              <option value="3">{t('form.nyhaClass', { num: 'III' })}</option>
+              <option value="4">{t('form.nyhaClass', { num: 'IV' })}</option>
+            </select>
+          </FormField>
 
-        <FormField label="NYHA Class" error={errors['nyhaClass']}>
-          <select
-            value={formState.nyhaClass}
-            onChange={(e) => { handleChange('nyhaClass', e.target.value) }}
-            className={selectClass('nyhaClass')}
-          >
-            <option value="1">I</option>
-            <option value="2">II</option>
-            <option value="3">III</option>
-            <option value="4">IV</option>
-          </select>
-        </FormField>
+          <FormField label={<>SBP<FieldConfidenceBadge fieldName="sbp" confidence={extractionResult?.confidence} /></>} error={errors['sbp']} suffix="mmHg">
+            <input
+              type="number"
+              value={formState.sbp}
+              onChange={(e) => { handleChange('sbp', e.target.value) }}
+              placeholder="120"
+              min={60}
+              max={250}
+              className={inputClass('sbp')}
+            />
+          </FormField>
 
-        <FormField label="SBP (mmHg)" error={errors['sbp']}>
-          <input
-            type="number"
-            value={formState.sbp}
-            onChange={(e) => { handleChange('sbp', e.target.value) }}
-            placeholder="60-250"
-            min={60}
-            max={250}
-            className={inputClass('sbp')}
-          />
-        </FormField>
+          <FormField label={<>HR<FieldConfidenceBadge fieldName="hr" confidence={extractionResult?.confidence} /></>} error={errors['hr']} suffix="bpm">
+            <input
+              type="number"
+              value={formState.hr}
+              onChange={(e) => { handleChange('hr', e.target.value) }}
+              placeholder="72"
+              min={30}
+              max={200}
+              className={inputClass('hr')}
+            />
+          </FormField>
+        </div>
 
-        <FormField label="HR (bpm)" error={errors['hr']}>
-          <input
-            type="number"
-            value={formState.hr}
-            onChange={(e) => { handleChange('hr', e.target.value) }}
-            placeholder="30-200"
-            min={30}
-            max={200}
-            className={inputClass('hr')}
-          />
-        </FormField>
-      </div>
-
-      <FormField label="Vitals Date" error={errors['vitalsDate']}>
-        <input
-          type="date"
-          value={formState.vitalsDate}
-          onChange={(e) => { handleChange('vitalsDate', e.target.value) }}
-          className={inputClass('vitalsDate')}
-        />
-      </FormField>
+        <div className="mt-3">
+          <FormField label={<>{t('form.vitalsDate')}<FieldConfidenceBadge fieldName="vitalsDate" confidence={extractionResult?.confidence} /></>} error={errors['vitalsDate']}>
+            <input
+              type="date"
+              value={formState.vitalsDate}
+              onChange={(e) => { handleChange('vitalsDate', e.target.value) }}
+              className={inputClass('vitalsDate')}
+            />
+          </FormField>
+        </div>
+      </SectionCard>
 
       {/* Laboratory Values */}
-      <SectionHeader title="Laboratory Values" />
+      <SectionCard title={t('form.labs')}>
+        <div className="grid grid-cols-2 gap-3">
+          <FormField label={<>eGFR<FieldConfidenceBadge fieldName="egfr" confidence={extractionResult?.confidence} /></>} error={errors['egfr']} suffix="mL/min">
+            <input
+              type="number"
+              value={formState.egfr}
+              onChange={(e) => { handleChange('egfr', e.target.value) }}
+              placeholder="--"
+              min={0}
+              max={200}
+              className={inputClass('egfr')}
+            />
+          </FormField>
 
-      <div className="grid grid-cols-2 gap-2">
-        <FormField label="eGFR (mL/min)" error={errors['egfr']}>
-          <input
-            type="number"
-            value={formState.egfr}
-            onChange={(e) => { handleChange('egfr', e.target.value) }}
-            placeholder="Optional"
-            min={0}
-            max={200}
-            className={inputClass('egfr')}
-          />
-        </FormField>
+          <FormField label={<>K+<FieldConfidenceBadge fieldName="potassium" confidence={extractionResult?.confidence} /></>} error={errors['potassium']} suffix="mEq/L">
+            <input
+              type="number"
+              value={formState.potassium}
+              onChange={(e) => { handleChange('potassium', e.target.value) }}
+              placeholder="--"
+              step={0.1}
+              min={2.0}
+              max={8.0}
+              className={inputClass('potassium')}
+            />
+          </FormField>
 
-        <FormField label="K+ (mEq/L)" error={errors['potassium']}>
-          <input
-            type="number"
-            value={formState.potassium}
-            onChange={(e) => { handleChange('potassium', e.target.value) }}
-            placeholder="Optional"
-            step={0.1}
-            min={2.0}
-            max={8.0}
-            className={inputClass('potassium')}
-          />
-        </FormField>
-      </div>
+          <FormField label={<>{t('form.labsDate')}<FieldConfidenceBadge fieldName="labsDate" confidence={extractionResult?.confidence} /></>} error={errors['labsDate']}>
+            <input
+              type="date"
+              value={formState.labsDate}
+              onChange={(e) => { handleChange('labsDate', e.target.value) }}
+              className={inputClass('labsDate')}
+            />
+          </FormField>
 
-      <div className="grid grid-cols-2 gap-2">
-        <FormField label="Labs Date" error={errors['labsDate']}>
-          <input
-            type="date"
-            value={formState.labsDate}
-            onChange={(e) => { handleChange('labsDate', e.target.value) }}
-            className={inputClass('labsDate')}
-          />
-        </FormField>
-
-        <FormField label="BNP (pg/mL)" error={errors['bnp']}>
-          <input
-            type="number"
-            value={formState.bnp}
-            onChange={(e) => { handleChange('bnp', e.target.value) }}
-            placeholder="Optional"
-            className={inputClass('bnp')}
-          />
-        </FormField>
-      </div>
+          <FormField label={<>BNP<FieldConfidenceBadge fieldName="bnp" confidence={extractionResult?.confidence} /></>} error={errors['bnp']} suffix="pg/mL">
+            <input
+              type="number"
+              value={formState.bnp}
+              onChange={(e) => { handleChange('bnp', e.target.value) }}
+              placeholder="--"
+              className={inputClass('bnp')}
+            />
+          </FormField>
+        </div>
+      </SectionCard>
 
       {/* Comorbidities */}
-      <SectionHeader title="Comorbidities" />
-
-      <FormField label="Diabetes" error={errors['dmType']}>
-        <select
-          value={formState.dmType}
-          onChange={(e) => { handleChange('dmType', e.target.value) }}
-          className={selectClass('dmType')}
-        >
-          <option value="none">None</option>
-          <option value="type1">Type 1</option>
-          <option value="type2">Type 2</option>
-        </select>
-      </FormField>
+      <SectionCard title={t('form.comorbidities')}>
+        <FormField label={<>Diabetes<FieldConfidenceBadge fieldName="dmType" confidence={extractionResult?.confidence} /></>} error={errors['dmType']}>
+          <select
+            value={formState.dmType}
+            onChange={(e) => { handleChange('dmType', e.target.value) }}
+            className={selectClass('dmType')}
+          >
+            <option value="none">{t('form.diabetesNone')}</option>
+            <option value="type1">{t('form.diabetesType1')}</option>
+            <option value="type2">{t('form.diabetesType2')}</option>
+          </select>
+        </FormField>
+      </SectionCard>
 
       {/* Current Medications */}
-      <SectionHeader title="Current Medications" />
+      <SectionCard title={t('form.medications')}>
+        <div className="space-y-2">
+          {formState.medications.map((med, index) => {
+            const pillarKey = med.pillar as keyof typeof PILLAR_LABELS
+            const accent = PILLAR_ACCENT[med.pillar] ?? 'border-l-gray-300'
+            const dot = PILLAR_DOT[med.pillar] ?? 'bg-gray-400'
+            const isActive = med.doseTier !== 'NOT_PRESCRIBED' && med.name !== ''
 
-      {formState.medications.map((med, index) => {
-        const pillarKey = med.pillar as keyof typeof PILLAR_LABELS
-        return (
-          <div
-            key={med.pillar}
-            className="border border-gray-200 rounded p-2 mb-2"
-          >
-            <p className="text-xs font-semibold text-gray-700 mb-1">
-              {PILLAR_LABELS[pillarKey]}
-            </p>
-
-            <div className="grid grid-cols-2 gap-2">
-              <FormField
-                label="Medication"
-                error={errors[`medications.${String(index)}.name`]}
+            return (
+              <div
+                key={med.pillar}
+                className={`border-l-[3px] ${accent} rounded-r-lg p-3 transition-colors ${
+                  isActive
+                    ? 'bg-white border border-l-0 border-gray-100 shadow-sm'
+                    : 'bg-gray-50/50'
+                }`}
               >
-                <input
-                  type="text"
-                  value={med.name}
-                  onChange={(e) => { handleMedicationChange(index, 'name', e.target.value) }}
-                  placeholder="Drug name + dose"
-                  className={inputClass(`medications.${String(index)}.name`)}
-                />
-              </FormField>
+                <div className="flex items-center gap-2 mb-2">
+                  <span className={`w-2 h-2 rounded-full ${dot}`} />
+                  <span className="text-xs font-semibold text-gray-700">
+                    {PILLAR_LABELS[pillarKey] ?? med.pillar}
+                  </span>
+                  {isActive && (
+                    <span className="ml-auto text-[10px] font-medium text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-full">
+                      {t('form.active')}
+                    </span>
+                  )}
+                </div>
 
-              <FormField
-                label="Dose Tier"
-                error={errors[`medications.${String(index)}.doseTier`]}
-              >
-                <select
-                  value={med.doseTier}
-                  onChange={(e) => { handleMedicationChange(index, 'doseTier', e.target.value) }}
-                  className={selectClass(`medications.${String(index)}.doseTier`)}
-                >
-                  {Object.values(DOSE_TIERS).map((tier) => (
-                    <option key={tier} value={tier}>
-                      {DOSE_TIER_LABELS[tier]}
-                    </option>
-                  ))}
-                </select>
-              </FormField>
-            </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <input
+                    type="text"
+                    value={med.name}
+                    onChange={(e) => { handleMedicationChange(index, 'name', e.target.value) }}
+                    placeholder={t('form.drugName')}
+                    className={`${inputBase} text-xs py-1.5 ${
+                      errors[`medications.${String(index)}.name`] ? 'border-red-400' : ''
+                    }`}
+                  />
+                  <select
+                    value={med.doseTier}
+                    onChange={(e) => { handleMedicationChange(index, 'doseTier', e.target.value) }}
+                    className={`${inputBase} text-xs py-1.5 ${
+                      errors[`medications.${String(index)}.doseTier`] ? 'border-red-400' : ''
+                    }`}
+                  >
+                    {Object.values(DOSE_TIERS).map((tier) => (
+                      <option key={tier} value={tier}>
+                        {tc(`doseTier.${tier}`)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
-            <div className="flex items-center gap-3 mt-1">
-              <label className="flex items-center gap-1 text-xs text-gray-600">
-                <input
-                  type="checkbox"
-                  checked={med.hasADR}
-                  onChange={(e) => { handleMedicationChange(index, 'hasADR', e.target.checked) }}
-                  className="rounded border-gray-300"
-                />
-                ADR history
-              </label>
-              <label className="flex items-center gap-1 text-xs text-gray-600">
-                <input
-                  type="checkbox"
-                  checked={med.hasAllergy}
-                  onChange={(e) => { handleMedicationChange(index, 'hasAllergy', e.target.checked) }}
-                  className="rounded border-gray-300"
-                />
-                Allergy
-              </label>
-            </div>
+                <div className="flex items-center gap-4 mt-2">
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={med.hasADR}
+                      onChange={(e) => { handleMedicationChange(index, 'hasADR', e.target.checked) }}
+                      className="sr-only peer"
+                    />
+                    <div className="w-7 h-4 bg-gray-200 peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border after:border-gray-300 after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-red-400" />
+                    <span className="ms-1.5 text-[11px] text-gray-500">ADR</span>
+                  </label>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={med.hasAllergy}
+                      onChange={(e) => { handleMedicationChange(index, 'hasAllergy', e.target.checked) }}
+                      className="sr-only peer"
+                    />
+                    <div className="w-7 h-4 bg-gray-200 peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border after:border-gray-300 after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-red-400" />
+                    <span className="ms-1.5 text-[11px] text-gray-500">{t('form.allergy')}</span>
+                  </label>
+                </div>
 
-            {med.hasADR && (
-              <FormField
-                label="ADR Description"
-                error={errors[`medications.${String(index)}.adrDescription`]}
-              >
-                <input
-                  type="text"
-                  value={med.adrDescription}
-                  onChange={(e) => { handleMedicationChange(index, 'adrDescription', e.target.value) }}
-                  placeholder="Describe adverse reaction"
-                  className={inputClass(`medications.${String(index)}.adrDescription`)}
-                />
-              </FormField>
-            )}
-          </div>
-        )
-      })}
+                {med.hasADR && (
+                  <input
+                    type="text"
+                    value={med.adrDescription}
+                    onChange={(e) => { handleMedicationChange(index, 'adrDescription', e.target.value) }}
+                    placeholder={t('form.describeADR')}
+                    className={`${inputBase} text-xs py-1.5 mt-2`}
+                  />
+                )}
+              </div>
+            )
+          })}
+        </div>
+      </SectionCard>
 
       {/* Submit */}
       <button
         type="submit"
         disabled={isLoading}
-        className="w-full mt-3 px-4 py-2 text-sm font-semibold text-white bg-blue-600 rounded hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+        className="w-full px-6 py-3 text-sm font-bold text-white bg-blue-600 rounded-xl shadow-lg shadow-blue-600/25 hover:bg-blue-700 hover:shadow-blue-700/30 active:scale-[0.98] disabled:bg-gray-300 disabled:shadow-none disabled:cursor-not-allowed transition-all duration-150"
       >
-        {isLoading ? 'Running Audit...' : 'Run Audit'}
+        {isLoading ? (
+          <span className="flex items-center justify-center gap-2">
+            <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+            {t('form.runningAudit')}
+          </span>
+        ) : (
+          t('form.runAudit')
+        )}
       </button>
     </form>
   )

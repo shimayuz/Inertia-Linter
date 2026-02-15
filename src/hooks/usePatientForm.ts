@@ -198,6 +198,52 @@ export function usePatientForm() {
     setErrors({})
   }, [])
 
+  const loadPartialSnapshot = useCallback((partial: Partial<PatientSnapshot>) => {
+    setFormState((prev) => {
+      const next = { ...prev }
+
+      if (partial.ef !== undefined) next.ef = String(partial.ef)
+      if (partial.nyhaClass !== undefined) next.nyhaClass = String(partial.nyhaClass)
+      if (partial.sbp !== undefined) next.sbp = String(partial.sbp)
+      if (partial.hr !== undefined) next.hr = String(partial.hr)
+      if (partial.vitalsDate !== undefined) next.vitalsDate = partial.vitalsDate
+      if (partial.egfr !== undefined) next.egfr = String(partial.egfr)
+      if (partial.potassium !== undefined) next.potassium = String(partial.potassium)
+      if (partial.labsDate !== undefined) next.labsDate = partial.labsDate
+      if (partial.bnp !== undefined) next.bnp = String(partial.bnp)
+      if (partial.dmType !== undefined) next.dmType = partial.dmType
+
+      if (partial.medications) {
+        const meds = Object.values(PILLARS).map((pillar) => {
+          const extracted = partial.medications?.find((m) => m.pillar === pillar)
+          const existing = prev.medications.find((m) => m.pillar === pillar)
+          if (extracted && extracted.name) {
+            return {
+              pillar,
+              name: extracted.name,
+              doseTier: extracted.doseTier,
+              hasADR: existing?.hasADR ?? false,
+              adrDescription: existing?.adrDescription ?? '',
+              hasAllergy: existing?.hasAllergy ?? false,
+            }
+          }
+          return existing ?? {
+            pillar,
+            name: '',
+            doseTier: 'NOT_PRESCRIBED',
+            hasADR: false,
+            adrDescription: '',
+            hasAllergy: false,
+          }
+        })
+        return { ...next, medications: meds }
+      }
+
+      return next
+    })
+    setErrors({})
+  }, [])
+
   const resetForm = useCallback(() => {
     setFormState(createDefaultFormState())
     setErrors({})
@@ -210,6 +256,7 @@ export function usePatientForm() {
     handleMedicationChange,
     handleSubmit,
     loadCase,
+    loadPartialSnapshot,
     resetForm,
   } as const
 }

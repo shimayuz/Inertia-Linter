@@ -1,7 +1,5 @@
-import { BLOCKER_UI_LABELS, type BlockerCode } from '../../types/blocker'
-
-const CLINICAL_INERTIA_TOOLTIP =
-  'No documented contraindication, data gap, or patient factor was found. If there is an undocumented reason, please add it below.'
+import { useTranslation } from 'react-i18next'
+import { type BlockerCode } from '../../types/blocker'
 
 interface BlockerLabelProps {
   readonly code: BlockerCode
@@ -9,15 +7,18 @@ interface BlockerLabelProps {
 }
 
 export function BlockerLabel({ code, className = '' }: BlockerLabelProps) {
-  const label = BLOCKER_UI_LABELS[code]
+  const { t } = useTranslation('clinical')
+
+  const label = t(`blocker.${code}`)
   const isClinicalInertia = code === 'CLINICAL_INERTIA'
+  const tooltip = t('blockerTooltip.CLINICAL_INERTIA')
 
   return (
     <span
       className={`inline-flex items-center text-sm ${className}`}
-      title={isClinicalInertia ? CLINICAL_INERTIA_TOOLTIP : undefined}
+      title={isClinicalInertia ? tooltip : undefined}
       aria-label={
-        isClinicalInertia ? `${label}. ${CLINICAL_INERTIA_TOOLTIP}` : label
+        isClinicalInertia ? `${label}. ${tooltip}` : label
       }
     >
       {label}

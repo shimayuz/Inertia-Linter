@@ -1,0 +1,36 @@
+{
+  "pillarStatus.ON_TARGET": "On Target",
+  "pillarStatus.UNDERDOSED": "Underdosed",
+  "pillarStatus.MISSING": "Missing",
+  "pillarStatus.CONTRAINDICATED": "Contraindicated",
+  "pillarStatus.UNKNOWN": "Unknown",
+
+  "statusDesc.ON_TARGET": "At guideline-recommended target dose",
+  "statusDesc.UNDERDOSED": "Prescribed but below target dose — optimization opportunity",
+  "statusDesc.MISSING": "Not currently prescribed — initiation opportunity",
+  "statusDesc.CONTRAINDICATED": "Contraindicated based on current clinical data",
+  "statusDesc.UNKNOWN": "Insufficient data to determine status",
+
+  "blocker.BP_LOW": "Low blood pressure (SBP)",
+  "blocker.HR_LOW": "Low heart rate",
+  "blocker.K_HIGH": "Elevated potassium",
+  "blocker.EGFR_LOW_INIT": "Low eGFR (initiation threshold)",
+  "blocker.EGFR_LOW_CONT": "Low eGFR (continuation threshold)",
+  "blocker.RECENT_AKI": "Recent acute kidney injury",
+  "blocker.ADR_HISTORY": "Prior adverse drug reaction",
+  "blocker.ALLERGY": "Drug allergy",
+  "blocker.STALE_LABS": "Lab results older than 14 days",
+  "blocker.STALE_VITALS": "Vitals older than 30 days",
+  "blocker.UNKNOWN_LABS": "Lab values not available",
+  "blocker.CLINICAL_INERTIA": "No identified blocker — Eligible to consider intensification",
+  "blocker.PATIENT_REFUSAL": "Patient preference/refusal",
+  "blocker.COST_BARRIER": "Cost or access barrier",
+  "blocker.OTHER": "Other clinical reason",
+
+  "blockerTooltip.CLINICAL_INERTIA": "No documented contraindication, data gap, or patient factor was found. If there is an undocumented reason, please add it below.",
+
+  "doseTier.NOT_PRESCRIBED": "Not prescribed",
+  "doseTier.LOW": "Minimum dose",
+  "doseTier.MEDIUM": "Medium dose",
+  "doseTier.HIGH": "Max dose"
+}

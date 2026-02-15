@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { Pillar, BlockerCode } from '../types'
 import { BLOCKER_UI_LABELS } from '../types/blocker'
 
@@ -60,6 +61,7 @@ export function ReasonInput({
   currentBlockers,
   onReasonsChange,
 }: ReasonInputProps) {
+  const { t } = useTranslation('ui')
   const [selectedReasons, setSelectedReasons] = useState<
     ReadonlyArray<BlockerCode>
   >([])
@@ -104,11 +106,10 @@ export function ReasonInput({
   return (
     <div className="space-y-2">
       <h4 className="text-sm font-semibold text-gray-700">
-        Add Undocumented Reason (Optional)
+        {t('reason.addUndocumented')}
       </h4>
       <p className="text-xs text-gray-500">
-        If there is a clinical reason not captured in the structured data, select
-        it below.
+        {t('reason.description')}
       </p>
       <div className="space-y-1.5">
         {availableReasons.map((code) => (
@@ -133,13 +134,13 @@ export function ReasonInput({
               onChange={() => handleToggle('OTHER')}
               className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
             />
-            Other:
+            {t('reason.other')}
           </label>
           <input
             type="text"
             value={otherText}
             onChange={handleOtherChange}
-            placeholder="Describe reason..."
+            placeholder={t('reason.describePlaceholder')}
             className="flex-1 text-sm border border-gray-300 rounded px-2 py-1 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
           />
         </div>

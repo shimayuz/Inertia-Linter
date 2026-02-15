@@ -1,5 +1,5 @@
+import { useTranslation } from 'react-i18next'
 import { PILLAR_LABELS, type PillarStatus } from '../types/pillar'
-import { DOSE_TIER_LABELS } from '../types/dose-tier'
 import { BlockerLabel } from './labels/BlockerLabel'
 import type { PillarResult } from '../types/audit'
 
@@ -17,27 +17,20 @@ const STATUS_STYLES: Readonly<Record<PillarStatus, string>> = {
   UNKNOWN: 'bg-purple-100 text-purple-800 border-purple-300',
 }
 
-const STATUS_DISPLAY_LABELS: Readonly<Record<PillarStatus, string>> = {
-  ON_TARGET: 'On Target',
-  UNDERDOSED: 'Underdosed',
-  MISSING: 'Missing',
-  CONTRAINDICATED: 'Contraindicated',
-  UNKNOWN: 'Unknown',
-}
-
 export function PillarCard({ result, isSelected = false, onClick }: PillarCardProps) {
+  const { t } = useTranslation('clinical')
   const { pillar, status, doseTier, blockers } = result
   const pillarLabel = PILLAR_LABELS[pillar]
   const statusStyle = STATUS_STYLES[status]
-  const statusLabel = STATUS_DISPLAY_LABELS[status]
+  const statusLabel = t(`pillarStatus.${status}`)
   const showDoseTier = doseTier !== 'NOT_PRESCRIBED'
 
   return (
     <button
       type="button"
       onClick={onClick}
-      className={`w-full text-left rounded-lg border shadow-sm p-4 transition-all duration-150 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-        isSelected ? 'ring-2 ring-blue-500 border-blue-400' : 'border-gray-200'
+      className={`w-full text-left rounded-xl border shadow-sm p-4 transition-all duration-200 hover:shadow-md hover:scale-[1.01] focus:outline-none focus:ring-2 focus:ring-blue-500/40 ${
+        isSelected ? 'ring-2 ring-blue-500 border-blue-300 bg-blue-50/30' : 'border-gray-100 bg-white'
       }`}
       aria-label={`${pillarLabel} pillar: ${statusLabel}`}
       aria-pressed={isSelected}
@@ -54,7 +47,7 @@ export function PillarCard({ result, isSelected = false, onClick }: PillarCardPr
 
       {showDoseTier && (
         <p className="mt-2 text-sm text-gray-600">
-          {DOSE_TIER_LABELS[doseTier]}
+          {t(`doseTier.${doseTier}`)}
         </p>
       )}
 

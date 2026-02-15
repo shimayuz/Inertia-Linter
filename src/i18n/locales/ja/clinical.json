@@ -1,0 +1,36 @@
+{
+  "pillarStatus.ON_TARGET": "目標用量達成",
+  "pillarStatus.UNDERDOSED": "用量不足",
+  "pillarStatus.MISSING": "未処方",
+  "pillarStatus.CONTRAINDICATED": "禁忌",
+  "pillarStatus.UNKNOWN": "不明",
+
+  "statusDesc.ON_TARGET": "ガイドライン推奨の目標用量に到達",
+  "statusDesc.UNDERDOSED": "処方されているが目標用量未満 — 最適化の機会あり",
+  "statusDesc.MISSING": "現在未処方 — 開始検討の機会あり",
+  "statusDesc.CONTRAINDICATED": "現在の臨床データに基づき禁忌",
+  "statusDesc.UNKNOWN": "ステータス判定に必要なデータが不足",
+
+  "blocker.BP_LOW": "低血圧 (SBP)",
+  "blocker.HR_LOW": "徐脈",
+  "blocker.K_HIGH": "高カリウム血症",
+  "blocker.EGFR_LOW_INIT": "eGFR低値（開始閾値）",
+  "blocker.EGFR_LOW_CONT": "eGFR低値（継続閾値）",
+  "blocker.RECENT_AKI": "最近の急性腎障害",
+  "blocker.ADR_HISTORY": "薬物有害反応の既往",
+  "blocker.ALLERGY": "薬物アレルギー",
+  "blocker.STALE_LABS": "検査値が14日以上経過",
+  "blocker.STALE_VITALS": "バイタルが30日以上経過",
+  "blocker.UNKNOWN_LABS": "検査値が未取得",
+  "blocker.CLINICAL_INERTIA": "阻害因子なし — 強化検討の対象",
+  "blocker.PATIENT_REFUSAL": "患者の希望/拒否",
+  "blocker.COST_BARRIER": "費用またはアクセスの障壁",
+  "blocker.OTHER": "その他の臨床的理由",
+
+  "blockerTooltip.CLINICAL_INERTIA": "禁忌、データ不足、患者因子のいずれも確認されませんでした。未記録の理由がある場合は、以下に追加してください。",
+
+  "doseTier.NOT_PRESCRIBED": "未処方",
+  "doseTier.LOW": "最小用量",
+  "doseTier.MEDIUM": "中用量",
+  "doseTier.HIGH": "最大用量"
+}

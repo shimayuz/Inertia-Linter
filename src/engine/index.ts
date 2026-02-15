@@ -12,3 +12,16 @@ export type { LLMContext } from './prepare-llm-context.ts'
 export { exportSOAP } from './export-soap.ts'
 export { exportProblemList } from './export-problem-list.ts'
 export { exportJSON } from './export-json.ts'
+export { matchTargetDose, getCurrentStepIndex } from './match-target-dose.ts'
+export {
+  toScoreProgression,
+  toMedicationTimeline,
+  toLabTrends,
+  generateJourneySummary,
+} from './timeline-transforms.ts'
+export type {
+  ScoreDataPoint,
+  MedicationDataPoint,
+  LabDataPoint,
+} from './timeline-transforms.ts'
+export { deriveMascotEmotion } from './derive-mascot-emotion.ts'

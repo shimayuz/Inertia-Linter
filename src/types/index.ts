@@ -22,3 +22,16 @@ export type { PillarResult, GDMTScore, AuditResult } from './audit.ts'
 export type { GuidelinePosition, GuidelineComparison } from './guideline.ts'
 
 export type { BarrierInfo } from './inertia-buster.ts'
+
+export type { ImageData, ExtractionConfidence, ExtractionResult } from './vision.ts'
+
+export type { DoseStep, DrugTargetDose } from './target-dose.ts'
+
+export type { Citation, ChatMessage, ConversationStarter } from './chat.ts'
+
+export type { ClinicalEvent, TimelineEntry, PatientTimeline } from './timeline.ts'
+
+export type { ActionDecision, ActionPriority, ActionCategory, ActionItem, ActionDecisionRecord } from './action-plan.ts'
+
+export { MASCOT_EMOTIONS } from './mascot.ts'
+export type { MascotEmotion } from './mascot.ts'

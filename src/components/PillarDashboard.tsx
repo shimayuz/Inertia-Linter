@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import type { Pillar } from '../types/pillar'
 import type { PillarResult } from '../types/audit'
 import { PillarCard } from './PillarCard'
@@ -13,8 +14,10 @@ export function PillarDashboard({
   selectedPillar = null,
   onSelectPillar,
 }: PillarDashboardProps) {
+  const { t } = useTranslation('ui')
+
   return (
-    <section aria-label="GDMT Pillar Status">
+    <section aria-label={t('score.pillarStatus')}>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         {results.map((result) => (
           <PillarCard

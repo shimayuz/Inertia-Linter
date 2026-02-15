@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { Pillar, BlockerCode } from '../types'
 import type { BarrierInfo } from '../types/inertia-buster'
 import { getInertiaInfo } from '../engine/get-inertia-info'
@@ -10,6 +11,7 @@ interface InertiaBusterProps {
 }
 
 function BarrierCard({ barrier }: { readonly barrier: BarrierInfo }) {
+  const { t } = useTranslation('ui')
   const [expanded, setExpanded] = useState(false)
 
   const toggle = useCallback(() => {
@@ -39,7 +41,7 @@ function BarrierCard({ barrier }: { readonly barrier: BarrierInfo }) {
       {expanded && (
         <div className="px-4 py-3 space-y-3 text-sm">
           <div>
-            <h5 className="font-semibold text-gray-700 mb-1">Information</h5>
+            <h5 className="font-semibold text-gray-700 mb-1">{t('buster.information')}</h5>
             <ul className="space-y-1">
               {barrier.information.map((item) => (
                 <li key={item} className="flex items-start gap-2 text-gray-600">
@@ -55,7 +57,7 @@ function BarrierCard({ barrier }: { readonly barrier: BarrierInfo }) {
 
           <div>
             <h5 className="font-semibold text-gray-700 mb-1">
-              Practical Options to Consider
+              {t('buster.practicalOptions')}
             </h5>
             <ul className="space-y-1">
               {barrier.practicalOptions.map((item) => (
@@ -72,7 +74,7 @@ function BarrierCard({ barrier }: { readonly barrier: BarrierInfo }) {
 
           <div>
             <h5 className="font-semibold text-amber-700 mb-1">
-              When This May Not Apply
+              {t('buster.whenNotApply')}
             </h5>
             <ul className="space-y-1">
               {barrier.whenNotTo.map((item) => (
@@ -88,7 +90,7 @@ function BarrierCard({ barrier }: { readonly barrier: BarrierInfo }) {
           </div>
 
           <p className="text-xs text-gray-400">
-            Evidence: {barrier.evidenceSource}
+            {t('buster.evidence', { source: barrier.evidenceSource })}
           </p>
         </div>
       )}
@@ -97,6 +99,7 @@ function BarrierCard({ barrier }: { readonly barrier: BarrierInfo }) {
 }
 
 export function InertiaBuster({ pillar, blockerCodes }: InertiaBusterProps) {
+  const { t } = useTranslation('ui')
   const barriers = getInertiaInfo(pillar, blockerCodes)
 
   if (barriers.length === 0) {
@@ -107,7 +110,7 @@ export function InertiaBuster({ pillar, blockerCodes }: InertiaBusterProps) {
     <div className="space-y-3">
       <div className="flex items-center justify-between">
         <h4 className="text-sm font-semibold text-gray-700">
-          Additional Clinical Information for Consideration
+          {t('buster.title')}
         </h4>
         <RuleDerivedLabel />
       </div>

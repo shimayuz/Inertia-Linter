@@ -1,0 +1,24 @@
+{
+  "demo.badge": "デモモード — 合成データのみ",
+  "demo.ariaLabel": "デモモード：合成データのみ",
+
+  "disclaimer.banner": "臨床監査ツール — 全出力に医師の確認が必要 — 治療推奨ではありません — アップロードされた画像はAnthropic APIに送信されます",
+  "disclaimer.ariaLabel": "臨床上の免責事項",
+
+  "draft.watermark": "ドラフト — 医師の確認待ち",
+  "draft.syntheticOnly": "ドラフト — 合成データのみ",
+
+  "label.aiGenerated": "この説明はAIが生成しました",
+  "label.aiGeneratedAria": "このコンテンツはAIにより生成されています",
+  "label.ruleDerived": "Guideline-as-Code ルールセット v2 から導出（テスト可能・決定論的）",
+  "label.ruleDerivedAria": "Guideline-as-Code ルールセット v2 から導出、テスト可能かつ決定論的",
+  "label.visionExtracted": "AIにより画像から抽出",
+  "label.visionExtractedAria": "このデータはAIにより画像から抽出されました",
+
+  "consent.title": "画像データに関する告知",
+  "consent.body1": "アップロードされた画像はデータ抽出のためAnthropic APIに送信されます。画像データはブラウザ外に送信され、外部サービスにより処理されます。",
+  "consent.body2": "実患者データを使用しないでください。このツールは合成データ専用です。",
+  "consent.body3": "続行することにより、画像にはデモ目的に適した合成データまたは匿名化データのみが含まれていることを確認します。",
+  "consent.accept": "理解し同意する",
+  "consent.decline": "キャンセル"
+}

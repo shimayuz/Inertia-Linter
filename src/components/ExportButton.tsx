@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { AuditResult } from '../types/audit'
 import type { PatientSnapshot } from '../types/patient'
 import { exportSOAP } from '../engine/export-soap'
@@ -25,6 +26,8 @@ function downloadFile(content: string, filename: string, mimeType: string): void
 }
 
 export function ExportButton({ auditResult, patient }: ExportButtonProps) {
+  const { t } = useTranslation()
+  const { t: ts } = useTranslation('safety')
   const [isOpen, setIsOpen] = useState(false)
 
   const handleExport = useCallback(
@@ -62,7 +65,7 @@ export function ExportButton({ auditResult, patient }: ExportButtonProps) {
         className="inline-flex items-center gap-1.5 rounded-md bg-gray-100 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-200 transition-colors"
         onClick={() => setIsOpen((prev) => !prev)}
       >
-        Export Report
+        {t('export.exportReport')}
         <svg
           className="h-4 w-4"
           fill="none"
@@ -88,7 +91,7 @@ export function ExportButton({ auditResult, patient }: ExportButtonProps) {
             }}
             role="button"
             tabIndex={-1}
-            aria-label="Close export menu"
+            aria-label={t('export.closeMenu')}
           />
           <div className="absolute right-0 z-20 mt-1 w-48 rounded-md border border-gray-200 bg-white shadow-lg">
             <div className="py-1">
@@ -97,26 +100,26 @@ export function ExportButton({ auditResult, patient }: ExportButtonProps) {
                 className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
                 onClick={() => handleExport('soap')}
               >
-                SOAP Note (.txt)
+                {t('export.soapNote')}
               </button>
               <button
                 type="button"
                 className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
                 onClick={() => handleExport('problem-list')}
               >
-                Problem List (.txt)
+                {t('export.problemList')}
               </button>
               <button
                 type="button"
                 className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
                 onClick={() => handleExport('json')}
               >
-                JSON Export (.json)
+                {t('export.jsonExport')}
               </button>
             </div>
             <div className="border-t border-gray-100 px-4 py-2">
               <p className="text-xs text-gray-400">
-                DRAFT — SYNTHETIC DATA ONLY
+                {ts('draft.syntheticOnly')}
               </p>
             </div>
           </div>

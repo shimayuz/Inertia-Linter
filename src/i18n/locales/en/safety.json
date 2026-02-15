@@ -1,0 +1,24 @@
+{
+  "demo.badge": "DEMO MODE — SYNTHETIC DATA ONLY",
+  "demo.ariaLabel": "Demo mode: synthetic data only",
+
+  "disclaimer.banner": "Clinical audit tool — All outputs require physician review — Not treatment recommendations — Image data, if uploaded, is sent to Anthropic API",
+  "disclaimer.ariaLabel": "Clinical disclaimer",
+
+  "draft.watermark": "DRAFT — Pending physician review",
+  "draft.syntheticOnly": "DRAFT — SYNTHETIC DATA ONLY",
+
+  "label.aiGenerated": "This explanation is AI-generated",
+  "label.aiGeneratedAria": "This content is AI-generated",
+  "label.ruleDerived": "Derived from Guideline-as-Code ruleset v2 (testable, deterministic)",
+  "label.ruleDerivedAria": "Derived from Guideline-as-Code ruleset v2, testable and deterministic",
+  "label.visionExtracted": "Extracted from image via AI",
+  "label.visionExtractedAria": "This data was extracted from an image via AI",
+
+  "consent.title": "IMAGE DATA DISCLOSURE",
+  "consent.body1": "The uploaded image will be sent to the Anthropic API for data extraction. Image data leaves your browser and is processed by a third-party service.",
+  "consent.body2": "Do NOT use real patient data. This tool is for SYNTHETIC DATA ONLY.",
+  "consent.body3": "By proceeding, you confirm that the image contains only synthetic or de-identified data suitable for demonstration purposes.",
+  "consent.accept": "I understand and accept",
+  "consent.decline": "Cancel"
+}

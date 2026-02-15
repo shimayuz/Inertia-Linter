@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import type { LLMContext } from '../engine/prepare-llm-context.ts'
+import { useAnthropicApiKey } from './useAnthropicApiKey.ts'
 
 interface LLMExplanationResult {
   readonly explanation: string
@@ -48,14 +49,13 @@ export function useLLMExplanation(
 ): LLMExplanationResult {
   const [explanation, setExplanation] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const apiKey = useAnthropicApiKey()
 
   useEffect(() => {
     if (!context) {
       setExplanation('')
       return
     }
-
-    const apiKey = import.meta.env['VITE_CLAUDE_API_KEY'] as string | undefined
 
     if (!apiKey) {
       setExplanation(generateTemplateExplanation(context))
@@ -106,7 +106,7 @@ export function useLLMExplanation(
     }
   }, [context])
 
-  const hasApiKey = Boolean(import.meta.env['VITE_CLAUDE_API_KEY'])
+  const hasApiKey = Boolean(apiKey)
 
   return {
     explanation,

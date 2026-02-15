@@ -13,8 +13,11 @@
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
+    "@rive-app/react-canvas-lite": "^4.27.0",
+    "i18next": "^25.8.7",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
+    "react-i18next": "^16.5.4",
     "recharts": "^3.7.0",
     "zod": "^4.3.6"
   },

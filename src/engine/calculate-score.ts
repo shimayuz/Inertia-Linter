@@ -8,9 +8,9 @@ export function calculateGDMTScore(
   pillarResults: ReadonlyArray<PillarResult>,
 ): GDMTScore {
   const excludedPillars: Pillar[] = []
+  let isIncomplete = false
   let score = 0
   let maxPossible = 0
-  let isIncomplete = false
 
   for (const result of pillarResults) {
     if (result.status === PILLAR_STATUSES.CONTRAINDICATED) {

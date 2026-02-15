@@ -1,0 +1,10 @@
+export const MASCOT_EMOTIONS = {
+  IDLE: 'IDLE',
+  THINKING: 'THINKING',
+  CELEBRATING: 'CELEBRATING',
+  CONCERNED: 'CONCERNED',
+  POINTING: 'POINTING',
+  HAPPY: 'HAPPY',
+} as const
+
+export type MascotEmotion = typeof MASCOT_EMOTIONS[keyof typeof MASCOT_EMOTIONS]

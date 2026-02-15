@@ -1,11 +1,15 @@
+import { useTranslation } from 'react-i18next'
+
 export function DemoModeBadge() {
+  const { t } = useTranslation('safety')
+
   return (
     <div
       role="status"
-      aria-label="Demo mode: synthetic data only"
-      className="fixed top-2 left-2 z-50 bg-yellow-400 text-yellow-900 font-bold px-3 py-1 rounded-md text-sm shadow-lg select-none"
+      aria-label={t('demo.ariaLabel')}
+      className="fixed top-2 left-2 z-50 bg-amber-400/90 backdrop-blur-sm text-amber-900 font-bold px-3 py-1 rounded-lg text-xs shadow-md select-none tracking-wide"
     >
-      DEMO MODE — SYNTHETIC DATA ONLY
+      {t('demo.badge')}
     </div>
   )
 }

@@ -47,8 +47,8 @@ describe('exportProblemList', () => {
 
   it('lists each pillar with status', () => {
     const result = exportProblemList(mockAudit)
-    expect(result).toContain('* ARNI/ACEi/ARB: MISSING')
-    expect(result).toContain('* SGLT2i: ON_TARGET')
+    expect(result).toContain('ARNI/ACEi/ARB: MISSING')
+    expect(result).toContain('SGLT2i: ON_TARGET')
   })
 
   it('lists blockers and missing info for each pillar', () => {

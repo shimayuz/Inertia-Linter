@@ -25,12 +25,12 @@ describe('runAudit — Case 1: 68M HFrEF EF 30%, clinical inertia + UTI barrier'
     expect(result.pillarResults).toHaveLength(4)
   })
 
-  it('ARNI: UNDERDOSED at LOW dose, CLINICAL_INERTIA', () => {
-    const arni = result.pillarResults.find((p) => p.pillar === 'ARNI_ACEi_ARB')
-    expect(arni).toBeDefined()
-    expect(arni!.status).toBe('UNDERDOSED')
-    expect(arni!.doseTier).toBe('LOW')
-    expect(arni!.blockers).toContain('CLINICAL_INERTIA')
+  it('ARNI_ACEi_ARB: UNDERDOSED at LOW dose, CLINICAL_INERTIA', () => {
+    const arniAcei = result.pillarResults.find((p) => p.pillar === 'ARNI_ACEi_ARB')
+    expect(arniAcei).toBeDefined()
+    expect(arniAcei!.status).toBe('UNDERDOSED')
+    expect(arniAcei!.doseTier).toBe('LOW')
+    expect(arniAcei!.blockers).toContain('CLINICAL_INERTIA')
   })
 
   it('BB: UNDERDOSED at MEDIUM dose, CLINICAL_INERTIA', () => {
@@ -57,7 +57,7 @@ describe('runAudit — Case 1: 68M HFrEF EF 30%, clinical inertia + UTI barrier'
     expect(sglt2i!.blockers).toContain('ADR_HISTORY')
   })
 
-  it('GDMT score: 24/100 (ARNI LOW 8 + BB MEDIUM 16 + MRA 0 + SGLT2i 0)', () => {
+  it('GDMT score: 24/100 (ARNI_ACEi_ARB LOW 8 + BB MEDIUM 16 + MRA 0 + SGLT2i 0)', () => {
     expect(result.gdmtScore.score).toBe(24)
     expect(result.gdmtScore.maxPossible).toBe(100)
     expect(result.gdmtScore.normalized).toBe(24)
@@ -138,12 +138,12 @@ describe('runAudit — Case 3: 72M HFrEF EF 25%, real blockers', () => {
     expect(result.pillarResults).toHaveLength(4)
   })
 
-  it('ARNI: UNDERDOSED at LOW dose, BP_LOW blocker (SBP 92 < threshold 100)', () => {
-    const arni = result.pillarResults.find((p) => p.pillar === 'ARNI_ACEi_ARB')
-    expect(arni).toBeDefined()
-    expect(arni!.status).toBe('UNDERDOSED')
-    expect(arni!.doseTier).toBe('LOW')
-    expect(arni!.blockers).toContain('BP_LOW')
+  it('ARNI_ACEi_ARB: UNDERDOSED at LOW dose, BP_LOW blocker (SBP 92 < threshold 100)', () => {
+    const arniAcei = result.pillarResults.find((p) => p.pillar === 'ARNI_ACEi_ARB')
+    expect(arniAcei).toBeDefined()
+    expect(arniAcei!.status).toBe('UNDERDOSED')
+    expect(arniAcei!.doseTier).toBe('LOW')
+    expect(arniAcei!.blockers).toContain('BP_LOW')
   })
 
   it('BB: UNDERDOSED at LOW dose, CLINICAL_INERTIA (HR 72 >= 60, SBP 92 >= BB threshold 90)', () => {
@@ -151,7 +151,7 @@ describe('runAudit — Case 3: 72M HFrEF EF 25%, real blockers', () => {
     expect(bb).toBeDefined()
     expect(bb!.status).toBe('UNDERDOSED')
     expect(bb!.doseTier).toBe('LOW')
-    // HR 72 > hr_low 60, SBP 92 >= bp_low_sbp 90 for BB → no blocker → CLINICAL_INERTIA
+    // HR 72 > hr_low 60, SBP 92 >= bp_low_sbp 90 for BB -> no blocker -> CLINICAL_INERTIA
     expect(bb!.blockers).toContain('CLINICAL_INERTIA')
   })
 
@@ -171,7 +171,7 @@ describe('runAudit — Case 3: 72M HFrEF EF 25%, real blockers', () => {
     expect(sglt2i!.blockers).toHaveLength(0)
   })
 
-  it('GDMT score: 49/100 (LOW 8 + LOW 8 + LOW 8 + HIGH 25)', () => {
+  it('GDMT score: 49/100 (ARNI_ACEi_ARB LOW 8 + BB LOW 8 + MRA LOW 8 + SGLT2i HIGH 25)', () => {
     expect(result.gdmtScore.score).toBe(49)
     expect(result.gdmtScore.maxPossible).toBe(100)
     expect(result.gdmtScore.normalized).toBe(49)
@@ -296,7 +296,7 @@ describe('runAudit — HFmrEF', () => {
 })
 
 describe('runAudit — CONTRAINDICATED exclusion', () => {
-  it('excludes CONTRAINDICATED pillar from score denominator', () => {
+  it('excludes CONTRAINDICATED ARNI_ACEi_ARB pillar from denominator', () => {
     const patient: PatientSnapshot = {
       ef: 30,
       nyhaClass: 2,
@@ -316,9 +316,9 @@ describe('runAudit — CONTRAINDICATED exclusion', () => {
 
     const result = runAudit(patient, REF_DATE)
 
-    const arni = result.pillarResults.find((p) => p.pillar === 'ARNI_ACEi_ARB')
-    expect(arni!.status).toBe('CONTRAINDICATED')
-    expect(result.gdmtScore.excludedPillars).toContain('ARNI_ACEi_ARB')
+    const arniAcei = result.pillarResults.find((p) => p.pillar === 'ARNI_ACEi_ARB')
+    expect(arniAcei!.status).toBe('CONTRAINDICATED')
+    // ARNI_ACEi_ARB excluded → maxPossible = 75
     expect(result.gdmtScore.maxPossible).toBe(75)
   })
 })
@@ -339,15 +339,15 @@ describe('runAudit — stale data detection', () => {
 
     // labsDate='2026-01-28', ref 2026-02-14 = 17 days -> STALE
     const result = runAudit(patient, REF_DATE)
-    const arni = result.pillarResults.find((p) => p.pillar === 'ARNI_ACEi_ARB')
-    expect(arni!.blockers).toContain('STALE_LABS')
+    const arniAcei = result.pillarResults.find((p) => p.pillar === 'ARNI_ACEi_ARB')
+    expect(arniAcei!.blockers).toContain('STALE_LABS')
   })
 
   it('does not detect STALE_LABS when labs within 14 days', () => {
     const result = runAudit(case1Patient, REF_DATE)
 
     // Case 1 labsDate='2026-02-14', ref 2026-02-14 = 0 days -> fresh
-    const arni = result.pillarResults.find((p) => p.pillar === 'ARNI_ACEi_ARB')
-    expect(arni!.blockers).not.toContain('STALE_LABS')
+    const arniAcei = result.pillarResults.find((p) => p.pillar === 'ARNI_ACEi_ARB')
+    expect(arniAcei!.blockers).not.toContain('STALE_LABS')
   })
 })

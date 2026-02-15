@@ -12,11 +12,7 @@ export const case1Patient: PatientSnapshot = {
   labsDate: '2026-02-14',
   bnp: 450,
   medications: [
-    {
-      pillar: 'ARNI_ACEi_ARB',
-      name: 'Enalapril 5mg',
-      doseTier: 'LOW',
-    },
+    { pillar: 'ARNI_ACEi_ARB', name: 'Enalapril 5mg', doseTier: 'LOW' },
     {
       pillar: 'BETA_BLOCKER',
       name: 'Carvedilol 12.5mg',

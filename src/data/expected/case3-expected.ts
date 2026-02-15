@@ -4,7 +4,7 @@ import type { AuditResult } from '../../types/index.ts'
  * Case 3: 72M HFrEF EF 25%, multiple real blockers
  *
  * GDMT Score: 49/100
- *   ARNI LOW (8) + BB LOW (8) + MRA LOW (8) + SGLT2i HIGH (25) = 49
+ *   ARNI_ACEi_ARB LOW (8) + BB LOW (8) + MRA LOW (8) + SGLT2i HIGH (25) = 49
  *
  * Note: DESIGN_SPEC v2.1 states GDMT 41/100 and MRA "ON_TARGET with alert",
  * but mathematically LOW=8pts not 25pts, and MRA at LOW is UNDERDOSED.

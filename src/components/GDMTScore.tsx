@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { PILLAR_LABELS } from '../types/pillar'
 import type { GDMTScore as GDMTScoreType } from '../types/audit'
 import { RuleDerivedLabel } from './labels/RuleDerivedLabel'
@@ -20,31 +21,32 @@ function getBarColor(normalized: number): string {
 }
 
 export function GDMTScore({ score, efCategory }: GDMTScoreProps) {
+  const { t } = useTranslation()
   const { normalized, maxPossible, excludedPillars, isIncomplete } = score
   const scoreColor = getScoreColor(normalized)
   const barColor = getBarColor(normalized)
   const isHFpEF = efCategory === 'HFpEF'
-  const title = isHFpEF ? 'HFpEF Management Score' : 'GDMT Score'
+  const title = t(isHFpEF ? 'score.hfpefScore' : 'score.gdmtScore')
   const activePillarCount = 4 - excludedPillars.length
 
   return (
-    <div className="flex flex-col items-center gap-3" aria-label={`${title}: ${score.score} out of ${maxPossible}`}>
-      <h2 className="text-sm font-semibold uppercase tracking-wide text-gray-500">
+    <div className="flex flex-col items-center gap-3 bg-white rounded-xl border border-gray-100 shadow-sm p-6" aria-label={t('score.ariaLabel', { title, score: score.score, max: maxPossible })}>
+      <h2 className="text-xs font-bold uppercase tracking-widest text-gray-400">
         {title}
       </h2>
 
-      <p className={`text-5xl font-extrabold tabular-nums ${scoreColor}`}>
+      <p className={`text-5xl font-extrabold tabular-nums tracking-tight ${scoreColor}`}>
         {score.score}
-        <span className="text-2xl font-semibold text-gray-400">/{maxPossible}</span>
+        <span className="text-2xl font-semibold text-gray-300">/{maxPossible}</span>
       </p>
 
       <div
-        className="h-3 w-48 overflow-hidden rounded-full bg-gray-200"
+        className="h-2.5 w-48 overflow-hidden rounded-full bg-gray-100"
         role="progressbar"
         aria-valuenow={normalized}
         aria-valuemin={0}
         aria-valuemax={100}
-        aria-label={`Score progress: ${normalized}%`}
+        aria-label={t('score.progressLabel', { percent: normalized })}
       >
         <div
           className={`h-full rounded-full transition-all duration-300 ${barColor}`}
@@ -54,14 +56,14 @@ export function GDMTScore({ score, efCategory }: GDMTScoreProps) {
 
       {excludedPillars.length > 0 && (
         <p className="text-xs text-gray-500">
-          Calculated from {activePillarCount} {activePillarCount === 1 ? 'pillar' : 'pillars'}
-          {' '}({excludedPillars.map((p) => PILLAR_LABELS[p]).join(', ')} excluded as contraindicated)
+          {t('score.calculatedFrom', { count: activePillarCount })}
+          {' '}({t('score.excludedContraindicated', { pillars: excludedPillars.map((p) => PILLAR_LABELS[p]).join(', ') })})
         </p>
       )}
 
       {isIncomplete && (
         <p className="text-xs text-amber-600">
-          * Incomplete data — some values unknown
+          {t('score.incompleteData')}
         </p>
       )}
 

@@ -35,7 +35,7 @@ describe('evaluatePillar', () => {
       expect(result.doseTier).toBe('HIGH')
     })
 
-    it('returns ON_TARGET for patient on ARNI HIGH dose', () => {
+    it('returns ON_TARGET for patient on ARNI_ACEi_ARB HIGH dose', () => {
       const patient = makePatient({
         medications: [
           { pillar: 'ARNI_ACEi_ARB', name: 'Sacubitril/Valsartan', doseTier: 'HIGH' },
@@ -241,7 +241,7 @@ describe('evaluatePillar', () => {
   describe('Case validation', () => {
     const refDate = new Date('2026-02-14')
 
-    it('Case 1 ARNI: UNDERDOSED, LOW, includes CLINICAL_INERTIA', () => {
+    it('Case 1 ARNI_ACEi_ARB: UNDERDOSED, LOW, includes CLINICAL_INERTIA', () => {
       const result = evaluatePillar(case1Patient, 'ARNI_ACEi_ARB', refDate)
 
       expect(result.status).toBe('UNDERDOSED')
@@ -257,7 +257,7 @@ describe('evaluatePillar', () => {
       expect(result.blockers).toContain('ADR_HISTORY')
     })
 
-    it('Case 3 ARNI: UNDERDOSED, LOW, includes BP_LOW', () => {
+    it('Case 3 ARNI_ACEi_ARB: UNDERDOSED, LOW, includes BP_LOW', () => {
       const result = evaluatePillar(case3Patient, 'ARNI_ACEi_ARB')
 
       expect(result.status).toBe('UNDERDOSED')

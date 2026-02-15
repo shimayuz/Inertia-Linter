@@ -38,13 +38,13 @@ describe('detectBlockers', () => {
   const refDate = new Date('2026-02-15')
 
   describe('Hemodynamic blockers', () => {
-    it('returns BP_LOW when SBP=95 for ARNI (threshold 100)', () => {
+    it('returns BP_LOW when SBP=95 for ARNI_ACEi_ARB (threshold 100)', () => {
       const patient = makePatient({ sbp: 95 })
       const result = detectBlockers(patient, 'ARNI_ACEi_ARB', true, refDate)
       expect(result).toContain('BP_LOW')
     })
 
-    it('does NOT return BP_LOW when SBP=100 for ARNI (boundary: < 100)', () => {
+    it('does NOT return BP_LOW when SBP=100 for ARNI_ACEi_ARB (boundary: < 100)', () => {
       const patient = makePatient({ sbp: 100 })
       const result = detectBlockers(patient, 'ARNI_ACEi_ARB', true, refDate)
       expect(result).not.toContain('BP_LOW')
@@ -284,7 +284,7 @@ describe('detectBlockers', () => {
   })
 
   describe('Case validations', () => {
-    it('Case 1 ARNI: returns CLINICAL_INERTIA (no blockers)', () => {
+    it('Case 1 ARNI_ACEi_ARB: returns CLINICAL_INERTIA (no blockers)', () => {
       const result = detectBlockers(case1Patient, 'ARNI_ACEi_ARB', false, refDate)
       expect(result).toEqual(['CLINICAL_INERTIA'])
     })
@@ -295,7 +295,7 @@ describe('detectBlockers', () => {
       expect(result).not.toContain('CLINICAL_INERTIA')
     })
 
-    it('Case 3 ARNI: returns BP_LOW', () => {
+    it('Case 3 ARNI_ACEi_ARB: returns BP_LOW', () => {
       const result = detectBlockers(case3Patient, 'ARNI_ACEi_ARB', false, refDate)
       expect(result).toContain('BP_LOW')
       expect(result).not.toContain('CLINICAL_INERTIA')
