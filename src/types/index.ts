@@ -35,3 +35,5 @@ export type { ActionDecision, ActionPriority, ActionCategory, ActionItem, Action
 
 export { MASCOT_EMOTIONS } from './mascot.ts'
 export type { MascotEmotion } from './mascot.ts'
+
+export type { MedicationChangeType, MedicationPlan, PatientExplanation, PreVisitNote } from './pre-visit-note.ts'

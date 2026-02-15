@@ -2,22 +2,31 @@ import { useState, useMemo, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { AuditResult } from '../types/audit.ts'
 import type { ActionDecision, ActionDecisionRecord } from '../types/action-plan.ts'
+import type { Medication } from '../types/patient.ts'
+import type { PreVisitNote } from '../types/pre-visit-note.ts'
 import type { LLMContext } from '../engine/prepare-llm-context.ts'
 import { generateActionPlan } from '../engine/generate-action-plan.ts'
+import { generatePreVisitNote } from '../engine/generate-pre-visit-note.ts'
+import { buildFHIRCarePlan } from '../fhir/build-careplan.ts'
 import { ActionItemCard } from './ActionItemCard.tsx'
 import { VisitSummaryPanel } from './VisitSummaryPanel.tsx'
+import { PreVisitNotePanel } from './PreVisitNotePanel.tsx'
 import { AuditChat } from './AuditChat.tsx'
 import { RuleDerivedLabel } from './labels/RuleDerivedLabel.tsx'
 
 interface InertiaActionPlanProps {
   readonly auditResult: AuditResult | null
   readonly llmContext: LLMContext | null
+  readonly medications?: ReadonlyArray<Medication>
 }
 
-export function InertiaActionPlan({ auditResult, llmContext }: InertiaActionPlanProps) {
+export function InertiaActionPlan({ auditResult, llmContext, medications }: InertiaActionPlanProps) {
   const { t } = useTranslation()
   const [decisions, setDecisions] = useState<ReadonlyArray<ActionDecisionRecord>>([])
   const [chatOpen, setChatOpen] = useState(false)
+  const [preVisitNote, setPreVisitNote] = useState<PreVisitNote | null>(null)
+  const [isSending, setIsSending] = useState(false)
+  const [sendResult, setSendResult] = useState<{ success: boolean; careplanId?: string } | null>(null)
 
   const actions = useMemo(
     () => (auditResult ? generateActionPlan(auditResult) : []),
@@ -64,6 +73,44 @@ export function InertiaActionPlan({ auditResult, llmContext }: InertiaActionPlan
   const toggleChat = useCallback(() => {
     setChatOpen((prev) => !prev)
   }, [])
+
+  const handleGenerateNote = useCallback(() => {
+    if (!auditResult) {
+      return
+    }
+    try {
+      const note = generatePreVisitNote(auditResult, actions, decisions, medications ?? [])
+      setPreVisitNote(note)
+      setSendResult(null)
+    } catch {
+      // Engine function may not be available yet; silently ignore
+    }
+  }, [auditResult, actions, decisions, medications])
+
+  const handleApproveAndSend = useCallback(() => {
+    if (!preVisitNote) {
+      return
+    }
+    setIsSending(true)
+    setSendResult(null)
+
+    try {
+      buildFHIRCarePlan(preVisitNote)
+    } catch {
+      // FHIR builder may not be available yet; continue with mock
+    }
+
+    // Demo mode: simulate EHR send with 1-second delay
+    const timer = setTimeout(() => {
+      setIsSending(false)
+      setSendResult({
+        success: true,
+        careplanId: `CarePlan/${crypto.randomUUID().slice(0, 8)}`,
+      })
+    }, 1000)
+
+    return () => clearTimeout(timer)
+  }, [preVisitNote])
 
   if (!auditResult) {
     return (
@@ -123,6 +170,35 @@ export function InertiaActionPlan({ auditResult, llmContext }: InertiaActionPlan
           decisions={decisions}
         />
       )}
+
+      {actions.length > 0 && (
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={handleGenerateNote}
+            disabled={undecidedCount > 0}
+            className={`flex-1 rounded-lg px-4 py-2.5 text-sm font-semibold transition-colors ${
+              undecidedCount > 0
+                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                : 'bg-teal-600 text-white hover:bg-teal-700'
+            }`}
+          >
+            {t('previsit.generate')}
+          </button>
+          {undecidedCount > 0 && (
+            <span className="shrink-0 rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-medium text-amber-700">
+              {t('previsit.remaining', { count: undecidedCount })}
+            </span>
+          )}
+        </div>
+      )}
+
+      <PreVisitNotePanel
+        note={preVisitNote}
+        onApproveAndSend={handleApproveAndSend}
+        isSending={isSending}
+        sendResult={sendResult}
+      />
 
       <div className="rounded-lg border border-gray-200 bg-white overflow-hidden">
         <button

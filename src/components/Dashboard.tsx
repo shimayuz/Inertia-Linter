@@ -139,7 +139,7 @@ export function Dashboard() {
                   )}
                 </div>
                 <div className="mt-4">
-                  <InertiaActionPlan auditResult={auditResult} llmContext={llmContext} />
+                  <InertiaActionPlan auditResult={auditResult} llmContext={llmContext} medications={currentPatient?.medications} />
                 </div>
                 <div className="mt-4">
                   <PillarDashboard
