@@ -25,6 +25,7 @@ const visionResponseSchema = z.object({
   potassium: z.number().min(2.0).max(8.0).nullable().optional(),
   labsDate: z.string().nullable().optional(),
   bnp: z.number().nullable().optional(),
+  ntProBnp: z.number().nullable().optional(),
   dmType: z.enum(['none', 'type1', 'type2']).nullable().optional(),
   medications: z.array(visionMedicationSchema),
   confidence: z.object({
@@ -45,6 +46,7 @@ export interface ParseResult {
     readonly potassium: number
     readonly labsDate: string
     readonly bnp: number
+    readonly ntProBnp: number
     readonly dmType: 'none' | 'type1' | 'type2'
     readonly medications: ReadonlyArray<Medication>
   }> | null
@@ -134,6 +136,7 @@ export function parseVisionResponse(rawText: string): ParseResult {
     ...(nullToUndefined(data.potassium) !== undefined ? { potassium: data.potassium! } : {}),
     ...(nullToUndefined(data.labsDate) !== undefined ? { labsDate: data.labsDate! } : {}),
     ...(nullToUndefined(data.bnp) !== undefined ? { bnp: data.bnp! } : {}),
+    ...(nullToUndefined(data.ntProBnp) !== undefined ? { ntProBnp: data.ntProBnp! } : {}),
     ...(nullToUndefined(data.dmType) !== undefined ? { dmType: data.dmType! } : {}),
     medications,
   }

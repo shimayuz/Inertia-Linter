@@ -25,6 +25,8 @@
   "form.describeADR": "有害反応の内容を記載",
   "form.runAudit": "GDMT監査を実行",
   "form.runningAudit": "監査実行中...",
+  "form.bnpHint": "心不全疑い >100",
+  "form.ntProBnpHint": "心不全疑い >300",
   "form.nyhaClass": "Class {{num}}",
 
   "detail.identifiedBlockers": "特定された阻害因子",
@@ -149,5 +151,11 @@
   "mascot.pointing": "アクション項目がレビューを待っています。",
   "mascot.happy": "こんにちは!",
   "mascot.dismiss": "マスコットを非表示",
-  "mascot.restore": "マスコットを表示"
+  "mascot.restore": "マスコットを表示",
+
+  "nav.appName": "Clinical Audit",
+  "nav.dashboard": "ダッシュボード",
+  "nav.patients": "患者一覧",
+  "nav.reports": "レポート",
+  "nav.comingSoon": "近日公開"
 }

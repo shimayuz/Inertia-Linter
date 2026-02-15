@@ -190,12 +190,13 @@ export function fhirToSnapshot(bundle: FHIRBundle): PatientSnapshot {
     LOINC_CODES.POTASSIUM,
   )
   const bnp = findMostRecentObservation(observations, LOINC_CODES.BNP)
+  const ntProBnp = findMostRecentObservation(observations, LOINC_CODES.NT_PRO_BNP)
 
   // --- Dates ---
   const vitalsDate =
     latestDate([sbp.date, hr.date]) ?? sbp.date
 
-  const labsDate = latestDate([egfr?.date, potassium?.date, bnp?.date])
+  const labsDate = latestDate([egfr?.date, potassium?.date, bnp?.date, ntProBnp?.date])
 
   // --- Medications ---
   const medRequests = extractActiveMedicationRequests(bundle)
@@ -256,6 +257,7 @@ export function fhirToSnapshot(bundle: FHIRBundle): PatientSnapshot {
     ...(potassium !== undefined ? { potassium: potassium.value } : {}),
     ...(labsDate !== undefined ? { labsDate } : {}),
     ...(bnp !== undefined ? { bnp: bnp.value } : {}),
+    ...(ntProBnp !== undefined ? { ntProBnp: ntProBnp.value } : {}),
     medications,
   }
 

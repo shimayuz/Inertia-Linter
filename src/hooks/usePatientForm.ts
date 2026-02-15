@@ -25,6 +25,8 @@ interface FormState {
   readonly potassium: string
   readonly labsDate: string
   readonly bnp: string
+  readonly biomarkerType: 'bnp' | 'ntProBnp'
+  readonly ntProBnp: string
   readonly dmType: string
   readonly medications: ReadonlyArray<MedicationFormEntry>
 }
@@ -55,6 +57,8 @@ function createDefaultFormState(): FormState {
     potassium: '',
     labsDate: '',
     bnp: '',
+    biomarkerType: 'bnp',
+    ntProBnp: '',
     dmType: 'none',
     medications: createDefaultMedications(),
   }
@@ -71,6 +75,7 @@ function parseFormToData(state: FormState): PatientFormData {
     potassium: state.potassium ? Number(state.potassium) : undefined,
     labsDate: state.labsDate || undefined,
     bnp: state.bnp ? Number(state.bnp) : undefined,
+    ntProBnp: state.ntProBnp ? Number(state.ntProBnp) : undefined,
     dmType: (state.dmType || 'none') as 'none' | 'type1' | 'type2',
     medications: state.medications.map((med) => ({
       pillar: med.pillar,
@@ -102,6 +107,7 @@ function formDataToSnapshot(data: PatientFormData): PatientSnapshot {
     potassium: data.potassium,
     labsDate: data.labsDate,
     bnp: data.bnp,
+    ntProBnp: data.ntProBnp,
     dmType: data.dmType,
     medications,
   }
@@ -118,6 +124,8 @@ function snapshotToFormState(patient: PatientSnapshot): FormState {
     potassium: patient.potassium !== undefined ? String(patient.potassium) : '',
     labsDate: patient.labsDate ?? '',
     bnp: patient.bnp !== undefined ? String(patient.bnp) : '',
+    biomarkerType: patient.ntProBnp !== undefined ? 'ntProBnp' : 'bnp',
+    ntProBnp: patient.ntProBnp !== undefined ? String(patient.ntProBnp) : '',
     dmType: patient.dmType ?? 'none',
     medications: Object.values(PILLARS).map((pillar) => {
       const med = patient.medications.find((m) => m.pillar === pillar)
@@ -149,10 +157,20 @@ export function usePatientForm() {
   const [errors, setErrors] = useState<FormErrors>({})
 
   const handleChange = useCallback((field: string, value: string | boolean) => {
-    setFormState((prev) => ({
-      ...prev,
-      [field]: value,
-    }))
+    setFormState((prev) => {
+      if (field === 'biomarkerType') {
+        return {
+          ...prev,
+          biomarkerType: value as 'bnp' | 'ntProBnp',
+          bnp: '',
+          ntProBnp: '',
+        }
+      }
+      return {
+        ...prev,
+        [field]: value,
+      }
+    })
     setErrors((prev) => {
       if (!prev[field]) return prev
       const { [field]: _, ...rest } = prev as Record<string, string | undefined>
@@ -211,6 +229,7 @@ export function usePatientForm() {
       if (partial.potassium !== undefined) next.potassium = String(partial.potassium)
       if (partial.labsDate !== undefined) next.labsDate = partial.labsDate
       if (partial.bnp !== undefined) next.bnp = String(partial.bnp)
+      if (partial.ntProBnp !== undefined) next.ntProBnp = String(partial.ntProBnp)
       if (partial.dmType !== undefined) next.dmType = partial.dmType
 
       if (partial.medications) {

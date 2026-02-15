@@ -25,6 +25,8 @@
   "form.describeADR": "Describe adverse reaction",
   "form.runAudit": "Run GDMT Audit",
   "form.runningAudit": "Running Audit...",
+  "form.bnpHint": "HF likely >100",
+  "form.ntProBnpHint": "HF likely >300",
   "form.nyhaClass": "Class {{num}}",
 
   "detail.identifiedBlockers": "Identified Blockers",
@@ -149,5 +151,11 @@
   "mascot.pointing": "Action items are waiting for your review.",
   "mascot.happy": "Hi there!",
   "mascot.dismiss": "Hide mascot",
-  "mascot.restore": "Show mascot"
+  "mascot.restore": "Show mascot",
+
+  "nav.appName": "Clinical Audit",
+  "nav.dashboard": "Dashboard",
+  "nav.patients": "Patients",
+  "nav.reports": "Reports",
+  "nav.comingSoon": "Coming Soon"
 }

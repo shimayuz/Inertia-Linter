@@ -285,13 +285,29 @@ export function PatientForm({ onSubmit, isLoading = false, extractionResult, onT
             />
           </FormField>
 
-          <FormField label={<>BNP<FieldConfidenceBadge fieldName="bnp" confidence={extractionResult?.confidence} /></>} error={errors['bnp']} suffix="pg/mL">
+          <FormField
+            label={
+              <>
+                <select
+                  value={formState.biomarkerType}
+                  onChange={(e) => { handleChange('biomarkerType', e.target.value) }}
+                  className="text-xs font-medium text-gray-500 bg-transparent border-none p-0 focus:ring-0 cursor-pointer"
+                >
+                  <option value="bnp">BNP</option>
+                  <option value="ntProBnp">NT-proBNP</option>
+                </select>
+                <FieldConfidenceBadge fieldName={formState.biomarkerType === 'bnp' ? 'bnp' : 'ntProBnp'} confidence={extractionResult?.confidence} />
+              </>
+            }
+            error={errors[formState.biomarkerType === 'bnp' ? 'bnp' : 'ntProBnp']}
+            suffix="pg/mL"
+          >
             <input
               type="number"
-              value={formState.bnp}
-              onChange={(e) => { handleChange('bnp', e.target.value) }}
-              placeholder="--"
-              className={inputClass('bnp')}
+              value={formState.biomarkerType === 'bnp' ? formState.bnp : formState.ntProBnp}
+              onChange={(e) => { handleChange(formState.biomarkerType === 'bnp' ? 'bnp' : 'ntProBnp', e.target.value) }}
+              placeholder={formState.biomarkerType === 'bnp' ? t('form.bnpHint') : t('form.ntProBnpHint')}
+              className={inputClass(formState.biomarkerType === 'bnp' ? 'bnp' : 'ntProBnp')}
             />
           </FormField>
         </div>

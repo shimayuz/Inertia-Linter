@@ -28,6 +28,7 @@ export interface PatientSnapshot {
   readonly potassium?: number
   readonly labsDate?: string
   readonly bnp?: number
+  readonly ntProBnp?: number
   readonly dmType?: 'none' | 'type1' | 'type2'
   readonly medications: ReadonlyArray<Medication>
   readonly history?: PatientHistory

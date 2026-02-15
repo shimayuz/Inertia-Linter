@@ -135,6 +135,7 @@ export const LOINC_CODES = {
   POTASSIUM: '6298-4',
   LVEF: '10230-1',
   BNP: '42176-8',
+  NT_PRO_BNP: '33762-6',
 } as const
 
 export type LoincCode = typeof LOINC_CODES[keyof typeof LOINC_CODES]

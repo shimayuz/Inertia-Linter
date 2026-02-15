@@ -24,6 +24,7 @@ export const patientFormSchema = z.object({
   potassium: z.number().min(2.0, 'K+ must be 2.0-8.0').max(8.0, 'K+ must be 2.0-8.0').optional(),
   labsDate: z.string().optional(),
   bnp: z.number().optional(),
+  ntProBnp: z.number().optional(),
   dmType: z.enum(['none', 'type1', 'type2']).optional(),
   medications: z.array(medicationFormSchema),
 })

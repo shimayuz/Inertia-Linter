@@ -5,7 +5,7 @@ import type { ExtractionResult } from '../types/vision.ts'
 import type { PatientTimeline } from '../types/timeline.ts'
 import { runAudit } from '../engine/index'
 import { prepareLLMContext } from '../engine/prepare-llm-context'
-import { DemoModeBadge } from './DemoModeBadge'
+import { AppHeader } from './AppHeader'
 import { DisclaimerBanner } from './DisclaimerBanner'
 import { PatientForm } from './PatientForm'
 import { ImageUpload } from './ImageUpload.tsx'
@@ -20,7 +20,6 @@ import { InertiaActionPlan } from './InertiaActionPlan.tsx'
 import { PatientTimelineView } from './PatientTimelineView.tsx'
 import { Mascot } from './Mascot.tsx'
 import { MascotRestoreButton } from './MascotRestoreButton.tsx'
-import { LanguageSwitcher } from './LanguageSwitcher.tsx'
 import { useFHIRConnect } from '../hooks/useFHIRConnect.ts'
 import { useMascotState } from '../hooks/useMascotState.ts'
 import { generateActionPlan } from '../engine/generate-action-plan.ts'
@@ -103,11 +102,10 @@ export function Dashboard() {
 
   return (
     <div className="min-h-screen bg-[#F8F9FA]">
-      <DemoModeBadge />
-      <div className="fixed top-2 right-2 z-50"><LanguageSwitcher /></div>
+      <AppHeader />
       <DisclaimerBanner />
 
-      <div className="flex min-h-[calc(100vh-2.5rem)] pt-12 px-5 gap-5 max-w-[1920px] mx-auto">
+      <div className="flex min-h-[calc(100vh-2.5rem)] pt-14 px-5 gap-5 max-w-[1920px] mx-auto">
         {/* Left pane — Image Upload + Patient Form */}
         <div className={`flex-shrink-0 transition-all duration-300 ${hasResults ? 'w-[32%]' : 'w-[38%]'}`}>
           <div className="sticky top-14 max-h-[calc(100vh-4rem)] overflow-y-auto form-scroll pr-1 pb-4">
