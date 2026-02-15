@@ -67,7 +67,7 @@ export function InertiaActionPlan({ auditResult, llmContext }: InertiaActionPlan
 
   if (!auditResult) {
     return (
-      <div className="rounded-xl border border-gray-100 bg-white shadow-sm p-5">
+      <div className="rounded-lg border border-gray-200 bg-white p-5">
         <div className="flex items-center justify-between mb-2">
           <h4 className="text-sm font-semibold text-gray-700">
             {t('action.title')}
@@ -83,8 +83,8 @@ export function InertiaActionPlan({ auditResult, llmContext }: InertiaActionPlan
 
   return (
     <div className="space-y-3">
-      <div className="rounded-xl border border-gray-100 bg-white shadow-sm overflow-hidden">
-        <div className="flex items-center justify-between px-4 py-2.5 border-b border-gray-100 bg-gray-50/50">
+      <div className="rounded-lg border border-gray-200 bg-white overflow-hidden">
+        <div className="flex items-center justify-between px-4 py-2.5 border-b border-gray-100 bg-gray-50">
           <div>
             <h4 className="text-sm font-semibold text-gray-700">
               {t('action.title')}
@@ -124,11 +124,11 @@ export function InertiaActionPlan({ auditResult, llmContext }: InertiaActionPlan
         />
       )}
 
-      <div className="rounded-xl border border-gray-100 bg-white shadow-sm overflow-hidden">
+      <div className="rounded-lg border border-gray-200 bg-white overflow-hidden">
         <button
           type="button"
           onClick={toggleChat}
-          className="w-full flex items-center justify-between px-4 py-2.5 text-left hover:bg-gray-50/50 transition-colors"
+          className="w-full flex items-center justify-between px-4 py-2.5 text-left hover:bg-gray-50 transition-colors"
           aria-expanded={chatOpen}
         >
           <span className="text-sm font-medium text-gray-500">

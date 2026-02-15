@@ -121,7 +121,7 @@ export function ReasonInput({
               type="checkbox"
               checked={selectedReasons.includes(code)}
               onChange={() => handleToggle(code)}
-              className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              className="rounded border-gray-300 text-teal-600 focus:ring-teal-500"
             />
             {BLOCKER_UI_LABELS[code]}
           </label>
@@ -132,7 +132,7 @@ export function ReasonInput({
               type="checkbox"
               checked={selectedReasons.includes('OTHER')}
               onChange={() => handleToggle('OTHER')}
-              className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              className="rounded border-gray-300 text-teal-600 focus:ring-teal-500"
             />
             {t('reason.other')}
           </label>
@@ -141,7 +141,7 @@ export function ReasonInput({
             value={otherText}
             onChange={handleOtherChange}
             placeholder={t('reason.describePlaceholder')}
-            className="flex-1 text-sm border border-gray-300 rounded px-2 py-1 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+            className="flex-1 text-sm border border-gray-300 rounded px-2 py-1 focus:ring-1 focus:ring-teal-500 focus:border-teal-500"
           />
         </div>
       </div>

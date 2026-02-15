@@ -17,7 +17,7 @@ export function LLMExplanation({ context }: LLMExplanationProps) {
   }
 
   return (
-    <div className="rounded-xl border border-gray-100 bg-white shadow-sm p-5">
+    <div className="rounded-lg border border-gray-200 bg-white p-5">
       <div className="flex items-center justify-between mb-2">
         <h4 className="text-sm font-semibold text-gray-700">
           {t('llm.auditSummary')}
@@ -31,7 +31,7 @@ export function LLMExplanation({ context }: LLMExplanationProps) {
 
       {isLoading ? (
         <div className="flex items-center gap-2 text-sm text-gray-500">
-          <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-blue-600" />
+          <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-teal-600" />
           {t('llm.generating')}
         </div>
       ) : (

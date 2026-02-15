@@ -12,7 +12,7 @@ export function MascotRestoreButton({ onClick }: MascotRestoreButtonProps) {
       type="button"
       onClick={onClick}
       aria-label={t('mascot.restore')}
-      className="fixed bottom-4 right-4 z-30 hidden md:flex w-9 h-9 rounded-full bg-blue-100 text-blue-500 items-center justify-center shadow-sm hover:bg-blue-200 hover:shadow-md transition-all duration-200"
+      className="fixed bottom-4 right-4 z-30 hidden md:flex w-9 h-9 rounded-full bg-teal-100 text-teal-600 items-center justify-center shadow-sm hover:bg-teal-200 hover:shadow-md transition-all duration-200"
     >
       <svg
         className="w-4.5 h-4.5"

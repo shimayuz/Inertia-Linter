@@ -29,8 +29,8 @@ export function PillarCard({ result, isSelected = false, onClick }: PillarCardPr
     <button
       type="button"
       onClick={onClick}
-      className={`w-full text-left rounded-xl border shadow-sm p-4 transition-all duration-200 hover:shadow-md hover:scale-[1.01] focus:outline-none focus:ring-2 focus:ring-blue-500/40 ${
-        isSelected ? 'ring-2 ring-blue-500 border-blue-300 bg-blue-50/30' : 'border-gray-100 bg-white'
+      className={`w-full text-left rounded-lg border p-4 transition-all duration-200 hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-600/40 ${
+        isSelected ? 'ring-2 ring-teal-600 border-teal-300 bg-teal-50/30' : 'border-gray-200 bg-white'
       }`}
       aria-label={`${pillarLabel} pillar: ${statusLabel}`}
       aria-pressed={isSelected}

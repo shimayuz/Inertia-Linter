@@ -121,7 +121,7 @@ export function InertiaBuster({ pillar, blockerCodes }: InertiaBusterProps) {
         ))}
       </div>
 
-      <p className="text-xs text-gray-400 border-t border-gray-100 pt-2">
+      <p className="text-xs text-gray-400 border-t border-gray-200 pt-2">
         {barriers[0].disclaimer}
       </p>
     </div>

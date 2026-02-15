@@ -67,7 +67,7 @@ function LabTooltipContent({ active, payload, label }: LabTooltipProps) {
             <span className="font-medium" style={{ color: item.color }}>
               {item.name}:
             </span>{' '}
-            <span className="text-gray-600">
+            <span className="font-mono text-gray-600">
               {item.value}{unit}
             </span>
           </div>

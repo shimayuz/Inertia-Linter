@@ -54,13 +54,13 @@ function MessageBubble({
       <div
         className={`max-w-[88%] px-3 py-2 rounded-xl text-[13px] leading-relaxed ${
           isUser
-            ? 'bg-blue-50 text-gray-800 rounded-br-sm'
-            : 'bg-gray-50 border border-gray-100 text-gray-700 rounded-bl-sm'
+            ? 'bg-teal-50 text-gray-800 rounded-br-sm'
+            : 'bg-gray-50 border border-gray-200 text-gray-700 rounded-bl-sm'
         }`}
       >
         <p className="whitespace-pre-wrap break-words">{message.content}</p>
         {message.citations.length > 0 && (
-          <div className="flex flex-wrap gap-1.5 mt-2 pt-2 border-t border-gray-100">
+          <div className="flex flex-wrap gap-1.5 mt-2 pt-2 border-t border-gray-200">
             {message.citations.map((citation, idx) => (
               <CitationBadge
                 key={citation.id}
@@ -149,7 +149,7 @@ export function AuditChat({ auditResult, llmContext }: AuditChatProps) {
 
   if (!auditResult) {
     return (
-      <div className="rounded-xl border border-gray-100 bg-white shadow-sm p-5">
+      <div className="rounded-lg border border-gray-200 bg-white p-5">
         <div className="flex items-center justify-between mb-2">
           <h4 className="text-sm font-semibold text-gray-700">
             {t('chat.title')}
@@ -163,8 +163,8 @@ export function AuditChat({ auditResult, llmContext }: AuditChatProps) {
   }
 
   return (
-    <div className="rounded-xl border border-gray-100 bg-white shadow-sm overflow-hidden">
-      <div className="flex items-center justify-between px-4 py-2.5 border-b border-gray-100 bg-gray-50/50">
+    <div className="rounded-lg border border-gray-200 bg-white overflow-hidden">
+      <div className="flex items-center justify-between px-4 py-2.5 border-b border-gray-200 bg-gray-50/50">
         <h4 className="text-sm font-semibold text-gray-700">
           {t('chat.title')}
         </h4>
@@ -213,7 +213,7 @@ export function AuditChat({ auditResult, llmContext }: AuditChatProps) {
         </div>
       </div>
 
-      <div className="flex items-center gap-2 px-3 py-2.5 border-t border-gray-100 bg-gray-50/30">
+      <div className="flex items-center gap-2 px-3 py-2.5 border-t border-gray-200 bg-gray-50/30">
         <input
           type="text"
           value={inputValue}
@@ -221,13 +221,13 @@ export function AuditChat({ auditResult, llmContext }: AuditChatProps) {
           onKeyDown={handleKeyDown}
           placeholder={t('chat.placeholder')}
           disabled={isStreaming}
-          className="flex-1 px-3 py-1.5 rounded-lg border border-gray-200 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400 disabled:opacity-50 disabled:cursor-not-allowed bg-white"
+          className="flex-1 px-3 py-1.5 rounded-lg border border-gray-200 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-200 focus:border-teal-400 disabled:opacity-50 disabled:cursor-not-allowed bg-white"
         />
         <button
           type="button"
           onClick={handleSend}
           disabled={inputValue.trim().length === 0 || isStreaming}
-          className="px-3 py-1.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
+          className="px-3 py-1.5 rounded-lg bg-teal-600 text-white text-sm font-medium hover:bg-teal-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
         >
           {t('chat.send')}
         </button>

@@ -58,7 +58,7 @@ function SectionCard({
   readonly children: React.ReactNode
 }) {
   return (
-    <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 mb-3">
+    <div className="bg-white rounded-lg border border-gray-200 p-4 mb-3">
       <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">
         {title}
       </h3>
@@ -117,7 +117,7 @@ export function PatientForm({ onSubmit, isLoading = false, extractionResult, onT
     }
   }, [extractionResult, loadPartialSnapshot])
 
-  const inputBase = 'w-full px-3 py-2 text-sm bg-gray-50 border border-gray-200 rounded-lg transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 focus:bg-white placeholder:text-gray-300'
+  const inputBase = 'w-full px-3 py-2 text-sm bg-gray-50 border border-gray-200 rounded-lg transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-teal-600/30 focus:border-teal-500 focus:bg-white placeholder:text-gray-300'
 
   const inputClass = (field: string) =>
     `${inputBase} ${errors[field] ? 'border-red-400 bg-red-50/50 focus:ring-red-500/30 focus:border-red-400' : ''}`
@@ -136,7 +136,7 @@ export function PatientForm({ onSubmit, isLoading = false, extractionResult, onT
   return (
     <form onSubmit={onFormSubmit} className="space-y-0 pb-4">
       {/* Demo Presets */}
-      <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-3 mb-3">
+      <div className="bg-white rounded-lg border border-gray-200 p-3 mb-3">
         <div className="flex items-center justify-between mb-2">
           <span className="text-xs font-bold uppercase tracking-widest text-gray-400">
             {t('form.demoPresets')}
@@ -153,7 +153,7 @@ export function PatientForm({ onSubmit, isLoading = false, extractionResult, onT
           <button
             type="button"
             onClick={() => { loadCase(case1Patient); onTimelineSelect?.(case1Timeline) }}
-            className="flex-1 px-3 py-2 text-xs font-medium bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors border border-blue-100"
+            className="flex-1 px-3 py-2 text-xs font-medium bg-teal-50 text-teal-700 rounded-lg hover:bg-teal-100 transition-colors border border-teal-100"
           >
             {t('form.case1')}
           </button>
@@ -375,7 +375,7 @@ export function PatientForm({ onSubmit, isLoading = false, extractionResult, onT
                       onChange={(e) => { handleMedicationChange(index, 'hasADR', e.target.checked) }}
                       className="sr-only peer"
                     />
-                    <div className="w-7 h-4 bg-gray-200 peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border after:border-gray-300 after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-red-400" />
+                    <div className="w-7 h-4 bg-gray-200 peer-focus:ring-2 peer-focus:ring-teal-400 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border after:border-gray-300 after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-red-400" />
                     <span className="ms-1.5 text-[11px] text-gray-500">ADR</span>
                   </label>
                   <label className="relative inline-flex items-center cursor-pointer">
@@ -385,7 +385,7 @@ export function PatientForm({ onSubmit, isLoading = false, extractionResult, onT
                       onChange={(e) => { handleMedicationChange(index, 'hasAllergy', e.target.checked) }}
                       className="sr-only peer"
                     />
-                    <div className="w-7 h-4 bg-gray-200 peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border after:border-gray-300 after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-red-400" />
+                    <div className="w-7 h-4 bg-gray-200 peer-focus:ring-2 peer-focus:ring-teal-400 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border after:border-gray-300 after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-red-400" />
                     <span className="ms-1.5 text-[11px] text-gray-500">{t('form.allergy')}</span>
                   </label>
                 </div>
@@ -409,7 +409,7 @@ export function PatientForm({ onSubmit, isLoading = false, extractionResult, onT
       <button
         type="submit"
         disabled={isLoading}
-        className="w-full px-6 py-3 text-sm font-bold text-white bg-blue-600 rounded-xl shadow-lg shadow-blue-600/25 hover:bg-blue-700 hover:shadow-blue-700/30 active:scale-[0.98] disabled:bg-gray-300 disabled:shadow-none disabled:cursor-not-allowed transition-all duration-150"
+        className="w-full px-6 py-3 text-sm font-bold text-white bg-teal-700 rounded-lg shadow-sm shadow-teal-700/20 hover:bg-teal-800 hover:shadow-teal-800/25 active:scale-[0.98] disabled:bg-gray-300 disabled:shadow-none disabled:cursor-not-allowed transition-all duration-150"
       >
         {isLoading ? (
           <span className="flex items-center justify-center gap-2">

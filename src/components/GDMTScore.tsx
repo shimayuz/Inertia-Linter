@@ -30,14 +30,14 @@ export function GDMTScore({ score, efCategory }: GDMTScoreProps) {
   const activePillarCount = 4 - excludedPillars.length
 
   return (
-    <div className="flex flex-col items-center gap-3 bg-white rounded-xl border border-gray-100 shadow-sm p-6" aria-label={t('score.ariaLabel', { title, score: score.score, max: maxPossible })}>
+    <div className="flex flex-col items-center gap-3 bg-white rounded-lg border border-gray-200 p-6" aria-label={t('score.ariaLabel', { title, score: score.score, max: maxPossible })}>
       <h2 className="text-xs font-bold uppercase tracking-widest text-gray-400">
         {title}
       </h2>
 
-      <p className={`text-5xl font-extrabold tabular-nums tracking-tight ${scoreColor}`}>
+      <p className={`text-5xl font-extrabold font-mono tabular-nums tracking-tight ${scoreColor}`}>
         {score.score}
-        <span className="text-2xl font-semibold text-gray-300">/{maxPossible}</span>
+        <span className="text-2xl font-semibold font-mono text-gray-300">/{maxPossible}</span>
       </p>
 
       <div

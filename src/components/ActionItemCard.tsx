@@ -84,7 +84,7 @@ export function ActionItemCard({ item, decision, onDecide }: ActionItemCardProps
 
   return (
     <div
-      className={`rounded-xl border border-gray-100 bg-white shadow-sm p-4 transition-opacity duration-200 ${
+      className={`rounded-lg border border-gray-200 bg-white p-4 transition-opacity duration-200 ${
         isDecided ? 'opacity-75' : ''
       }`}
     >
@@ -103,7 +103,7 @@ export function ActionItemCard({ item, decision, onDecide }: ActionItemCardProps
 
       <p className="mt-2 text-sm font-medium text-gray-800">{item.suggestedAction}</p>
 
-      <span className="mt-2 inline-block rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700">
+      <span className="mt-2 inline-block rounded-full bg-teal-50 px-2.5 py-0.5 text-xs font-medium text-teal-700">
         {item.evidence}
       </span>
 
@@ -155,7 +155,7 @@ export function ActionItemCard({ item, decision, onDecide }: ActionItemCardProps
               value={reasonText}
               onChange={handleReasonChange}
               placeholder={t('action.reasonPlaceholder')}
-              className="w-full rounded border border-gray-200 px-2.5 py-1.5 text-sm focus:border-blue-400 focus:ring-1 focus:ring-blue-400"
+              className="w-full rounded border border-gray-200 px-2.5 py-1.5 text-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500"
             />
             <div className="flex gap-2">
               <button

@@ -92,10 +92,10 @@ export function ImageUpload({ onExtracted }: ImageUploadProps) {
 
   if (isExtracting) {
     return (
-      <div className="bg-white rounded-xl border border-blue-100 shadow-sm p-5 mb-3 text-center">
-        <div className="mb-3 inline-block h-8 w-8 animate-spin rounded-full border-[3px] border-blue-200 border-t-blue-600" />
-        <p className="text-sm font-medium text-blue-700">{t('image.extractingData')}</p>
-        <p className="text-xs text-blue-400 mt-1">{t('image.analyzingVision')}</p>
+      <div className="bg-white rounded-lg border border-teal-100 p-5 mb-3 text-center">
+        <div className="mb-3 inline-block h-8 w-8 animate-spin rounded-full border-[3px] border-teal-200 border-t-teal-600" />
+        <p className="text-sm font-medium text-teal-700">{t('image.extractingData')}</p>
+        <p className="text-xs text-teal-400 mt-1">{t('image.analyzingVision')}</p>
       </div>
     )
   }
@@ -103,7 +103,7 @@ export function ImageUpload({ onExtracted }: ImageUploadProps) {
   if (previewUrl && imageData) {
     return (
       <>
-        <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 mb-3">
+        <div className="bg-white rounded-lg border border-gray-200 p-4 mb-3">
           <div className="mb-3 flex items-center justify-center bg-gray-50 rounded-lg p-2">
             <img
               src={previewUrl}
@@ -146,10 +146,10 @@ export function ImageUpload({ onExtracted }: ImageUploadProps) {
   return (
     <>
       <div
-        className={`cursor-pointer rounded-xl border-2 border-dashed p-5 mb-3 text-center transition-all duration-200 ${
+        className={`cursor-pointer rounded-lg border-2 border-dashed p-5 mb-3 text-center transition-all duration-200 ${
           isDragging
-            ? 'border-blue-400 bg-blue-50/80 scale-[1.01]'
-            : 'border-gray-200 bg-white hover:border-blue-300 hover:bg-blue-50/30'
+            ? 'border-teal-400 bg-teal-50/80 scale-[1.01]'
+            : 'border-gray-200 bg-white hover:border-teal-300 hover:bg-teal-50/30'
         }`}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
@@ -164,8 +164,8 @@ export function ImageUpload({ onExtracted }: ImageUploadProps) {
           }
         }}
       >
-        <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-blue-50 flex items-center justify-center">
-          <svg className="w-6 h-6 text-blue-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+        <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-teal-50 flex items-center justify-center">
+          <svg className="w-6 h-6 text-teal-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
             <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z" />
           </svg>

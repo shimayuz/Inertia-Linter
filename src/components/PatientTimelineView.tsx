@@ -56,7 +56,7 @@ export function PatientTimelineView({ timeline }: PatientTimelineViewProps) {
 
   if (!timeline) {
     return (
-      <div className="flex items-center justify-center rounded-xl border border-gray-100 bg-white p-12 shadow-sm">
+      <div className="flex items-center justify-center rounded-lg border border-gray-200 bg-white p-12">
         <p className="text-sm text-gray-400">
           {t('timeline.noTimeline')}
         </p>
@@ -66,8 +66,8 @@ export function PatientTimelineView({ timeline }: PatientTimelineViewProps) {
 
   return (
     <DraftWatermark>
-      <div className="rounded-xl border border-gray-100 bg-white shadow-sm">
-        <div className="flex items-center justify-between border-b border-gray-100 px-6 py-4">
+      <div className="rounded-lg border border-gray-200 bg-white">
+        <div className="flex items-center justify-between border-b border-gray-200 px-6 py-4">
           <h2 className="text-base font-bold text-gray-900">
             {t('timeline.title')}
           </h2>
@@ -75,14 +75,14 @@ export function PatientTimelineView({ timeline }: PatientTimelineViewProps) {
         </div>
 
         {journeySummary && (
-          <div className="border-b border-gray-100 px-6 py-3">
+          <div className="border-b border-gray-200 px-6 py-3">
             <p className="text-sm leading-relaxed text-gray-600">
               {journeySummary}
             </p>
           </div>
         )}
 
-        <div className="border-b border-gray-100" role="tablist" aria-label={t('timeline.title')}>
+        <div className="border-b border-gray-200" role="tablist" aria-label={t('timeline.title')}>
           <div className="flex gap-0 px-6">
             {TAB_KEYS.map((tab) => {
               const isActive = activeTab === tab.id

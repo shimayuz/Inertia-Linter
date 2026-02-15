@@ -249,7 +249,7 @@ export function DetailPanel({ auditResult, selectedPillar, medications }: Detail
   )
 
   return (
-    <div className="p-5 overflow-y-auto h-full bg-white rounded-xl border border-gray-100 shadow-sm">
+    <div className="p-5 overflow-y-auto h-full bg-white rounded-lg border border-gray-200">
       <PillarDetail
         pillarResult={pillarResult}
         questions={questions}

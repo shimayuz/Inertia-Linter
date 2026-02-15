@@ -25,8 +25,8 @@ function PatientRow({
   const baseClasses =
     'flex items-center justify-between rounded-lg border px-4 py-3 transition-colors cursor-pointer'
   const selectedClasses = isSelected
-    ? 'border-blue-300 bg-blue-50'
-    : 'border-gray-100 bg-white hover:border-gray-200 hover:bg-gray-50'
+    ? 'border-teal-300 bg-teal-50'
+    : 'border-gray-200 bg-white hover:border-gray-200 hover:bg-gray-50'
 
   return (
     <button
@@ -49,7 +49,7 @@ function PatientRow({
         </span>
         {isSelected && isLoading && (
           <svg
-            className="h-4 w-4 animate-spin text-blue-500"
+            className="h-4 w-4 animate-spin text-teal-500"
             viewBox="0 0 24 24"
             fill="none"
             aria-label="Loading patient data"
@@ -103,7 +103,7 @@ export function FHIRPatientList({
     >
       <div className="mx-4 flex w-full max-w-md flex-col rounded-2xl bg-white shadow-xl">
         {/* Header */}
-        <div className="flex items-start justify-between border-b border-gray-100 px-6 py-4">
+        <div className="flex items-start justify-between border-b border-gray-200 px-6 py-4">
           <div className="flex flex-col gap-0.5">
             <h2
               id="fhir-patient-list-title"
@@ -147,7 +147,7 @@ export function FHIRPatientList({
         )}
 
         {/* Footer */}
-        <div className="flex justify-end border-t border-gray-100 px-6 py-3">
+        <div className="flex justify-end border-t border-gray-200 px-6 py-3">
           <button
             type="button"
             onClick={onClose}

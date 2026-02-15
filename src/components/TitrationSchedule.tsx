@@ -18,7 +18,7 @@ function StepBadge({
   readonly label: string
   readonly variant: 'current' | 'future' | 'target' | 'past'
 }) {
-  const baseClasses = 'px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap'
+  const baseClasses = 'px-3 py-1.5 rounded-full text-xs font-medium font-mono whitespace-nowrap'
   const variantClasses = {
     current: 'bg-blue-600 text-white',
     future: 'border border-gray-300 text-gray-500 bg-white',

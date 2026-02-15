@@ -102,7 +102,7 @@ export function Dashboard() {
   const hasResults = auditResult !== null
 
   return (
-    <div className="min-h-screen bg-[#F9FAFB]">
+    <div className="min-h-screen bg-[#F8F9FA]">
       <DemoModeBadge />
       <div className="fixed top-2 right-2 z-50"><LanguageSwitcher /></div>
       <DisclaimerBanner />

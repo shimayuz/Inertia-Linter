@@ -38,7 +38,7 @@ export function VisitSummaryPanel({
   }, [summaryText])
 
   return (
-    <div className="rounded-xl border border-gray-100 bg-white shadow-sm overflow-hidden">
+    <div className="rounded-lg border border-gray-200 bg-white overflow-hidden">
       <div className="flex items-center justify-between px-4 py-2.5 border-b border-gray-100 bg-gray-50/50">
         <h4 className="text-sm font-semibold text-gray-700">
           {t('action.visitSummary')}
@@ -49,7 +49,7 @@ export function VisitSummaryPanel({
           className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${
             copied
               ? 'bg-emerald-50 text-emerald-600'
-              : 'bg-blue-50 text-blue-600 hover:bg-blue-100'
+              : 'bg-teal-50 text-teal-600 hover:bg-teal-100'
           }`}
         >
           {copied ? t('action.copied') : t('action.copySummary')}

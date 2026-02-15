@@ -45,10 +45,10 @@ function ScoreTooltipContent({ active, payload, label }: ScoreTooltipProps) {
     <div className="rounded-lg border border-gray-200 bg-white px-3 py-2 shadow-md">
       <p className="text-xs font-medium text-gray-500">{label}</p>
       <p className="text-sm font-bold text-indigo-600">
-        Score: {data.score}/{data.maxPossible}
+        Score: <span className="font-mono">{data.score}/{data.maxPossible}</span>
       </p>
       <p className="text-xs text-gray-400">
-        Normalized: {data.normalized}%
+        Normalized: <span className="font-mono">{data.normalized}%</span>
       </p>
     </div>
   )
