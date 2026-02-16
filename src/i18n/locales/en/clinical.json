@@ -34,6 +34,16 @@
   "blocker.DISCHARGE_MED_LOST": "Medication not continued after discharge",
   "blocker.HANDOFF_GAP": "Care transition gap identified",
   "blocker.PERIOP_HOLD": "Perioperative medication hold",
+  "blocker.HYPOGLYCEMIA_RISK": "Hypoglycemia risk with current regimen",
+  "blocker.LACTIC_ACIDOSIS_RISK": "Lactic acidosis risk (eGFR too low for metformin)",
+  "blocker.HBA1C_AT_GOAL": "HbA1c at goal — no intensification needed",
+  "blocker.GI_INTOLERANCE": "GI intolerance history",
+  "blocker.PANCREATITIS_HISTORY": "History of pancreatitis",
+  "blocker.ANGIOEDEMA_HISTORY": "History of angioedema",
+  "blocker.PREGNANCY_RISK": "Pregnancy or pregnancy risk",
+  "blocker.GOUT_RISK": "Gout or hyperuricemia risk",
+  "blocker.ANKLE_EDEMA": "Ankle edema limiting CCB use",
+  "blocker.BP_AT_GOAL": "Blood pressure at goal — no intensification needed",
 
   "blockerTooltip.CLINICAL_INERTIA": "No documented contraindication, data gap, or patient factor was found. If there is an undocumented reason, please add it below.",
   "blockerTooltip.PA_DENIED": "The insurance plan denied prior authorization for this medication. Consider generic alternatives, patient assistance programs, or appeal.",
@@ -55,5 +65,28 @@
   "doseTier.NOT_PRESCRIBED": "Not prescribed",
   "doseTier.LOW": "Minimum dose",
   "doseTier.MEDIUM": "Medium dose",
-  "doseTier.HIGH": "Max dose"
+  "doseTier.HIGH": "Max dose",
+
+  "clinicalMetrics.title": "Your Key Health Numbers",
+  "clinicalMetrics.notAvailable": "Not available",
+  "clinicalMetrics.target": "target",
+  "clinicalMetrics.ruleDerived": "Values derived from clinical data by rule engine",
+
+  "metrics.dm.hba1c": "Blood Sugar (HbA1c)",
+  "metrics.dm.fastingGlucose": "Fasting Blood Sugar",
+  "metrics.dm.bmi": "BMI",
+  "metrics.dm.egfr": "Kidney Function",
+
+  "metrics.htn.bp": "Blood Pressure",
+  "metrics.htn.egfr": "Kidney Function",
+  "metrics.htn.potassium": "Potassium",
+  "metrics.htn.hr": "Heart Rate",
+
+  "metrics.hf.ef": "Heart Pumping (EF)",
+  "metrics.hf.sbp": "Blood Pressure (SBP)",
+  "metrics.hf.hr": "Heart Rate",
+  "metrics.hf.egfr": "Kidney Function",
+  "metrics.hf.potassium": "Potassium",
+  "metrics.hf.bnp": "BNP",
+  "metrics.hf.ntProBnp": "NT-proBNP"
 }

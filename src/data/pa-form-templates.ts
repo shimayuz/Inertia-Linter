@@ -10,7 +10,7 @@ export interface PATemplate {
   readonly stepTherapyExceptionTemplate: string
 }
 
-export const PA_TEMPLATES: Readonly<Record<Pillar, PATemplate>> = {
+export const PA_TEMPLATES: Readonly<Partial<Record<Pillar, PATemplate>>> = {
   ARNI_ACEi_ARB: {
     pillar: 'ARNI_ACEi_ARB',
     drugClass: 'Angiotensin receptor-neprilysin inhibitor (ARNI)',

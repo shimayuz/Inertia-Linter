@@ -28,6 +28,9 @@ export interface PatientHistory {
 }
 
 export interface PatientSnapshot {
+  // Domain identification
+  readonly domainId?: string
+  // Heart Failure fields
   readonly ef: number
   readonly nyhaClass: 1 | 2 | 3 | 4
   readonly sbp: number
@@ -39,6 +42,18 @@ export interface PatientSnapshot {
   readonly bnp?: number
   readonly ntProBnp?: number
   readonly dmType?: 'none' | 'type1' | 'type2'
+  // Diabetes-specific fields
+  readonly hba1c?: number
+  readonly fastingGlucose?: number
+  readonly bmi?: number
+  readonly cvdRisk?: boolean
+  readonly ckd?: boolean
+  // Hypertension-specific fields
+  readonly dbp?: number
+  readonly targetSBP?: number
+  readonly targetDBP?: number
+  readonly htnStage?: 'stage1' | 'stage2' | 'resistant'
+  // Common
   readonly medications: ReadonlyArray<Medication>
   readonly history?: PatientHistory
   readonly surgeryDate?: string

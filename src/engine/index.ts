@@ -27,3 +27,7 @@ export type {
 export { deriveMascotEmotion } from './derive-mascot-emotion.ts'
 export { detectTransitionGaps } from './detect-transition-gaps.ts'
 export type { TransitionGap } from './detect-transition-gaps.ts'
+export { generateNudges } from './generate-nudges.ts'
+export { generatePatientInsight } from './generate-patient-insight.ts'
+export { generateSharedDecisions } from './generate-shared-decisions.ts'
+export { extractClinicalMetrics } from './extract-clinical-metrics.ts'

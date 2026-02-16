@@ -1,6 +1,6 @@
 import type { PatientSnapshot } from '../../types/patient.ts'
 import type { ClinicalEvent, TimelineEntry, PatientTimeline } from '../../types/timeline.ts'
-import { runAudit } from '../../engine/audit.ts'
+import { runHTNAudit } from '../../domains/htn-control/engine.ts'
 import { case2Patient } from '../cases/case2.ts'
 
 function buildEntry(
@@ -11,104 +11,125 @@ function buildEntry(
   return {
     date,
     snapshot,
-    auditResult: runAudit(snapshot),
+    auditResult: runHTNAudit(snapshot),
     events,
   }
 }
 
 const entry1Snapshot: PatientSnapshot = {
-  ef: 58,
-  nyhaClass: 2,
-  sbp: 148,
-  hr: 72,
-  vitalsDate: '2025-11-10',
-  egfr: 48,
-  potassium: 4.5,
-  labsDate: '2025-11-10',
-  bnp: 180,
+  domainId: 'htn-control',
+  ef: 55,
+  nyhaClass: 1,
+  sbp: 170,
+  hr: 78,
+  dbp: 100,
+  vitalsDate: '2025-11-05',
+  egfr: 54,
+  potassium: 4.0,
+  labsDate: '2025-11-05',
   dmType: 'type2',
+  hba1c: 7.0,
+  bmi: 29,
+  ckd: true,
+  htnStage: 'stage2',
+  targetSBP: 130,
+  targetDBP: 80,
   medications: [
-    { pillar: 'ARNI_ACEi_ARB', name: 'Valsartan 80mg', doseTier: 'MEDIUM' },
-    { pillar: 'BETA_BLOCKER', name: '', doseTier: 'NOT_PRESCRIBED' },
-    { pillar: 'MRA', name: '', doseTier: 'NOT_PRESCRIBED' },
-    { pillar: 'SGLT2i', name: '', doseTier: 'NOT_PRESCRIBED' },
+    { pillar: 'ACEi_ARB_HTN', name: '', doseTier: 'NOT_PRESCRIBED' },
+    { pillar: 'CCB', name: 'Amlodipine 5mg', doseTier: 'MEDIUM' },
+    { pillar: 'THIAZIDE', name: '', doseTier: 'NOT_PRESCRIBED' },
+    { pillar: 'BETA_BLOCKER_HTN', name: '', doseTier: 'NOT_PRESCRIBED' },
   ],
 }
 
 const entry2Snapshot: PatientSnapshot = {
-  ef: 58,
-  nyhaClass: 2,
-  sbp: 145,
-  hr: 70,
-  vitalsDate: '2025-12-15',
-  egfr: 46,
-  potassium: 4.6,
-  labsDate: '2025-12-12',
-  bnp: 200,
+  domainId: 'htn-control',
+  ef: 55,
+  nyhaClass: 1,
+  sbp: 158,
+  hr: 77,
+  dbp: 95,
+  vitalsDate: '2025-12-10',
+  egfr: 53,
+  potassium: 4.1,
+  labsDate: '2025-12-08',
   dmType: 'type2',
+  hba1c: 6.9,
+  bmi: 29,
+  ckd: true,
+  htnStage: 'stage2',
+  targetSBP: 130,
+  targetDBP: 80,
   medications: [
-    { pillar: 'ARNI_ACEi_ARB', name: 'Valsartan 80mg', doseTier: 'MEDIUM' },
-    { pillar: 'BETA_BLOCKER', name: '', doseTier: 'NOT_PRESCRIBED' },
-    { pillar: 'MRA', name: '', doseTier: 'NOT_PRESCRIBED' },
-    { pillar: 'SGLT2i', name: '', doseTier: 'NOT_PRESCRIBED' },
+    { pillar: 'ACEi_ARB_HTN', name: '', doseTier: 'NOT_PRESCRIBED' },
+    { pillar: 'CCB', name: 'Amlodipine 5mg', doseTier: 'MEDIUM' },
+    { pillar: 'THIAZIDE', name: '', doseTier: 'NOT_PRESCRIBED' },
+    { pillar: 'BETA_BLOCKER_HTN', name: '', doseTier: 'NOT_PRESCRIBED' },
   ],
 }
 
 const entry3Snapshot: PatientSnapshot = {
-  ef: 58,
-  nyhaClass: 2,
-  sbp: 144,
-  hr: 69,
-  vitalsDate: '2026-01-20',
-  egfr: 45,
-  potassium: 4.9,
-  labsDate: '2026-01-18',
-  bnp: 210,
+  domainId: 'htn-control',
+  ef: 55,
+  nyhaClass: 1,
+  sbp: 160,
+  hr: 76,
+  dbp: 96,
+  vitalsDate: '2026-01-15',
+  egfr: 52,
+  potassium: 4.2,
+  labsDate: '2026-01-12',
   dmType: 'type2',
+  hba1c: 6.8,
+  bmi: 29,
+  ckd: true,
+  htnStage: 'stage2',
+  targetSBP: 130,
+  targetDBP: 80,
   medications: [
-    { pillar: 'ARNI_ACEi_ARB', name: 'Valsartan 80mg', doseTier: 'MEDIUM' },
-    { pillar: 'BETA_BLOCKER', name: '', doseTier: 'NOT_PRESCRIBED' },
-    { pillar: 'MRA', name: '', doseTier: 'NOT_PRESCRIBED' },
-    { pillar: 'SGLT2i', name: '', doseTier: 'NOT_PRESCRIBED' },
+    { pillar: 'ACEi_ARB_HTN', name: '', doseTier: 'NOT_PRESCRIBED' },
+    { pillar: 'CCB', name: 'Amlodipine 5mg', doseTier: 'MEDIUM' },
+    { pillar: 'THIAZIDE', name: '', doseTier: 'NOT_PRESCRIBED' },
+    { pillar: 'BETA_BLOCKER_HTN', name: '', doseTier: 'NOT_PRESCRIBED' },
   ],
 }
 
 const entry1Events: ReadonlyArray<ClinicalEvent> = [
   {
-    date: '2025-11-10',
+    date: '2025-11-05',
     type: 'visit',
-    description: 'Initial HFpEF assessment — EF 58%, NYHA II, Type 2 DM on metformin',
+    description: 'HTN Stage 2 diagnosed — SBP 170/100, Type 2 DM with CKD. Amlodipine 5mg started.',
   },
   {
-    date: '2025-11-10',
+    date: '2025-11-05',
     type: 'lab',
-    description: 'Baseline labs: eGFR 48, K+ 4.5, BNP 180',
+    description: 'Baseline labs: eGFR 54, K+ 4.0, HbA1c 7.0',
   },
 ]
 
 const entry2Events: ReadonlyArray<ClinicalEvent> = [
   {
-    date: '2025-12-15',
+    date: '2025-12-10',
     type: 'visit',
-    description: 'Follow-up — SGLT2i discussed but not started; provider notes AHA Class 2a vs ESC Class I discrepancy',
+    description: 'Follow-up — SBP 158/95, some improvement but not at goal. No medication intensification.',
   },
   {
-    date: '2025-12-12',
+    date: '2025-12-08',
     type: 'lab',
-    description: 'Labs: eGFR 46, K+ 4.6, BNP 200 — slight BNP rise',
+    description: 'Labs: eGFR 53, K+ 4.1, HbA1c 6.9',
   },
 ]
 
 const entry3Events: ReadonlyArray<ClinicalEvent> = [
   {
-    date: '2026-01-20',
+    date: '2026-01-15',
     type: 'visit',
-    description: 'Follow-up — labs stable, SGLT2i still not initiated despite guideline support',
+    description: 'Follow-up — SBP 160/96, ACEi discussed but not started due to "borderline K+" (4.2, well within normal). No real barrier identified.',
   },
   {
-    date: '2026-01-18',
+    date: '2026-01-12',
     type: 'lab',
-    description: 'Labs: eGFR 45, K+ 4.9 approaching threshold, BNP 210',
+    description: 'Labs: eGFR 52, K+ 4.2 (normal)',
   },
 ]
 
@@ -116,22 +137,22 @@ const entry4Events: ReadonlyArray<ClinicalEvent> = [
   {
     date: '2026-02-10',
     type: 'visit',
-    description: 'Follow-up — no medication changes, guideline ambiguity (AHA vs ESC) remains central issue',
+    description: 'Follow-up — SBP 162/98, 3 months of uncontrolled Stage 2 HTN on monotherapy. ACEi/ARB and thiazide still not started. Clinical inertia.',
   },
   {
     date: '2026-02-08',
     type: 'lab',
-    description: 'Labs: eGFR 45, K+ 4.8, BNP 220',
+    description: 'Labs: eGFR 52, K+ 4.1, HbA1c 6.8',
   },
 ]
 
 export const case2Timeline: PatientTimeline = {
   patientId: 'case-2',
-  label: 'Case 2: 75F HFpEF EF 58% — SGLT2i Gap, Guideline Ambiguity',
+  label: 'Case 2: 58M Uncontrolled HTN \u2014 Stage 2 on Monotherapy, Clinical Inertia',
   entries: [
-    buildEntry('2025-11-10', entry1Snapshot, entry1Events),
-    buildEntry('2025-12-15', entry2Snapshot, entry2Events),
-    buildEntry('2026-01-20', entry3Snapshot, entry3Events),
+    buildEntry('2025-11-05', entry1Snapshot, entry1Events),
+    buildEntry('2025-12-10', entry2Snapshot, entry2Events),
+    buildEntry('2026-01-15', entry3Snapshot, entry3Events),
     buildEntry('2026-02-10', case2Patient, entry4Events),
   ],
 }

@@ -1,27 +1,47 @@
 export const BLOCKER_CODES = {
+  // Vitals
   BP_LOW: 'BP_LOW',
   HR_LOW: 'HR_LOW',
+  // Labs
   K_HIGH: 'K_HIGH',
   EGFR_LOW_INIT: 'EGFR_LOW_INIT',
   EGFR_LOW_CONT: 'EGFR_LOW_CONT',
+  // Safety
   RECENT_AKI: 'RECENT_AKI',
   ADR_HISTORY: 'ADR_HISTORY',
   ALLERGY: 'ALLERGY',
+  // Data quality
   STALE_LABS: 'STALE_LABS',
   STALE_VITALS: 'STALE_VITALS',
   UNKNOWN_LABS: 'UNKNOWN_LABS',
+  // System
   CLINICAL_INERTIA: 'CLINICAL_INERTIA',
+  OTHER: 'OTHER',
+  PERIOP_HOLD: 'PERIOP_HOLD',
+  // Patient
   PATIENT_REFUSAL: 'PATIENT_REFUSAL',
   COST_BARRIER: 'COST_BARRIER',
-  OTHER: 'OTHER',
+  COPAY_PROHIBITIVE: 'COPAY_PROHIBITIVE',
+  // Access
   PA_PENDING: 'PA_PENDING',
   PA_DENIED: 'PA_DENIED',
   STEP_THERAPY_REQUIRED: 'STEP_THERAPY_REQUIRED',
-  COPAY_PROHIBITIVE: 'COPAY_PROHIBITIVE',
   FORMULARY_EXCLUDED: 'FORMULARY_EXCLUDED',
+  // Transition
   DISCHARGE_MED_LOST: 'DISCHARGE_MED_LOST',
   HANDOFF_GAP: 'HANDOFF_GAP',
-  PERIOP_HOLD: 'PERIOP_HOLD',
+  // DM-specific
+  HYPOGLYCEMIA_RISK: 'HYPOGLYCEMIA_RISK',
+  LACTIC_ACIDOSIS_RISK: 'LACTIC_ACIDOSIS_RISK',
+  HBA1C_AT_GOAL: 'HBA1C_AT_GOAL',
+  GI_INTOLERANCE: 'GI_INTOLERANCE',
+  PANCREATITIS_HISTORY: 'PANCREATITIS_HISTORY',
+  // HTN-specific
+  ANGIOEDEMA_HISTORY: 'ANGIOEDEMA_HISTORY',
+  PREGNANCY_RISK: 'PREGNANCY_RISK',
+  GOUT_RISK: 'GOUT_RISK',
+  ANKLE_EDEMA: 'ANKLE_EDEMA',
+  BP_AT_GOAL: 'BP_AT_GOAL',
 } as const
 
 export type BlockerCode = typeof BLOCKER_CODES[keyof typeof BLOCKER_CODES]
@@ -50,6 +70,16 @@ export const BLOCKER_UI_LABELS: Readonly<Record<BlockerCode, string>> = {
   DISCHARGE_MED_LOST: 'Medication not continued after discharge',
   HANDOFF_GAP: 'Care transition gap identified',
   PERIOP_HOLD: 'Perioperative medication hold',
+  HYPOGLYCEMIA_RISK: 'Hypoglycemia risk with current regimen',
+  LACTIC_ACIDOSIS_RISK: 'Lactic acidosis risk (eGFR too low for metformin)',
+  HBA1C_AT_GOAL: 'HbA1c at goal \u2014 no intensification needed',
+  GI_INTOLERANCE: 'GI intolerance history',
+  PANCREATITIS_HISTORY: 'History of pancreatitis',
+  ANGIOEDEMA_HISTORY: 'History of angioedema',
+  PREGNANCY_RISK: 'Pregnancy or pregnancy risk',
+  GOUT_RISK: 'Gout or hyperuricemia risk',
+  ANKLE_EDEMA: 'Ankle edema limiting CCB use',
+  BP_AT_GOAL: 'Blood pressure at goal \u2014 no intensification needed',
 } as const
 
 export const BLOCKER_CATEGORIES = {
@@ -89,6 +119,16 @@ export const BLOCKER_CODE_CATEGORY: Readonly<Record<BlockerCode, BlockerCategory
   DISCHARGE_MED_LOST: 'TRANSITION',
   HANDOFF_GAP: 'TRANSITION',
   PERIOP_HOLD: 'SYSTEM',
+  HYPOGLYCEMIA_RISK: 'SAFETY',
+  LACTIC_ACIDOSIS_RISK: 'SAFETY',
+  HBA1C_AT_GOAL: 'SYSTEM',
+  GI_INTOLERANCE: 'SAFETY',
+  PANCREATITIS_HISTORY: 'SAFETY',
+  ANGIOEDEMA_HISTORY: 'SAFETY',
+  PREGNANCY_RISK: 'SAFETY',
+  GOUT_RISK: 'SAFETY',
+  ANKLE_EDEMA: 'SAFETY',
+  BP_AT_GOAL: 'SYSTEM',
 } as const
 
 import type { Pillar } from './pillar.ts'

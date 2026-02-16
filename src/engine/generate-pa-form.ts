@@ -10,7 +10,7 @@ import { classifyEF } from './classify-ef.ts'
 // Drug name lookup per pillar
 // ---------------------------------------------------------------------------
 
-const DEFAULT_DRUG_NAMES: Readonly<Record<Pillar, string>> = {
+const DEFAULT_DRUG_NAMES: Readonly<Partial<Record<Pillar, string>>> = {
   ARNI_ACEi_ARB: 'Sacubitril/Valsartan (Entresto)',
   BETA_BLOCKER: 'Carvedilol',
   MRA: 'Spironolactone',
@@ -29,8 +29,11 @@ export function generatePAForm(
   const efCategory = classifyEF(snapshot.ef)
   const icd10 = getICD10ForEF(efCategory)
   const template = PA_TEMPLATES[pillar]
+  if (!template) {
+    throw new Error(`PA form template not available for pillar: ${pillar}`)
+  }
   const medication = snapshot.medications.find((m) => m.pillar === pillar)
-  const drugName = medication?.name || DEFAULT_DRUG_NAMES[pillar]
+  const drugName = medication?.name || DEFAULT_DRUG_NAMES[pillar] || pillar
 
   const pillarResult = auditResult.pillarResults.find((r) => r.pillar === pillar)
   const doseTier = pillarResult?.doseTier ?? 'NOT_PRESCRIBED'

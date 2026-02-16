@@ -272,8 +272,19 @@ const SGLT2I_DRUGS: ReadonlyArray<DrugTargetDose> = [
 ] as const
 
 export const TARGET_DOSES: Readonly<Record<Pillar, ReadonlyArray<DrugTargetDose>>> = {
+  // Heart Failure
   ARNI_ACEi_ARB: ARNI_ACEI_ARB_DRUGS,
   BETA_BLOCKER: BETA_BLOCKER_DRUGS,
   MRA: MRA_DRUGS,
   SGLT2i: SGLT2I_DRUGS,
+  // Diabetes Management (target doses TBD)
+  METFORMIN: [],
+  SGLT2i_DM: [],
+  GLP1_RA: [],
+  INSULIN: [],
+  // Hypertension Control (target doses TBD)
+  ACEi_ARB_HTN: [],
+  CCB: [],
+  THIAZIDE: [],
+  BETA_BLOCKER_HTN: [],
 } as const

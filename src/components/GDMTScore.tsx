@@ -6,6 +6,7 @@ import { RuleDerivedLabel } from './labels/RuleDerivedLabel'
 interface GDMTScoreProps {
   readonly score: GDMTScoreType
   readonly efCategory?: string
+  readonly domainId?: string
 }
 
 function getScoreColor(normalized: number): string {
@@ -20,13 +21,17 @@ function getBarColor(normalized: number): string {
   return 'bg-green-500'
 }
 
-export function GDMTScore({ score, efCategory }: GDMTScoreProps) {
+export function GDMTScore({ score, efCategory, domainId }: GDMTScoreProps) {
   const { t } = useTranslation()
   const { normalized, maxPossible, excludedPillars, isIncomplete } = score
   const scoreColor = getScoreColor(normalized)
   const barColor = getBarColor(normalized)
   const isHFpEF = efCategory === 'HFpEF'
-  const title = t(isHFpEF ? 'score.hfpefScore' : 'score.gdmtScore')
+  const title = domainId === 'dm-mgmt'
+    ? 'DM Management Score'
+    : domainId === 'htn-control'
+      ? 'HTN Control Score'
+      : t(isHFpEF ? 'score.hfpefScore' : 'score.gdmtScore')
   const activePillarCount = 4 - excludedPillars.length
 
   return (

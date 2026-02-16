@@ -131,11 +131,15 @@ export interface FHIRBundle extends FHIRResource {
 export const LOINC_CODES = {
   HEART_RATE: '8867-4',
   SBP: '8480-6',
+  DBP: '8462-4',
   EGFR: '33914-3',
   POTASSIUM: '6298-4',
   LVEF: '10230-1',
   BNP: '42176-8',
   NT_PRO_BNP: '33762-6',
+  HBA1C: '4548-4',
+  FASTING_GLUCOSE: '1558-6',
+  BMI: '39156-5',
 } as const
 
 export type LoincCode = typeof LOINC_CODES[keyof typeof LOINC_CODES]
@@ -152,5 +156,13 @@ export const CONDITION_CODES = {
   ACS: {
     SNOMED: '394659003',
     ICD: 'I21',
+  },
+  TYPE2_DIABETES: {
+    SNOMED: '44054006',
+    ICD: 'E11',
+  },
+  HYPERTENSION: {
+    SNOMED: '38341003',
+    ICD: 'I10',
   },
 } as const

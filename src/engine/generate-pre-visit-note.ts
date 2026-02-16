@@ -15,7 +15,7 @@ import { PILLAR_LABELS } from '../types/pillar.ts'
 // Monitoring items per pillar
 // ---------------------------------------------------------------------------
 
-const MONITORING_ITEMS: Readonly<Record<Pillar, ReadonlyArray<string>>> = {
+const MONITORING_ITEMS: Readonly<Partial<Record<Pillar, ReadonlyArray<string>>>> = {
   ARNI_ACEi_ARB: ['Blood pressure', 'Renal function (eGFR, Cr)', 'Potassium'],
   BETA_BLOCKER: ['Heart rate', 'Blood pressure', 'Symptoms of fatigue/dizziness'],
   MRA: ['Potassium', 'Renal function (eGFR)', 'Signs of gynecomastia (if spironolactone)'],
@@ -26,7 +26,7 @@ const MONITORING_ITEMS: Readonly<Record<Pillar, ReadonlyArray<string>>> = {
 // Side effects per pillar
 // ---------------------------------------------------------------------------
 
-const SIDE_EFFECTS: Readonly<Record<Pillar, ReadonlyArray<string>>> = {
+const SIDE_EFFECTS: Readonly<Partial<Record<Pillar, ReadonlyArray<string>>>> = {
   ARNI_ACEi_ARB: ['Dizziness when standing', 'Dry cough (ACEi)', 'Elevated potassium'],
   BETA_BLOCKER: ['Fatigue', 'Slow heart rate', 'Cold hands/feet'],
   MRA: ['Elevated potassium', 'Breast tenderness (spironolactone)', 'Dizziness'],
@@ -114,7 +114,7 @@ export function generatePreVisitNote(
       const drugName = medication?.name ?? PILLAR_LABELS[action.pillar]
       const changeType = deriveChangeType(action, currentDose)
       const targetDose = NEXT_DOSE_TIER[currentDose]
-      const monitoringItems = MONITORING_ITEMS[action.pillar]
+      const monitoringItems = MONITORING_ITEMS[action.pillar] ?? []
       const pillarLabel = PILLAR_LABELS[action.pillar]
 
       medicationPlans.push({
@@ -131,7 +131,7 @@ export function generatePreVisitNote(
         pillar: action.pillar,
         drugName,
         explanation: buildExplanation(changeType, pillarLabel, drugName),
-        sideEffectsToWatch: SIDE_EFFECTS[action.pillar],
+        sideEffectsToWatch: SIDE_EFFECTS[action.pillar] ?? [],
         whenToCallDoctor:
           'Call if you experience severe dizziness, swelling, or difficulty breathing',
       })

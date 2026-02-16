@@ -4,6 +4,7 @@ import type { PatientSnapshot, AuditResult, Pillar } from '../types/index'
 import type { ExtractionResult } from '../types/vision.ts'
 import type { PatientTimeline } from '../types/timeline.ts'
 import { runAudit } from '../engine/index'
+import { getDomain } from '../domains/registry'
 import { prepareLLMContext } from '../engine/prepare-llm-context'
 import { fetchPatientEverything } from '../fhir/fhir-client.ts'
 import { fhirToSnapshot } from '../fhir/fhir-to-snapshot.ts'
@@ -93,7 +94,20 @@ export function Dashboard() {
 
   const handleAudit = useCallback((patient: PatientSnapshot, timeline?: PatientTimeline) => {
     setIsLoading(true)
-    const result = runAudit(patient)
+
+    let result
+    const domainId = patient.domainId
+    if (domainId) {
+      const domain = getDomain(domainId)
+      if (domain && domain.status === 'active') {
+        result = domain.runAudit(patient)
+      } else {
+        result = runAudit(patient)
+      }
+    } else {
+      result = runAudit(patient)
+    }
+
     setAuditResult(result)
     setCurrentPatient(patient)
     setCurrentTimeline(timeline ?? null)
@@ -240,6 +254,7 @@ export function Dashboard() {
                       <GDMTScore
                         score={auditResult.gdmtScore}
                         efCategory={auditResult.efCategory}
+                        domainId={auditResult.domainId}
                       />
                       {currentPatient && (
                         <ExportButton

@@ -1,8 +1,32 @@
 import { describe, it, expect } from 'vitest'
 import { evaluatePillar } from '../evaluate-pillar.ts'
 import type { PatientSnapshot } from '../../types/index.ts'
-import { case1Patient } from '../../data/cases/case1.ts'
 import { case3Patient } from '../../data/cases/case3.ts'
+
+/** Original HF Case 1: 68M HFrEF EF 30% (inlined -- case1.ts is now DM domain) */
+const hfCase1Patient: PatientSnapshot = {
+  ef: 30,
+  nyhaClass: 2,
+  sbp: 118,
+  hr: 68,
+  vitalsDate: '2026-02-14',
+  egfr: 55,
+  potassium: 4.2,
+  labsDate: '2026-02-14',
+  bnp: 450,
+  medications: [
+    { pillar: 'ARNI_ACEi_ARB', name: 'Enalapril 5mg', doseTier: 'LOW' },
+    { pillar: 'BETA_BLOCKER', name: 'Carvedilol 12.5mg', doseTier: 'MEDIUM' },
+    { pillar: 'MRA', name: '', doseTier: 'NOT_PRESCRIBED' },
+    {
+      pillar: 'SGLT2i',
+      name: '',
+      doseTier: 'NOT_PRESCRIBED',
+      hasADR: true,
+      adrDescription: 'Recurrent UTIs',
+    },
+  ],
+}
 
 function makePatient(overrides: Partial<PatientSnapshot> = {}): PatientSnapshot {
   return {
@@ -242,7 +266,7 @@ describe('evaluatePillar', () => {
     const refDate = new Date('2026-02-14')
 
     it('Case 1 ARNI_ACEi_ARB: UNDERDOSED, LOW, includes CLINICAL_INERTIA', () => {
-      const result = evaluatePillar(case1Patient, 'ARNI_ACEi_ARB', refDate)
+      const result = evaluatePillar(hfCase1Patient, 'ARNI_ACEi_ARB', refDate)
 
       expect(result.status).toBe('UNDERDOSED')
       expect(result.doseTier).toBe('LOW')
@@ -250,7 +274,7 @@ describe('evaluatePillar', () => {
     })
 
     it('Case 1 SGLT2i: MISSING, NOT_PRESCRIBED, includes ADR_HISTORY', () => {
-      const result = evaluatePillar(case1Patient, 'SGLT2i', refDate)
+      const result = evaluatePillar(hfCase1Patient, 'SGLT2i', refDate)
 
       expect(result.status).toBe('MISSING')
       expect(result.doseTier).toBe('NOT_PRESCRIBED')

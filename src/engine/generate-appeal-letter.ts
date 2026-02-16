@@ -8,6 +8,9 @@ import { PILLAR_LABELS } from '../types/pillar.ts'
 
 function buildAppealBody(paForm: PAFormData, denialReason?: string): string {
   const template = PA_TEMPLATES[paForm.requestedDrugPillar]
+  if (!template) {
+    throw new Error(`PA form template not available for pillar: ${paForm.requestedDrugPillar}`)
+  }
   const pillarLabel = PILLAR_LABELS[paForm.requestedDrugPillar]
   const sections: Array<string> = []
 

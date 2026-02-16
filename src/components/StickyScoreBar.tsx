@@ -31,7 +31,13 @@ export function StickyScoreBar({ score, efCategory, auditResult, patient }: Stic
   const barColor = getBarColor(normalized)
   const scoreColor = getScoreColor(normalized)
   const isHFpEF = efCategory === 'HFpEF'
-  const title = t(isHFpEF ? 'score.hfpefScore' : 'score.gdmtScore')
+  const domainId = auditResult.domainId
+  const categoryLabel = auditResult.categoryLabel
+  const title = domainId === 'dm-mgmt'
+    ? 'DM Management Score'
+    : domainId === 'htn-control'
+      ? 'HTN Control Score'
+      : t(isHFpEF ? 'score.hfpefScore' : 'score.gdmtScore')
 
   return (
     <div className="sticky top-0 z-10 bg-white/95 backdrop-blur-sm border-b border-gray-200 px-4 py-2.5 -mx-5 mb-4"
@@ -60,9 +66,9 @@ export function StickyScoreBar({ score, efCategory, auditResult, patient }: Stic
           />
         </div>
 
-        {efCategory && (
+        {(categoryLabel ?? efCategory) && (
           <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-0.5 rounded">
-            {efCategory}
+            {categoryLabel ?? efCategory}
           </span>
         )}
 

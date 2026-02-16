@@ -1,7 +1,7 @@
 export { EF_CATEGORIES, EF_THRESHOLDS } from './ef-category.ts'
 export type { EFCategory } from './ef-category.ts'
 
-export { PILLARS, PILLAR_LABELS, PILLAR_STATUSES, PILLAR_STATUS_COLORS } from './pillar.ts'
+export { PILLARS, PILLAR_LABELS, PILLAR_STATUSES, PILLAR_STATUS_COLORS, HF_PILLARS, DM_PILLARS, HTN_PILLARS } from './pillar.ts'
 export type { Pillar, PillarStatus } from './pillar.ts'
 
 export {
@@ -59,3 +59,17 @@ export type {
   AssistanceProgram,
   PatientResolutionContext,
 } from './resolution.ts'
+
+export { NUDGE_TYPES, NUDGE_PRIORITIES, NUDGE_STATUSES, METRIC_STATUSES } from './patient-view.ts'
+export type {
+  NudgeType,
+  NudgePriority,
+  NudgeStatus,
+  Nudge,
+  PatientInsight,
+  DecisionOption,
+  SharedDecisionContext,
+  MetricStatus,
+  MetricTarget,
+  ClinicalMetric,
+} from './patient-view.ts'

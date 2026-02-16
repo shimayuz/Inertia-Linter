@@ -1,6 +1,6 @@
 import type { PatientSnapshot } from '../../types/patient.ts'
 import type { ClinicalEvent, TimelineEntry, PatientTimeline } from '../../types/timeline.ts'
-import { runAudit } from '../../engine/audit.ts'
+import { runDMAudit } from '../../domains/dm-mgmt/engine.ts'
 import { case1Patient } from '../cases/case1.ts'
 
 function buildEntry(
@@ -11,203 +11,169 @@ function buildEntry(
   return {
     date,
     snapshot,
-    auditResult: runAudit(snapshot),
+    auditResult: runDMAudit(snapshot),
     events,
   }
 }
 
+// ---------------------------------------------------------------------------
+// Timeline snapshots: 52F Type 2 DM -- gradual HbA1c rise, missed intensification
+// ---------------------------------------------------------------------------
+
 const entry1Snapshot: PatientSnapshot = {
-  ef: 30,
-  nyhaClass: 2,
-  sbp: 125,
-  hr: 75,
-  vitalsDate: '2025-11-15',
-  egfr: 58,
-  potassium: 4.0,
-  labsDate: '2025-11-15',
-  bnp: 520,
+  domainId: 'dm-mgmt',
+  ef: 60,
+  nyhaClass: 1,
+  sbp: 130,
+  hr: 76,
+  dbp: 84,
+  vitalsDate: '2025-11-01',
+  egfr: 68,
+  potassium: 4.2,
+  labsDate: '2025-11-01',
+  dmType: 'type2',
+  hba1c: 7.2,
+  fastingGlucose: 142,
+  bmi: 31,
+  cvdRisk: true,
+  ckd: false,
   medications: [
-    { pillar: 'ARNI_ACEi_ARB', name: '', doseTier: 'NOT_PRESCRIBED' },
-    { pillar: 'BETA_BLOCKER', name: '', doseTier: 'NOT_PRESCRIBED' },
-    { pillar: 'MRA', name: '', doseTier: 'NOT_PRESCRIBED' },
-    { pillar: 'SGLT2i', name: '', doseTier: 'NOT_PRESCRIBED' },
+    { pillar: 'METFORMIN', name: 'Metformin 500mg daily', doseTier: 'LOW' },
+    { pillar: 'SGLT2i_DM', name: '', doseTier: 'NOT_PRESCRIBED' },
+    { pillar: 'GLP1_RA', name: '', doseTier: 'NOT_PRESCRIBED' },
+    { pillar: 'INSULIN', name: '', doseTier: 'NOT_PRESCRIBED' },
   ],
 }
 
 const entry2Snapshot: PatientSnapshot = {
-  ef: 30,
-  nyhaClass: 2,
-  sbp: 120,
-  hr: 72,
-  vitalsDate: '2025-12-01',
-  egfr: 56,
-  potassium: 4.1,
-  labsDate: '2025-11-28',
-  bnp: 480,
+  domainId: 'dm-mgmt',
+  ef: 60,
+  nyhaClass: 1,
+  sbp: 132,
+  hr: 74,
+  dbp: 82,
+  vitalsDate: '2025-12-05',
+  egfr: 67,
+  potassium: 4.3,
+  labsDate: '2025-12-03',
+  dmType: 'type2',
+  hba1c: 7.5,
+  fastingGlucose: 155,
+  bmi: 31.5,
+  cvdRisk: true,
+  ckd: false,
   medications: [
-    { pillar: 'ARNI_ACEi_ARB', name: 'Enalapril 2.5mg', doseTier: 'LOW' },
-    { pillar: 'BETA_BLOCKER', name: '', doseTier: 'NOT_PRESCRIBED' },
-    { pillar: 'MRA', name: '', doseTier: 'NOT_PRESCRIBED' },
-    { pillar: 'SGLT2i', name: '', doseTier: 'NOT_PRESCRIBED' },
+    { pillar: 'METFORMIN', name: 'Metformin 1000mg BID', doseTier: 'MEDIUM' },
+    { pillar: 'SGLT2i_DM', name: '', doseTier: 'NOT_PRESCRIBED' },
+    { pillar: 'GLP1_RA', name: '', doseTier: 'NOT_PRESCRIBED' },
+    { pillar: 'INSULIN', name: '', doseTier: 'NOT_PRESCRIBED' },
   ],
 }
 
 const entry3Snapshot: PatientSnapshot = {
-  ef: 30,
-  nyhaClass: 2,
-  sbp: 115,
-  hr: 70,
-  vitalsDate: '2025-12-15',
-  egfr: 55,
+  domainId: 'dm-mgmt',
+  ef: 60,
+  nyhaClass: 1,
+  sbp: 130,
+  hr: 76,
+  dbp: 80,
+  vitalsDate: '2026-01-10',
+  egfr: 66,
   potassium: 4.2,
-  labsDate: '2025-12-10',
-  bnp: 460,
+  labsDate: '2026-01-08',
+  dmType: 'type2',
+  hba1c: 8.0,
+  fastingGlucose: 168,
+  bmi: 32,
+  cvdRisk: true,
+  ckd: false,
   medications: [
-    { pillar: 'ARNI_ACEi_ARB', name: 'Enalapril 5mg', doseTier: 'LOW' },
-    { pillar: 'BETA_BLOCKER', name: 'Carvedilol 6.25mg', doseTier: 'LOW' },
-    { pillar: 'MRA', name: '', doseTier: 'NOT_PRESCRIBED' },
-    { pillar: 'SGLT2i', name: '', doseTier: 'NOT_PRESCRIBED' },
+    { pillar: 'METFORMIN', name: 'Metformin 1000mg BID', doseTier: 'MEDIUM' },
+    { pillar: 'SGLT2i_DM', name: '', doseTier: 'NOT_PRESCRIBED' },
+    { pillar: 'GLP1_RA', name: '', doseTier: 'NOT_PRESCRIBED' },
+    { pillar: 'INSULIN', name: '', doseTier: 'NOT_PRESCRIBED' },
   ],
 }
 
-const entry4Snapshot: PatientSnapshot = {
-  ef: 30,
-  nyhaClass: 2,
-  sbp: 112,
-  hr: 65,
-  vitalsDate: '2026-01-05',
-  egfr: 55,
-  potassium: 4.3,
-  labsDate: '2026-01-03',
-  bnp: 440,
-  medications: [
-    { pillar: 'ARNI_ACEi_ARB', name: 'Enalapril 5mg', doseTier: 'LOW' },
-    { pillar: 'BETA_BLOCKER', name: 'Carvedilol 12.5mg', doseTier: 'MEDIUM' },
-    { pillar: 'MRA', name: '', doseTier: 'NOT_PRESCRIBED' },
-    { pillar: 'SGLT2i', name: '', doseTier: 'NOT_PRESCRIBED' },
-  ],
-}
-
-const entry5Snapshot: PatientSnapshot = {
-  ef: 30,
-  nyhaClass: 2,
-  sbp: 118,
-  hr: 68,
-  vitalsDate: '2026-01-20',
-  egfr: 54,
-  potassium: 4.2,
-  labsDate: '2026-01-18',
-  bnp: 450,
-  medications: [
-    { pillar: 'ARNI_ACEi_ARB', name: 'Enalapril 5mg', doseTier: 'LOW' },
-    { pillar: 'BETA_BLOCKER', name: 'Carvedilol 12.5mg', doseTier: 'MEDIUM' },
-    { pillar: 'MRA', name: '', doseTier: 'NOT_PRESCRIBED' },
-    {
-      pillar: 'SGLT2i',
-      name: '',
-      doseTier: 'NOT_PRESCRIBED',
-      hasADR: true,
-      adrDescription: 'Recurrent UTIs',
-    },
-  ],
-}
+// ---------------------------------------------------------------------------
+// Timeline events
+// ---------------------------------------------------------------------------
 
 const entry1Events: ReadonlyArray<ClinicalEvent> = [
   {
-    date: '2025-11-15',
+    date: '2025-11-01',
     type: 'visit',
-    description: 'Initial HF diagnosis, EF 30% on echocardiogram',
+    description: 'Type 2 DM diagnosis, HbA1c 7.2%, BMI 31',
   },
   {
-    date: '2025-11-15',
+    date: '2025-11-01',
+    type: 'med_start',
+    description: 'Metformin 500mg daily started',
+    pillar: 'METFORMIN',
+  },
+  {
+    date: '2025-11-01',
     type: 'lab',
-    description: 'Baseline labs: eGFR 58, K+ 4.0, BNP 520',
+    description: 'Baseline labs: HbA1c 7.2%, eGFR 68, K+ 4.2, fasting glucose 142',
   },
 ]
 
 const entry2Events: ReadonlyArray<ClinicalEvent> = [
   {
-    date: '2025-12-01',
-    type: 'med_start',
-    description: 'Enalapril 2.5mg BID started',
-    pillar: 'ARNI_ACEi_ARB',
+    date: '2025-12-05',
+    type: 'visit',
+    description: 'Follow-up visit, HbA1c rising to 7.5%, tolerating metformin',
   },
   {
-    date: '2025-12-01',
-    type: 'visit',
-    description: 'Follow-up visit, tolerating ACEi well',
+    date: '2025-12-05',
+    type: 'med_change',
+    description: 'Metformin uptitrated 500mg daily to 1000mg BID',
+    pillar: 'METFORMIN',
+  },
+  {
+    date: '2025-12-03',
+    type: 'lab',
+    description: 'Labs: HbA1c 7.5%, eGFR 67, K+ 4.3, fasting glucose 155',
   },
 ]
 
 const entry3Events: ReadonlyArray<ClinicalEvent> = [
   {
-    date: '2025-12-15',
-    type: 'med_change',
-    description: 'Enalapril uptitrated 2.5mg to 5mg BID',
-    pillar: 'ARNI_ACEi_ARB',
+    date: '2026-01-10',
+    type: 'visit',
+    description: 'Follow-up visit, HbA1c 8.0% despite metformin uptitration. SGLT2i discussed but not started',
   },
   {
-    date: '2025-12-15',
-    type: 'med_start',
-    description: 'Carvedilol 6.25mg BID started',
-    pillar: 'BETA_BLOCKER',
-  },
-  {
-    date: '2025-12-10',
+    date: '2026-01-08',
     type: 'lab',
-    description: 'Labs: eGFR 55, K+ 4.2 — stable renal function',
+    description: 'Labs: HbA1c 8.0%, eGFR 66, K+ 4.2, fasting glucose 168',
   },
 ]
 
 const entry4Events: ReadonlyArray<ClinicalEvent> = [
   {
-    date: '2026-01-05',
-    type: 'med_change',
-    description: 'Carvedilol uptitrated 6.25mg to 12.5mg BID',
-    pillar: 'BETA_BLOCKER',
-  },
-  {
-    date: '2026-01-03',
-    type: 'lab',
-    description: 'Labs: eGFR 55, K+ 4.3, BNP 440 — slight improvement',
-  },
-]
-
-const entry5Events: ReadonlyArray<ClinicalEvent> = [
-  {
-    date: '2026-01-20',
-    type: 'visit',
-    description: 'UTI episode documented; SGLT2i deferred due to recurrent UTI concern',
-  },
-  {
-    date: '2026-01-18',
-    type: 'lab',
-    description: 'Labs: eGFR 54, K+ 4.2, BNP 450',
-  },
-]
-
-const entry6Events: ReadonlyArray<ClinicalEvent> = [
-  {
     date: '2026-02-14',
     type: 'visit',
-    description: 'Follow-up visit — no medication changes, MRA and SGLT2i still not initiated',
+    description: 'Follow-up visit -- HbA1c 8.5%, still only on Metformin 500mg BID (dose reduced from 1000mg). No SGLT2i or GLP-1 RA initiated',
   },
   {
     date: '2026-02-14',
     type: 'lab',
-    description: 'Labs: eGFR 55, K+ 4.2, BNP 450',
+    description: 'Labs: HbA1c 8.5%, eGFR 65, K+ 4.3, fasting glucose 185',
   },
 ]
+
+// ---------------------------------------------------------------------------
+// Assembled timeline
+// ---------------------------------------------------------------------------
 
 export const case1Timeline: PatientTimeline = {
   patientId: 'case-1',
-  label: 'Case 1: 68M HFrEF EF 30% — Clinical Inertia Unfolding',
+  label: 'Case 1: 52F Type 2 DM -- Clinical Inertia in Glucose Management',
   entries: [
-    buildEntry('2025-11-15', entry1Snapshot, entry1Events),
-    buildEntry('2025-12-01', entry2Snapshot, entry2Events),
-    buildEntry('2025-12-15', entry3Snapshot, entry3Events),
-    buildEntry('2026-01-05', entry4Snapshot, entry4Events),
-    buildEntry('2026-01-20', entry5Snapshot, entry5Events),
-    buildEntry('2026-02-14', case1Patient, entry6Events),
+    buildEntry('2025-11-01', entry1Snapshot, entry1Events),
+    buildEntry('2025-12-05', entry2Snapshot, entry2Events),
+    buildEntry('2026-01-10', entry3Snapshot, entry3Events),
+    buildEntry('2026-02-14', case1Patient, entry4Events),
   ],
 }

@@ -34,6 +34,16 @@
   "blocker.DISCHARGE_MED_LOST": "退院後 処方未継続",
   "blocker.HANDOFF_GAP": "ケア移行ギャップ",
   "blocker.PERIOP_HOLD": "周術期 薬剤保留",
+  "blocker.HYPOGLYCEMIA_RISK": "低血糖リスク",
+  "blocker.LACTIC_ACIDOSIS_RISK": "乳酸アシドーシスリスク（eGFR低値）",
+  "blocker.HBA1C_AT_GOAL": "HbA1c目標達成 — 強化不要",
+  "blocker.GI_INTOLERANCE": "消化器系不耐性の既往",
+  "blocker.PANCREATITIS_HISTORY": "膵炎の既往",
+  "blocker.ANGIOEDEMA_HISTORY": "血管浮腫の既往",
+  "blocker.PREGNANCY_RISK": "妊娠または妊娠リスク",
+  "blocker.GOUT_RISK": "痛風・高尿酸血症リスク",
+  "blocker.ANKLE_EDEMA": "足首浮腫（CCB制限）",
+  "blocker.BP_AT_GOAL": "血圧目標達成 — 強化不要",
 
   "blockerTooltip.CLINICAL_INERTIA": "禁忌、データ不足、患者因子のいずれも確認されませんでした。未記録の理由がある場合は、以下に追加してください。",
   "blockerTooltip.PA_DENIED": "保険プランがこの薬剤の事前承認を却下しました。ジェネリック代替薬、患者支援プログラム、または不服申し立てを検討してください。",
@@ -55,5 +65,28 @@
   "doseTier.NOT_PRESCRIBED": "未処方",
   "doseTier.LOW": "最小用量",
   "doseTier.MEDIUM": "中用量",
-  "doseTier.HIGH": "最大用量"
+  "doseTier.HIGH": "最大用量",
+
+  "clinicalMetrics.title": "あなたの主な健康数値",
+  "clinicalMetrics.notAvailable": "データなし",
+  "clinicalMetrics.target": "目標",
+  "clinicalMetrics.ruleDerived": "臨床データからルールエンジンが算出した値",
+
+  "metrics.dm.hba1c": "血糖値 (HbA1c)",
+  "metrics.dm.fastingGlucose": "空腹時血糖",
+  "metrics.dm.bmi": "BMI",
+  "metrics.dm.egfr": "腎機能",
+
+  "metrics.htn.bp": "血圧",
+  "metrics.htn.egfr": "腎機能",
+  "metrics.htn.potassium": "カリウム",
+  "metrics.htn.hr": "心拍数",
+
+  "metrics.hf.ef": "心臓のポンプ力 (EF)",
+  "metrics.hf.sbp": "血圧 (SBP)",
+  "metrics.hf.hr": "心拍数",
+  "metrics.hf.egfr": "腎機能",
+  "metrics.hf.potassium": "カリウム",
+  "metrics.hf.bnp": "BNP",
+  "metrics.hf.ntProBnp": "NT-proBNP"
 }

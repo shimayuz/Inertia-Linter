@@ -1,8 +1,32 @@
 import { describe, it, expect } from 'vitest'
 import { detectBlockers } from '../detect-blockers'
 import type { PatientSnapshot, Medication } from '../../types'
-import { case1Patient } from '../../data/cases/case1'
 import { case3Patient } from '../../data/cases/case3'
+
+/** Original HF Case 1: 68M HFrEF EF 30% (inlined -- case1.ts is now DM domain) */
+const hfCase1Patient: PatientSnapshot = {
+  ef: 30,
+  nyhaClass: 2,
+  sbp: 118,
+  hr: 68,
+  vitalsDate: '2026-02-14',
+  egfr: 55,
+  potassium: 4.2,
+  labsDate: '2026-02-14',
+  bnp: 450,
+  medications: [
+    { pillar: 'ARNI_ACEi_ARB', name: 'Enalapril 5mg', doseTier: 'LOW' },
+    { pillar: 'BETA_BLOCKER', name: 'Carvedilol 12.5mg', doseTier: 'MEDIUM' },
+    { pillar: 'MRA', name: '', doseTier: 'NOT_PRESCRIBED' },
+    {
+      pillar: 'SGLT2i',
+      name: '',
+      doseTier: 'NOT_PRESCRIBED',
+      hasADR: true,
+      adrDescription: 'Recurrent UTIs',
+    },
+  ],
+}
 
 function daysAgo(days: number, referenceDate: Date): string {
   const d = new Date(referenceDate)
@@ -407,12 +431,12 @@ describe('detectBlockers', () => {
 
   describe('Case validations', () => {
     it('Case 1 ARNI_ACEi_ARB: returns CLINICAL_INERTIA (no blockers)', () => {
-      const result = detectBlockers(case1Patient, 'ARNI_ACEi_ARB', false, refDate)
+      const result = detectBlockers(hfCase1Patient, 'ARNI_ACEi_ARB', false, refDate)
       expect(result).toEqual(['CLINICAL_INERTIA'])
     })
 
     it('Case 1 SGLT2i: returns ADR_HISTORY', () => {
-      const result = detectBlockers(case1Patient, 'SGLT2i', true, refDate)
+      const result = detectBlockers(hfCase1Patient, 'SGLT2i', true, refDate)
       expect(result).toContain('ADR_HISTORY')
       expect(result).not.toContain('CLINICAL_INERTIA')
     })

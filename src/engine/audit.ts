@@ -12,7 +12,7 @@ const ALL_PILLARS: ReadonlyArray<Pillar> = [
   PILLARS.SGLT2i,
 ]
 
-const PILLAR_DISPLAY_NAMES: Readonly<Record<Pillar, string>> = {
+const PILLAR_DISPLAY_NAMES: Readonly<Partial<Record<Pillar, string>>> = {
   ARNI_ACEi_ARB: 'ARNI/ACEi/ARB',
   BETA_BLOCKER: 'Beta-blocker',
   MRA: 'MRA',
@@ -52,7 +52,7 @@ function generateNextBestQuestions(
 
   for (const pr of pillarResults) {
     for (const blocker of pr.blockers) {
-      const pillarName = PILLAR_DISPLAY_NAMES[pr.pillar]
+      const pillarName = PILLAR_DISPLAY_NAMES[pr.pillar] ?? pr.pillar
 
       if (blocker === 'STALE_LABS') {
         addUnique('Order updated lab panel (eGFR, K+)')

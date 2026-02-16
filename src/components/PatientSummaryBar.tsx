@@ -7,9 +7,71 @@ interface PatientSummaryBarProps {
   readonly onEdit: () => void
 }
 
+function DomainSummaryContent({ patient }: { readonly patient: PatientSnapshot }) {
+  const domainId = patient.domainId
+
+  if (domainId === 'dm-mgmt') {
+    return (
+      <>
+        <span className="font-semibold text-gray-900 truncate">
+          HbA1c {patient.hba1c ?? '—'}%
+        </span>
+        <span className="text-gray-300">|</span>
+        <span className="text-gray-600">Type 2 DM</span>
+        {patient.bmi !== undefined && (
+          <>
+            <span className="text-gray-300">|</span>
+            <span className="text-gray-600">BMI {patient.bmi}</span>
+          </>
+        )}
+        {patient.egfr !== undefined && (
+          <>
+            <span className="text-gray-300">|</span>
+            <span className="text-gray-600">eGFR {patient.egfr}</span>
+          </>
+        )}
+      </>
+    )
+  }
+
+  if (domainId === 'htn-control') {
+    return (
+      <>
+        <span className="font-semibold text-gray-900 truncate">
+          BP {patient.sbp}/{patient.dbp ?? '—'}
+        </span>
+        <span className="text-gray-300">|</span>
+        <span className="text-gray-600">
+          {patient.htnStage === 'resistant' ? 'Resistant HTN' : patient.htnStage === 'stage2' ? 'Stage 2 HTN' : 'Stage 1 HTN'}
+        </span>
+        {patient.egfr !== undefined && (
+          <>
+            <span className="text-gray-300">|</span>
+            <span className="text-gray-600">eGFR {patient.egfr}</span>
+          </>
+        )}
+      </>
+    )
+  }
+
+  const efCategory = classifyEF(patient.ef)
+  return (
+    <>
+      <span className="font-semibold text-gray-900 truncate">
+        EF {patient.ef}%
+      </span>
+      <span className="text-gray-300">|</span>
+      <span className="text-gray-600">{efCategory}</span>
+      <span className="text-gray-300">|</span>
+      <span className="text-gray-600">
+        NYHA {['I', 'II', 'III', 'IV'][patient.nyhaClass - 1]}
+      </span>
+    </>
+  )
+}
+
 export function PatientSummaryBar({ patient, onEdit }: PatientSummaryBarProps) {
   const { t } = useTranslation()
-  const efCategory = classifyEF(patient.ef)
 
   const activeMedCount = patient.medications.filter(
     (m) => m.doseTier !== 'NOT_PRESCRIBED',
@@ -25,17 +87,7 @@ export function PatientSummaryBar({ patient, onEdit }: PatientSummaryBarProps) {
         </div>
 
         <div className="flex items-center gap-2 flex-wrap min-w-0 text-sm">
-          <span className="font-semibold text-gray-900 truncate">
-            EF {patient.ef}%
-          </span>
-          <span className="text-gray-300">|</span>
-          <span className="text-gray-600">
-            {efCategory}
-          </span>
-          <span className="text-gray-300">|</span>
-          <span className="text-gray-600">
-            NYHA {['I', 'II', 'III', 'IV'][patient.nyhaClass - 1]}
-          </span>
+          <DomainSummaryContent patient={patient} />
           <span className="text-gray-300">|</span>
           <span className="text-gray-500 text-xs">
             {t('summary.medsActive', { count: activeMedCount })}

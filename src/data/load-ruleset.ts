@@ -64,8 +64,8 @@ export interface StaleDataThresholds {
 
 const rules: ReadonlyArray<RulesetEntry> = rulesetData.rules as ReadonlyArray<RulesetEntry>
 
-const pillarThresholds: Readonly<Record<Pillar, PillarThresholds>> =
-  rulesetData.pillar_thresholds as Readonly<Record<Pillar, PillarThresholds>>
+const pillarThresholds: Readonly<Partial<Record<Pillar, PillarThresholds>>> =
+  rulesetData.pillar_thresholds as Readonly<Partial<Record<Pillar, PillarThresholds>>>
 
 const multiGuidelineDifferences: ReadonlyArray<MultiGuidelineDifference> =
   rulesetData.multi_guideline_differences as ReadonlyArray<MultiGuidelineDifference>
@@ -84,7 +84,7 @@ export function getRulesForPillar(
 }
 
 export function getThresholdsForPillar(pillar: Pillar): PillarThresholds {
-  return pillarThresholds[pillar]
+  return pillarThresholds[pillar] ?? {}
 }
 
 export function getMultiGuidelineDifferences(): ReadonlyArray<MultiGuidelineDifference> {

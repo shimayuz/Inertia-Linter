@@ -20,7 +20,9 @@ export interface GDMTScore {
 }
 
 export interface AuditResult {
+  readonly domainId?: string
   readonly efCategory: EFCategory
+  readonly categoryLabel?: string
   readonly pillarResults: ReadonlyArray<PillarResult>
   readonly gdmtScore: GDMTScore
   readonly missingInfo: ReadonlyArray<string>

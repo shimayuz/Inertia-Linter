@@ -1,9 +1,34 @@
 import { describe, it, expect } from 'vitest'
-import { case1Patient } from '../../data/cases/case1.ts'
 import { case2Patient } from '../../data/cases/case2.ts'
 import { case3Patient } from '../../data/cases/case3.ts'
 import { runAudit } from '../audit.ts'
+import { runHTNAudit } from '../../domains/htn-control/engine.ts'
 import type { PatientSnapshot } from '../../types/index.ts'
+
+/** Original HF Case 1: 68M HFrEF EF 30% (inlined -- case1.ts is now DM domain) */
+const hfCase1Patient: PatientSnapshot = {
+  ef: 30,
+  nyhaClass: 2,
+  sbp: 118,
+  hr: 68,
+  vitalsDate: '2026-02-14',
+  egfr: 55,
+  potassium: 4.2,
+  labsDate: '2026-02-14',
+  bnp: 450,
+  medications: [
+    { pillar: 'ARNI_ACEi_ARB', name: 'Enalapril 5mg', doseTier: 'LOW' },
+    { pillar: 'BETA_BLOCKER', name: 'Carvedilol 12.5mg', doseTier: 'MEDIUM' },
+    { pillar: 'MRA', name: '', doseTier: 'NOT_PRESCRIBED' },
+    {
+      pillar: 'SGLT2i',
+      name: '',
+      doseTier: 'NOT_PRESCRIBED',
+      hasADR: true,
+      adrDescription: 'Recurrent UTIs',
+    },
+  ],
+}
 
 /**
  * Integration tests for the full audit pipeline.
@@ -15,7 +40,7 @@ import type { PatientSnapshot } from '../../types/index.ts'
 const REF_DATE = new Date('2026-02-14')
 
 describe('runAudit — Case 1: 68M HFrEF EF 30%, clinical inertia + UTI barrier', () => {
-  const result = runAudit(case1Patient, REF_DATE)
+  const result = runAudit(hfCase1Patient, REF_DATE)
 
   it('classifies EF correctly as HFrEF', () => {
     expect(result.efCategory).toBe('HFrEF')
@@ -89,37 +114,71 @@ describe('runAudit — Case 1: 68M HFrEF EF 30%, clinical inertia + UTI barrier'
   })
 })
 
-describe('runAudit — Case 2: 75F HFpEF EF 58%, multi-guideline', () => {
-  const result = runAudit(case2Patient, REF_DATE)
+describe('runHTNAudit — Case 2: 58M Uncontrolled HTN, SBP 162/98, CCB only', () => {
+  const result = runHTNAudit(case2Patient, REF_DATE)
 
-  it('classifies EF correctly as HFpEF', () => {
-    expect(result.efCategory).toBe('HFpEF')
+  it('sets domainId to htn-control', () => {
+    expect(result.domainId).toBe('htn-control')
   })
 
-  it('evaluates only SGLT2i pillar for HFpEF', () => {
-    expect(result.pillarResults).toHaveLength(1)
-    expect(result.pillarResults[0].pillar).toBe('SGLT2i')
+  it('classifies as Stage 2 HTN (SBP >= 160)', () => {
+    expect(result.categoryLabel).toBe('Stage 2 HTN')
   })
 
-  it('SGLT2i: MISSING, CLINICAL_INERTIA', () => {
-    const sglt2i = result.pillarResults[0]
-    expect(sglt2i.status).toBe('MISSING')
-    expect(sglt2i.doseTier).toBe('NOT_PRESCRIBED')
-    expect(sglt2i.blockers).toContain('CLINICAL_INERTIA')
+  it('evaluates all 4 HTN pillars', () => {
+    expect(result.pillarResults).toHaveLength(4)
+    const pillars = result.pillarResults.map((p) => p.pillar)
+    expect(pillars).toContain('ACEi_ARB_HTN')
+    expect(pillars).toContain('CCB')
+    expect(pillars).toContain('THIAZIDE')
+    expect(pillars).toContain('BETA_BLOCKER_HTN')
   })
 
-  it('uses HFpEF scoring (includes T2DM component)', () => {
-    // HFpEF score: SGLT2i MISSING=0, BP 142>=130 so no BP points,
-    // T2DM present=20 pts, finerenone not included in current scoring
-    expect(result.gdmtScore.score).toBe(20)
-    expect(result.gdmtScore.maxPossible).toBe(100)
+  it('ACEi_ARB_HTN: MISSING, CLINICAL_INERTIA (no blockers, not prescribed)', () => {
+    const acei = result.pillarResults.find((p) => p.pillar === 'ACEi_ARB_HTN')
+    expect(acei).toBeDefined()
+    expect(acei!.status).toBe('MISSING')
+    expect(acei!.doseTier).toBe('NOT_PRESCRIBED')
+    expect(acei!.blockers).toContain('CLINICAL_INERTIA')
+  })
+
+  it('CCB: UNDERDOSED at MEDIUM dose', () => {
+    const ccb = result.pillarResults.find((p) => p.pillar === 'CCB')
+    expect(ccb).toBeDefined()
+    expect(ccb!.status).toBe('UNDERDOSED')
+    expect(ccb!.doseTier).toBe('MEDIUM')
+  })
+
+  it('THIAZIDE: MISSING, CLINICAL_INERTIA (no blockers, not prescribed)', () => {
+    const thiazide = result.pillarResults.find((p) => p.pillar === 'THIAZIDE')
+    expect(thiazide).toBeDefined()
+    expect(thiazide!.status).toBe('MISSING')
+    expect(thiazide!.doseTier).toBe('NOT_PRESCRIBED')
+    expect(thiazide!.blockers).toContain('CLINICAL_INERTIA')
+  })
+
+  it('BETA_BLOCKER_HTN: MISSING with no blockers (no compelling indication)', () => {
+    const bb = result.pillarResults.find((p) => p.pillar === 'BETA_BLOCKER_HTN')
+    expect(bb).toBeDefined()
+    expect(bb!.status).toBe('MISSING')
+    expect(bb!.doseTier).toBe('NOT_PRESCRIBED')
+    // BB is not first-line for HTN without compelling indication — no CLINICAL_INERTIA
+    expect(bb!.blockers).toHaveLength(0)
+  })
+
+  it('HTN score: 16/75 normalized (CCB MEDIUM=16, max 75 with BB excluded)', () => {
+    // 3-pillar scoring: ACEi_ARB_HTN(0) + CCB(16) + THIAZIDE(0) = 16/75
+    // BB_HTN excluded (no compelling indication)
+    expect(result.gdmtScore.score).toBe(16)
+    expect(result.gdmtScore.maxPossible).toBe(75)
+    expect(result.gdmtScore.excludedPillars).toContain('BETA_BLOCKER_HTN')
   })
 
   it('generates nextBestQuestions for CLINICAL_INERTIA', () => {
-    const hasQ = result.nextBestQuestions.some((q) =>
-      q.includes('SGLT2i'),
+    const hasACEiQ = result.nextBestQuestions.some((q) =>
+      q.includes('ACEi/ARB') && q.includes('no identified barrier'),
     )
-    expect(hasQ).toBe(true)
+    expect(hasACEiQ).toBe(true)
   })
 
   it('has a timestamp', () => {
@@ -344,9 +403,9 @@ describe('runAudit — stale data detection', () => {
   })
 
   it('does not detect STALE_LABS when labs within 14 days', () => {
-    const result = runAudit(case1Patient, REF_DATE)
+    const result = runAudit(hfCase1Patient, REF_DATE)
 
-    // Case 1 labsDate='2026-02-14', ref 2026-02-14 = 0 days -> fresh
+    // HF Case 1 labsDate='2026-02-14', ref 2026-02-14 = 0 days -> fresh
     const arniAcei = result.pillarResults.find((p) => p.pillar === 'ARNI_ACEi_ARB')
     expect(arniAcei!.blockers).not.toContain('STALE_LABS')
   })

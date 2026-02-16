@@ -10,7 +10,7 @@ import { ASSISTANCE_PROGRAMS } from '../data/assistance-programs.ts'
 // Alternatives lookup (static data, pure function)
 // ---------------------------------------------------------------------------
 
-const ALTERNATIVES_BY_PILLAR: Readonly<Record<Pillar, ReadonlyArray<MedicationAlternative>>> = {
+const ALTERNATIVES_BY_PILLAR: Readonly<Partial<Record<Pillar, ReadonlyArray<MedicationAlternative>>>> = {
   ARNI_ACEi_ARB: ARNI_ALTERNATIVES,
   BETA_BLOCKER: [],
   MRA: MRA_ALTERNATIVES,
@@ -22,7 +22,7 @@ export function findAlternatives(
   currentDrug: string,
   _blockerCode: BlockerCode,
 ): ReadonlyArray<MedicationAlternative> {
-  const alternatives = ALTERNATIVES_BY_PILLAR[pillar]
+  const alternatives = ALTERNATIVES_BY_PILLAR[pillar] ?? []
   if (alternatives.length === 0) {
     return []
   }
@@ -46,7 +46,7 @@ export function findAlternatives(
 // Assistance programs lookup
 // ---------------------------------------------------------------------------
 
-const PILLAR_DRUG_KEYWORDS: Readonly<Record<Pillar, ReadonlyArray<string>>> = {
+const PILLAR_DRUG_KEYWORDS: Readonly<Partial<Record<Pillar, ReadonlyArray<string>>>> = {
   ARNI_ACEi_ARB: ['entresto', 'sacubitril', 'enalapril', 'lisinopril', 'losartan', 'acei', 'arb'],
   BETA_BLOCKER: ['carvedilol', 'metoprolol', 'bisoprolol', 'beta-blocker'],
   MRA: ['spironolactone', 'eplerenone', 'inspra'],
@@ -57,7 +57,7 @@ export function findAssistancePrograms(
   pillar: Pillar,
   drugName: string,
 ): ReadonlyArray<AssistanceProgram> {
-  const keywords = PILLAR_DRUG_KEYWORDS[pillar]
+  const keywords = PILLAR_DRUG_KEYWORDS[pillar] ?? []
   const lowerDrug = drugName.toLowerCase()
 
   return ASSISTANCE_PROGRAMS.filter((program) => {
