@@ -30,3 +30,8 @@ coverage/
 .env
 .env.local
 .env.*.local
+
+# Private / submission materials
+demo-video/
+PITCH_SCRIPT_*.md
+SUBMISSION_DRAFT.md
