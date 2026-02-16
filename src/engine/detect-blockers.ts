@@ -1,4 +1,4 @@
-import type { PatientSnapshot, Pillar, BlockerCode } from '../types/index.ts'
+import type { PatientSnapshot, Pillar, BlockerCode, AccessBarrierType } from '../types/index.ts'
 import { getThresholdsForPillar } from '../data/load-ruleset.ts'
 import { detectStaleData } from './detect-stale.ts'
 
@@ -80,6 +80,29 @@ function checkCostBarrier(patient: PatientSnapshot, pillar: Pillar): boolean {
   )
 }
 
+function checkAccessBarrier(patient: PatientSnapshot, pillar: Pillar): ReadonlyArray<BlockerCode> {
+  const med = patient.medications.find((m) => m.pillar === pillar)
+  if (!med?.accessBarrier) return []
+
+  const mapping: Readonly<Record<AccessBarrierType, BlockerCode>> = {
+    pa_pending: 'PA_PENDING',
+    pa_denied: 'PA_DENIED',
+    step_therapy: 'STEP_THERAPY_REQUIRED',
+    copay_prohibitive: 'COPAY_PROHIBITIVE',
+    formulary_excluded: 'FORMULARY_EXCLUDED',
+  }
+
+  return [mapping[med.accessBarrier.type]]
+}
+
+function checkPeriopHold(patient: PatientSnapshot, pillar: Pillar, referenceDate?: Date): boolean {
+  if (pillar !== 'SGLT2i' || !patient.surgeryDate) return false
+  const ref = referenceDate ?? new Date()
+  const surgery = new Date(patient.surgeryDate)
+  const daysDiff = Math.abs((surgery.getTime() - ref.getTime()) / (1000 * 60 * 60 * 24))
+  return daysDiff <= 30
+}
+
 export function detectBlockers(
   patient: PatientSnapshot,
   pillar: Pillar,
@@ -138,6 +161,15 @@ export function detectBlockers(
 
   if (checkCostBarrier(patient, pillar)) {
     blockers.push('COST_BARRIER')
+  }
+
+  const accessBlockers = checkAccessBarrier(patient, pillar)
+  for (const ab of accessBlockers) {
+    blockers.push(ab)
+  }
+
+  if (checkPeriopHold(patient, pillar, referenceDate)) {
+    blockers.push('PERIOP_HOLD')
   }
 
   if (blockers.length === 0) {

@@ -79,6 +79,16 @@ export function buildFHIRCarePlan(note: PreVisitNote): FHIRCarePlan {
     )
   }
 
+  if (note.resolutionTasks && note.resolutionTasks.length > 0) {
+    for (const task of note.resolutionTasks) {
+      notes.push(
+        buildNote(
+          `[Resolution - ${task.pillar}] ${task.type}: ${task.description} (${task.status})`,
+        ),
+      )
+    }
+  }
+
   if (note.nextVisitMonitoring.length > 0) {
     notes.push(
       buildNote(

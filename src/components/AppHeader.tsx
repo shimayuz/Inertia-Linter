@@ -2,11 +2,10 @@ import { useTranslation } from 'react-i18next'
 import { DemoModeBadge } from './DemoModeBadge'
 import { LanguageSwitcher } from './LanguageSwitcher'
 
-const TABS = [
-  { key: 'nav.dashboard', active: true },
-  { key: 'nav.patients', active: false },
-  { key: 'nav.reports', active: false },
-] as const
+interface AppHeaderProps {
+  readonly isSidebarOpen: boolean
+  readonly onToggleSidebar: () => void
+}
 
 function HeartbeatIcon() {
   return (
@@ -26,7 +25,7 @@ function HeartbeatIcon() {
   )
 }
 
-export function AppHeader() {
+export function AppHeader({ isSidebarOpen, onToggleSidebar }: AppHeaderProps) {
   const { t } = useTranslation()
 
   return (
@@ -43,20 +42,33 @@ export function AppHeader() {
 
         {/* Center: Tab Navigation */}
         <nav className="flex items-center gap-6">
-          {TABS.map(({ key, active }) => (
-            <span
-              key={key}
-              className={
-                active
-                  ? 'text-teal-700 border-b-2 border-teal-700 font-semibold pb-0.5'
-                  : 'text-gray-400 cursor-not-allowed pb-0.5'
-              }
-              title={active ? undefined : t('nav.comingSoon')}
-              aria-disabled={!active}
-            >
-              {t(key)}
-            </span>
-          ))}
+          {/* Patients — toggle sidebar (leftmost) */}
+          <button
+            type="button"
+            onClick={onToggleSidebar}
+            className={
+              isSidebarOpen
+                ? 'text-teal-700 border-b-2 border-teal-700 font-semibold pb-0.5 transition-colors'
+                : 'text-gray-500 hover:text-teal-600 font-medium pb-0.5 transition-colors'
+            }
+            aria-pressed={isSidebarOpen}
+          >
+            {t('nav.patients')}
+          </button>
+
+          {/* Dashboard — always active, static */}
+          <span className="text-teal-700 border-b-2 border-teal-700 font-semibold pb-0.5">
+            {t('nav.dashboard')}
+          </span>
+
+          {/* Reports — coming soon */}
+          <span
+            className="text-gray-400 cursor-not-allowed pb-0.5"
+            title={t('nav.comingSoon')}
+            aria-disabled
+          >
+            {t('nav.reports')}
+          </span>
         </nav>
 
         {/* Right: DemoModeBadge + LanguageSwitcher */}

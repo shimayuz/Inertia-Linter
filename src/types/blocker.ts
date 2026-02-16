@@ -14,6 +14,14 @@ export const BLOCKER_CODES = {
   PATIENT_REFUSAL: 'PATIENT_REFUSAL',
   COST_BARRIER: 'COST_BARRIER',
   OTHER: 'OTHER',
+  PA_PENDING: 'PA_PENDING',
+  PA_DENIED: 'PA_DENIED',
+  STEP_THERAPY_REQUIRED: 'STEP_THERAPY_REQUIRED',
+  COPAY_PROHIBITIVE: 'COPAY_PROHIBITIVE',
+  FORMULARY_EXCLUDED: 'FORMULARY_EXCLUDED',
+  DISCHARGE_MED_LOST: 'DISCHARGE_MED_LOST',
+  HANDOFF_GAP: 'HANDOFF_GAP',
+  PERIOP_HOLD: 'PERIOP_HOLD',
 } as const
 
 export type BlockerCode = typeof BLOCKER_CODES[keyof typeof BLOCKER_CODES]
@@ -34,6 +42,14 @@ export const BLOCKER_UI_LABELS: Readonly<Record<BlockerCode, string>> = {
   PATIENT_REFUSAL: 'Patient preference/refusal',
   COST_BARRIER: 'Cost or access barrier',
   OTHER: 'Other clinical reason',
+  PA_PENDING: 'Prior authorization pending',
+  PA_DENIED: 'Prior authorization denied',
+  STEP_THERAPY_REQUIRED: 'Step therapy required by payer',
+  COPAY_PROHIBITIVE: 'Prohibitive copay/out-of-pocket cost',
+  FORMULARY_EXCLUDED: 'Not on formulary',
+  DISCHARGE_MED_LOST: 'Medication not continued after discharge',
+  HANDOFF_GAP: 'Care transition gap identified',
+  PERIOP_HOLD: 'Perioperative medication hold',
 } as const
 
 export const BLOCKER_CATEGORIES = {
@@ -43,6 +59,8 @@ export const BLOCKER_CATEGORIES = {
   DATA_QUALITY: 'DATA_QUALITY',
   PATIENT: 'PATIENT',
   SYSTEM: 'SYSTEM',
+  ACCESS: 'ACCESS',
+  TRANSITION: 'TRANSITION',
 } as const
 
 export type BlockerCategory = typeof BLOCKER_CATEGORIES[keyof typeof BLOCKER_CATEGORIES]
@@ -63,6 +81,14 @@ export const BLOCKER_CODE_CATEGORY: Readonly<Record<BlockerCode, BlockerCategory
   PATIENT_REFUSAL: 'PATIENT',
   COST_BARRIER: 'PATIENT',
   OTHER: 'SYSTEM',
+  PA_PENDING: 'ACCESS',
+  PA_DENIED: 'ACCESS',
+  STEP_THERAPY_REQUIRED: 'ACCESS',
+  COPAY_PROHIBITIVE: 'PATIENT',
+  FORMULARY_EXCLUDED: 'ACCESS',
+  DISCHARGE_MED_LOST: 'TRANSITION',
+  HANDOFF_GAP: 'TRANSITION',
+  PERIOP_HOLD: 'SYSTEM',
 } as const
 
 import type { Pillar } from './pillar.ts'

@@ -15,7 +15,7 @@ export type { BlockerCode, BlockerCategory, BlockerInfo } from './blocker.ts'
 export { DOSE_TIERS, DOSE_TIER_POINTS, DOSE_TIER_LABELS } from './dose-tier.ts'
 export type { DoseTier } from './dose-tier.ts'
 
-export type { Medication, PatientHistory, PatientSnapshot } from './patient.ts'
+export type { AccessBarrierType, AccessBarrier, Medication, PatientHistory, PatientSnapshot } from './patient.ts'
 
 export type { PillarResult, GDMTScore, AuditResult } from './audit.ts'
 
@@ -36,4 +36,26 @@ export type { ActionDecision, ActionPriority, ActionCategory, ActionItem, Action
 export { MASCOT_EMOTIONS } from './mascot.ts'
 export type { MascotEmotion } from './mascot.ts'
 
-export type { MedicationChangeType, MedicationPlan, PatientExplanation, PreVisitNote } from './pre-visit-note.ts'
+export type { MedicationChangeType, MedicationPlan, PatientExplanation, ResolutionTask, PreVisitNote } from './pre-visit-note.ts'
+
+export type { PatientSource, AppointmentPatient } from './appointment.ts'
+
+export type {
+  ResolutionPathwayType,
+  ResolutionStatus,
+  ResolutionStep,
+  RequiredDataField,
+  ResolutionPathway,
+  StepProgress,
+  GeneratedDocument,
+  ResolutionRecord,
+  ResolutionEventType,
+  ResolutionEvent,
+  InsuranceInfo,
+  PrescriberInfo,
+  PriorDrugTrial,
+  PAFormData,
+  MedicationAlternative,
+  AssistanceProgram,
+  PatientResolutionContext,
+} from './resolution.ts'

@@ -4,7 +4,7 @@ import type { AuditResult } from './audit.ts'
 
 export interface ClinicalEvent {
   readonly date: string
-  readonly type: 'med_start' | 'med_change' | 'med_stop' | 'lab' | 'vitals' | 'hospitalization' | 'visit'
+  readonly type: 'med_start' | 'med_change' | 'med_stop' | 'lab' | 'vitals' | 'hospitalization' | 'visit' | 'discharge' | 'transfer'
   readonly description: string
   readonly pillar?: Pillar
 }

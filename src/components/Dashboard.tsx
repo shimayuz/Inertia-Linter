@@ -5,22 +5,25 @@ import type { ExtractionResult } from '../types/vision.ts'
 import type { PatientTimeline } from '../types/timeline.ts'
 import { runAudit } from '../engine/index'
 import { prepareLLMContext } from '../engine/prepare-llm-context'
+import { fetchPatientEverything } from '../fhir/fhir-client.ts'
+import { fhirToSnapshot } from '../fhir/fhir-to-snapshot.ts'
+import { getDemoAppointments, getEhrAppointments, getDemoCaseData } from '../data/mock-appointments.ts'
+import type { AppointmentPatient } from '../types/appointment.ts'
 import { AppHeader } from './AppHeader'
 import { DisclaimerBanner } from './DisclaimerBanner'
 import { PatientForm } from './PatientForm'
 import { ImageUpload } from './ImageUpload.tsx'
-import { EHRConnectButton } from './EHRConnectButton.tsx'
-import { FHIRPatientList } from './FHIRPatientList.tsx'
-import { DomainSelector } from './DomainSelector.tsx'
+import { PatientListSidebar } from './PatientListSidebar.tsx'
 import { GDMTScore } from './GDMTScore'
 import { PillarDashboard } from './PillarDashboard'
 import { DetailPanel } from './DetailPanel'
 import { ExportButton } from './ExportButton'
-import { InertiaActionPlan } from './InertiaActionPlan.tsx'
+import { PatientSummaryBar } from './PatientSummaryBar.tsx'
+import { StickyScoreBar } from './StickyScoreBar.tsx'
+import { FloatingActionPanel } from './FloatingActionPanel.tsx'
 import { PatientTimelineView } from './PatientTimelineView.tsx'
 import { Mascot } from './Mascot.tsx'
 import { MascotRestoreButton } from './MascotRestoreButton.tsx'
-import { useFHIRConnect } from '../hooks/useFHIRConnect.ts'
 import { useMascotState } from '../hooks/useMascotState.ts'
 import { generateActionPlan } from '../engine/generate-action-plan.ts'
 
@@ -59,9 +62,22 @@ export function Dashboard() {
   const [selectedPillar, setSelectedPillar] = useState<Pillar | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [extractionResult, setExtractionResult] = useState<ExtractionResult | null>(null)
-  const [dataSource, setDataSource] = useState<'manual' | 'fhir' | 'vision'>('manual')
   const [currentTimeline, setCurrentTimeline] = useState<PatientTimeline | null>(null)
-  const fhir = useFHIRConnect()
+  const [selectedPatientId, setSelectedPatientId] = useState<string | null>(null)
+  const [sidebarLoading, setSidebarLoading] = useState(false)
+  const [preloadedPatient, setPreloadedPatient] = useState<PatientSnapshot | null>(null)
+  const [showImageUpload, setShowImageUpload] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [isFormCollapsed, setIsFormCollapsed] = useState(false)
+  const [isEhrConnected, setIsEhrConnected] = useState(false)
+  const [isEhrConnecting, setIsEhrConnecting] = useState(false)
+  const [ehrPatients, setEhrPatients] = useState<ReadonlyArray<AppointmentPatient>>([])
+
+  const demoAppointments = useMemo(() => getDemoAppointments(), [])
+  const appointments = useMemo(
+    () => (isEhrConnected ? [...demoAppointments, ...ehrPatients] : demoAppointments),
+    [demoAppointments, ehrPatients, isEhrConnected],
+  )
 
   const llmContext = useMemo(
     () => (auditResult ? prepareLLMContext(auditResult) : null),
@@ -83,80 +99,173 @@ export function Dashboard() {
     setCurrentTimeline(timeline ?? null)
     setSelectedPillar(null)
     setIsLoading(false)
+    setIsFormCollapsed(true)
   }, [])
 
   const handleExtracted = useCallback((result: ExtractionResult) => {
     setExtractionResult(result)
-    setDataSource('vision')
+
+    setShowImageUpload(false)
   }, [])
 
-  const handleFHIRSelect = useCallback(async (patientId: string) => {
-    const snapshot = await fhir.selectPatient(patientId)
-    if (snapshot) {
-      setDataSource('fhir')
-      handleAudit(snapshot)
+  const handleSelectPatient = useCallback(async (patientId: string) => {
+    setSelectedPatientId(patientId)
+    setSidebarLoading(true)
+
+    const demoData = getDemoCaseData(patientId)
+    if (demoData) {
+      setPreloadedPatient(demoData.snapshot)
+      setCurrentTimeline(demoData.timeline)
+
+      handleAudit(demoData.snapshot, demoData.timeline)
+      setSidebarLoading(false)
+      return
     }
-  }, [fhir.selectPatient, handleAudit])
+
+    try {
+      const bundle = await fetchPatientEverything(patientId)
+      const snapshot = fhirToSnapshot(bundle)
+      setPreloadedPatient(snapshot)
+
+      handleAudit(snapshot)
+    } catch {
+      setPreloadedPatient(null)
+    }
+    setSidebarLoading(false)
+  }, [handleAudit])
+
+  const handleManualEntry = useCallback(() => {
+    setSelectedPatientId(null)
+    setPreloadedPatient(null)
+    setAuditResult(null)
+    setCurrentPatient(null)
+    setCurrentTimeline(null)
+    setExtractionResult(null)
+    setIsFormCollapsed(false)
+  }, [])
+
+  const handleEditPatient = useCallback(() => {
+    setIsFormCollapsed(false)
+  }, [])
+
+  const handleToggleImageUpload = useCallback(() => {
+    setShowImageUpload((prev) => !prev)
+  }, [])
+
+  const handleToggleSidebar = useCallback(() => {
+    setSidebarOpen((prev) => !prev)
+  }, [])
+
+  const handleConnectEhr = useCallback(() => {
+    setIsEhrConnecting(true)
+    // Simulate async EHR connection (real: OAuth + FHIR endpoint discovery)
+    setTimeout(() => {
+      const patients = getEhrAppointments()
+      setEhrPatients(patients)
+      setIsEhrConnected(true)
+      setIsEhrConnecting(false)
+    }, 800)
+  }, [])
 
   const hasResults = auditResult !== null
 
   return (
     <div className="min-h-screen bg-[#F8F9FA]">
-      <AppHeader />
+      <AppHeader isSidebarOpen={sidebarOpen} onToggleSidebar={handleToggleSidebar} />
       <DisclaimerBanner />
 
-      <div className="flex min-h-[calc(100vh-2.5rem)] pt-14 px-5 gap-5 max-w-[1920px] mx-auto">
-        {/* Left pane — Image Upload + Patient Form */}
-        <div className={`flex-shrink-0 transition-all duration-300 ${hasResults ? 'w-[32%]' : 'w-[38%]'}`}>
-          <div className="sticky top-14 max-h-[calc(100vh-4rem)] overflow-y-auto form-scroll pr-1 pb-4">
-            <EHRConnectButton onClick={fhir.open} dataSource={dataSource} />
-            <ImageUpload onExtracted={handleExtracted} />
-            <DomainSelector selectedDomainId="hf-gdmt" />
-            <PatientForm
-              onSubmit={handleAudit}
-              isLoading={isLoading}
-              extractionResult={extractionResult}
-              onTimelineSelect={setCurrentTimeline}
-            />
+      <div className="flex min-h-[calc(100vh-2.5rem)] pt-14 max-w-[1920px] mx-auto">
+        {/* Left pane — Patient List Sidebar (toggleable) */}
+        {sidebarOpen && (
+          <div className="w-[20%] min-w-[240px] max-w-[300px] flex-shrink-0 border-r border-gray-200 bg-white animate-slide-in">
+            <div className="sticky top-14 max-h-[calc(100vh-4rem)] overflow-y-auto form-scroll">
+              <PatientListSidebar
+                appointments={appointments}
+                selectedId={selectedPatientId}
+                isLoading={sidebarLoading}
+                onSelectPatient={handleSelectPatient}
+                onManualEntry={handleManualEntry}
+                onImageUpload={handleToggleImageUpload}
+                isEhrConnected={isEhrConnected}
+                isEhrConnecting={isEhrConnecting}
+                onConnectEhr={handleConnectEhr}
+              />
+            </div>
           </div>
-        </div>
+        )}
 
-        {/* Center pane — Score + Action Plan + Pillar Cards */}
-        <div className={`flex-shrink-0 transition-all duration-300 ${hasResults ? 'w-[38%]' : 'w-[32%]'}`}>
-          <div className="sticky top-14 max-h-[calc(100vh-4rem)] overflow-y-auto pr-1 pb-4">
-            {hasResults ? (
-              <div className="py-2">
-                <div className="flex items-center justify-between">
-                  <GDMTScore
-                    score={auditResult.gdmtScore}
-                    efCategory={auditResult.efCategory}
-                  />
-                  {currentPatient && (
-                    <ExportButton
+        {/* Center pane — Form + Results */}
+        <div className="flex-1 min-w-0 px-5">
+          <div className="sticky top-14 max-h-[calc(100vh-4rem)] overflow-y-auto form-scroll pr-1 pb-4">
+            {isFormCollapsed && currentPatient ? (
+              <>
+                <PatientSummaryBar patient={currentPatient} onEdit={handleEditPatient} />
+                {auditResult && (
+                  <>
+                    <StickyScoreBar
+                      score={auditResult.gdmtScore}
+                      efCategory={auditResult.efCategory}
                       auditResult={auditResult}
                       patient={currentPatient}
                     />
-                  )}
-                </div>
-                <div className="mt-4">
-                  <InertiaActionPlan auditResult={auditResult} llmContext={llmContext} medications={currentPatient?.medications} />
-                </div>
-                <div className="mt-4">
-                  <PillarDashboard
-                    results={auditResult.pillarResults}
-                    selectedPillar={selectedPillar}
-                    onSelectPillar={setSelectedPillar}
-                  />
-                </div>
-              </div>
+                    <div className="mt-4">
+                      <PillarDashboard
+                        results={auditResult.pillarResults}
+                        selectedPillar={selectedPillar}
+                        onSelectPillar={setSelectedPillar}
+                      />
+                    </div>
+                  </>
+                )}
+              </>
             ) : (
-              <ResultsEmptyState />
+              <>
+                {showImageUpload && (
+                  <div className="mb-3">
+                    <ImageUpload onExtracted={handleExtracted} />
+                  </div>
+                )}
+
+                <PatientForm
+                  onSubmit={handleAudit}
+                  isLoading={isLoading}
+                  extractionResult={extractionResult}
+                  onTimelineSelect={setCurrentTimeline}
+                  preloadedPatient={preloadedPatient}
+                />
+
+                {hasResults ? (
+                  <div className="mt-4">
+                    <div className="flex items-center justify-between">
+                      <GDMTScore
+                        score={auditResult.gdmtScore}
+                        efCategory={auditResult.efCategory}
+                      />
+                      {currentPatient && (
+                        <ExportButton
+                          auditResult={auditResult}
+                          patient={currentPatient}
+                        />
+                      )}
+                    </div>
+                    <div className="mt-4">
+                      <PillarDashboard
+                        results={auditResult.pillarResults}
+                        selectedPillar={selectedPillar}
+                        onSelectPillar={setSelectedPillar}
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <ResultsEmptyState />
+                )}
+              </>
             )}
           </div>
         </div>
 
         {/* Right pane — Detail Panel + Timeline */}
-        <div className="w-[30%] flex-shrink-0">
+        <div className="w-[30%] flex-shrink-0 px-5">
           <div className="sticky top-14 max-h-[calc(100vh-4rem)] overflow-y-auto pr-1 pb-4">
             <DetailPanel
               auditResult={auditResult}
@@ -172,15 +281,15 @@ export function Dashboard() {
         </div>
       </div>
 
-      <FHIRPatientList
-        isOpen={fhir.isOpen}
-        patients={fhir.patients}
-        isLoading={fhir.isLoading}
-        error={fhir.error}
-        selectedPatientId={fhir.selectedPatientId}
-        onSelect={handleFHIRSelect}
-        onClose={fhir.close}
-      />
+      {auditResult && actions.length > 0 && (
+        <FloatingActionPanel
+          auditResult={auditResult}
+          llmContext={llmContext}
+          medications={currentPatient?.medications}
+          snapshot={currentPatient}
+          pendingCount={actions.length}
+        />
+      )}
 
       {mascot.isVisible ? (
         <Mascot

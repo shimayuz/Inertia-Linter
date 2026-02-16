@@ -1,0 +1,66 @@
+import type { MedicationAlternative } from '../types/resolution.ts'
+
+export const ARNI_ALTERNATIVES: ReadonlyArray<MedicationAlternative> = [
+  {
+    drugName: 'Enalapril',
+    genericName: 'enalapril maleate',
+    pillar: 'ARNI_ACEi_ARB',
+    isGeneric: true,
+    estimatedMonthlyCost: '$4',
+    formularyLikelihood: 'high',
+    clinicalEquivalence: 'similar',
+    guidelineSupport: 'AHA Class I LOE A for ACEi in HFrEF (CONSENSUS, SOLVD-Treatment)',
+    switchConsiderations: [
+      'ACEi is first-line alternative when ARNI is unavailable',
+      'Start at low dose (2.5-5mg BID) and titrate to 10-20mg BID',
+      'Monitor renal function and potassium at 1-2 weeks',
+      '36-hour washout required before switching to ARNI',
+    ],
+  },
+  {
+    drugName: 'Lisinopril',
+    genericName: 'lisinopril',
+    pillar: 'ARNI_ACEi_ARB',
+    isGeneric: true,
+    estimatedMonthlyCost: '$4',
+    formularyLikelihood: 'high',
+    clinicalEquivalence: 'similar',
+    guidelineSupport: 'AHA Class I LOE A for ACEi in HFrEF (ATLAS)',
+    switchConsiderations: [
+      'Once-daily dosing may improve adherence',
+      'Start at 2.5-5mg daily, target 20-40mg daily',
+      'Monitor renal function and potassium',
+      '36-hour washout required before switching to ARNI',
+    ],
+  },
+  {
+    drugName: 'Losartan',
+    genericName: 'losartan potassium',
+    pillar: 'ARNI_ACEi_ARB',
+    isGeneric: true,
+    estimatedMonthlyCost: '$4',
+    formularyLikelihood: 'high',
+    clinicalEquivalence: 'similar',
+    guidelineSupport: 'AHA Class I LOE A for ARB in HFrEF when ACEi intolerant (CHARM-Alternative)',
+    switchConsiderations: [
+      'Preferred if history of ACEi-induced cough or angioedema',
+      'Start at 25-50mg daily, target 150mg daily',
+      'No washout required when switching to ARNI from ARB',
+    ],
+  },
+  {
+    drugName: 'Valsartan',
+    genericName: 'valsartan',
+    pillar: 'ARNI_ACEi_ARB',
+    isGeneric: true,
+    estimatedMonthlyCost: '$8',
+    formularyLikelihood: 'high',
+    clinicalEquivalence: 'similar',
+    guidelineSupport: 'AHA Class I LOE A for ARB in HFrEF (Val-HeFT)',
+    switchConsiderations: [
+      'Start at 40mg BID, target 160mg BID',
+      'Component of ARNI (sacubitril/valsartan)',
+      'No washout required when switching to ARNI from ARB',
+    ],
+  },
+] as const

@@ -35,7 +35,7 @@ interface ScoreTooltipProps {
   readonly label?: string
 }
 
-function ScoreTooltipContent({ active, payload, label }: ScoreTooltipProps) {
+function ScoreTooltipContent({ active, payload, label, scoreLabel, normalizedLabel }: ScoreTooltipProps & { readonly scoreLabel?: string; readonly normalizedLabel?: string }) {
   if (!active || !payload || payload.length === 0) return null
 
   const point = payload[0]
@@ -45,10 +45,10 @@ function ScoreTooltipContent({ active, payload, label }: ScoreTooltipProps) {
     <div className="rounded-lg border border-gray-200 bg-white px-3 py-2 shadow-md">
       <p className="text-xs font-medium text-gray-500">{label}</p>
       <p className="text-sm font-bold text-indigo-600">
-        Score: <span className="font-mono">{data.score}/{data.maxPossible}</span>
+        {scoreLabel ?? 'Score'}: <span className="font-mono">{data.score}/{data.maxPossible}</span>
       </p>
       <p className="text-xs text-gray-400">
-        Normalized: <span className="font-mono">{data.normalized}%</span>
+        {normalizedLabel ?? 'Normalized'}: <span className="font-mono">{data.normalized}%</span>
       </p>
     </div>
   )
@@ -94,7 +94,7 @@ export function ScoreProgressChart({ data }: ScoreProgressChartProps) {
               style: { fontSize: 12, fill: '#9ca3af' },
             }}
           />
-          <Tooltip content={<ScoreTooltipContent />} />
+          <Tooltip content={<ScoreTooltipContent scoreLabel={t('chart.score')} normalizedLabel={t('chart.normalized')} />} />
           <ReferenceLine
             y={50}
             stroke="#9ca3af"

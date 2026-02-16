@@ -283,6 +283,128 @@ describe('detectBlockers', () => {
     })
   })
 
+  describe('perioperative hold detection', () => {
+    const periopRefDate = new Date('2026-02-15')
+
+    function makePeriopPatient(surgeryDate?: string): PatientSnapshot {
+      return makePatient({
+        medications: [
+          makeMed({ pillar: 'SGLT2i', name: 'Dapagliflozin', doseTier: 'HIGH' }),
+        ],
+        surgeryDate,
+      })
+    }
+
+    it('SGLT2i with surgery in 7 days returns PERIOP_HOLD', () => {
+      const patient = makePeriopPatient('2026-02-22')
+      const result = detectBlockers(patient, 'SGLT2i', true, periopRefDate)
+      expect(result).toContain('PERIOP_HOLD')
+    })
+
+    it('SGLT2i with surgery in 25 days returns PERIOP_HOLD', () => {
+      const patient = makePeriopPatient('2026-03-12')
+      const result = detectBlockers(patient, 'SGLT2i', true, periopRefDate)
+      expect(result).toContain('PERIOP_HOLD')
+    })
+
+    it('SGLT2i with surgery 35 days away does NOT return PERIOP_HOLD', () => {
+      const patient = makePeriopPatient('2026-03-22')
+      const result = detectBlockers(patient, 'SGLT2i', true, periopRefDate)
+      expect(result).not.toContain('PERIOP_HOLD')
+    })
+
+    it('SGLT2i with no surgeryDate does NOT return PERIOP_HOLD', () => {
+      const patient = makePeriopPatient(undefined)
+      const result = detectBlockers(patient, 'SGLT2i', true, periopRefDate)
+      expect(result).not.toContain('PERIOP_HOLD')
+    })
+
+    it('BETA_BLOCKER with surgery in 7 days does NOT return PERIOP_HOLD', () => {
+      const patient = makePatient({
+        medications: [
+          makeMed({ pillar: 'BETA_BLOCKER', name: 'Carvedilol', doseTier: 'HIGH' }),
+        ],
+        surgeryDate: '2026-02-22',
+      })
+      const result = detectBlockers(patient, 'BETA_BLOCKER', true, periopRefDate)
+      expect(result).not.toContain('PERIOP_HOLD')
+    })
+
+    it('SGLT2i with surgery 10 days ago (past) returns PERIOP_HOLD', () => {
+      const patient = makePeriopPatient('2026-02-05')
+      const result = detectBlockers(patient, 'SGLT2i', true, periopRefDate)
+      expect(result).toContain('PERIOP_HOLD')
+    })
+  })
+
+  describe('access barrier detection', () => {
+    it('returns PA_DENIED when medication has pa_denied access barrier', () => {
+      const patient = makePatient({
+        medications: [
+          makeMed({
+            pillar: 'ARNI_ACEi_ARB',
+            name: 'Sacubitril/Valsartan',
+            doseTier: 'NOT_PRESCRIBED',
+            accessBarrier: { type: 'pa_denied', description: 'Step therapy not completed' },
+          }),
+        ],
+      })
+      const result = detectBlockers(patient, 'ARNI_ACEi_ARB', true, refDate)
+      expect(result).toContain('PA_DENIED')
+    })
+
+    it('returns STEP_THERAPY_REQUIRED when medication has step_therapy access barrier', () => {
+      const patient = makePatient({
+        medications: [
+          makeMed({
+            pillar: 'SGLT2i',
+            name: 'Dapagliflozin',
+            doseTier: 'NOT_PRESCRIBED',
+            accessBarrier: { type: 'step_therapy', description: 'Must try metformin first' },
+          }),
+        ],
+      })
+      const result = detectBlockers(patient, 'SGLT2i', true, refDate)
+      expect(result).toContain('STEP_THERAPY_REQUIRED')
+    })
+
+    it('does NOT include access barrier codes when medication has no access barrier', () => {
+      const patient = makePatient({
+        medications: [
+          makeMed({
+            pillar: 'ARNI_ACEi_ARB',
+            name: 'Sacubitril/Valsartan',
+            doseTier: 'LOW',
+          }),
+        ],
+      })
+      const result = detectBlockers(patient, 'ARNI_ACEi_ARB', true, refDate)
+      expect(result).not.toContain('PA_PENDING')
+      expect(result).not.toContain('PA_DENIED')
+      expect(result).not.toContain('STEP_THERAPY_REQUIRED')
+      expect(result).not.toContain('COPAY_PROHIBITIVE')
+      expect(result).not.toContain('FORMULARY_EXCLUDED')
+    })
+
+    it('returns BOTH access barrier and physiological blocker when both apply', () => {
+      const patient = makePatient({
+        sbp: 85,
+        medications: [
+          makeMed({
+            pillar: 'ARNI_ACEi_ARB',
+            name: 'Sacubitril/Valsartan',
+            doseTier: 'NOT_PRESCRIBED',
+            accessBarrier: { type: 'pa_denied', description: 'PA denied by insurer' },
+          }),
+        ],
+      })
+      const result = detectBlockers(patient, 'ARNI_ACEi_ARB', true, refDate)
+      expect(result).toContain('PA_DENIED')
+      expect(result).toContain('BP_LOW')
+      expect(result).not.toContain('CLINICAL_INERTIA')
+    })
+  })
+
   describe('Case validations', () => {
     it('Case 1 ARNI_ACEi_ARB: returns CLINICAL_INERTIA (no blockers)', () => {
       const result = detectBlockers(case1Patient, 'ARNI_ACEi_ARB', false, refDate)

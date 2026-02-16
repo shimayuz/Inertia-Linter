@@ -21,6 +21,13 @@ export interface PatientExplanation {
   readonly whenToCallDoctor: string
 }
 
+export interface ResolutionTask {
+  readonly pillar: Pillar
+  readonly type: string
+  readonly description: string
+  readonly status: string
+}
+
 export interface PreVisitNote {
   readonly generatedAt: string
   readonly gdmtScore: number
@@ -32,4 +39,5 @@ export interface PreVisitNote {
     readonly reason: string
   }>
   readonly nextVisitMonitoring: ReadonlyArray<string>
+  readonly resolutionTasks?: ReadonlyArray<ResolutionTask>
 }

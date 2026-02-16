@@ -35,7 +35,7 @@ function buildPlainText(
 ): string {
   const lines: Array<string> = [
     t('previsit.title'),
-    `Date: ${note.generatedAt} | EF: ${note.efCategory} | GDMT Score: ${String(note.gdmtScore)}`,
+    `${t('common.date')}: ${note.generatedAt} | ${t('common.ef')}: ${note.efCategory} | ${t('common.gdmtScoreLabel')}: ${String(note.gdmtScore)}`,
     '',
     `── ${t('previsit.medicationPlan')} ──`,
   ]
@@ -84,7 +84,7 @@ function buildPlainText(
     lines.push('')
   }
 
-  lines.push('[DRAFT — Not a clinical document]')
+  lines.push(t('common.draftDisclaimer'))
   return lines.join('\n')
 }
 
@@ -140,7 +140,7 @@ export function PreVisitNotePanel({
             {t('previsit.title')}
           </h4>
           <span className="inline-flex items-center rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-700">
-            DRAFT
+            {t('common.draftBadge')}
           </span>
         </div>
         <RuleDerivedLabel />
@@ -209,7 +209,7 @@ export function PreVisitNotePanel({
 
                 {note.medicationPlans.length === 0 && (
                   <p className="text-xs text-gray-400 text-center py-2">
-                    (none)
+                    {t('common.none')}
                   </p>
                 )}
               </div>

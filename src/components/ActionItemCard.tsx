@@ -1,11 +1,18 @@
 import { useState, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { ActionItem, ActionDecision } from '../types/action-plan'
+import type { BlockerCode } from '../types/blocker.ts'
+import type { UseResolutionReturn } from '../hooks/useResolution.ts'
+import { hasResolvableBlockers } from '../engine/resolve-pathway.ts'
+import { BLOCKER_CODE_CATEGORY } from '../types/blocker.ts'
+import { ResolutionPanel } from './ResolutionPanel.tsx'
 
 interface ActionItemCardProps {
   readonly item: ActionItem
   readonly decision: ActionDecision
   readonly onDecide: (actionId: string, decision: ActionDecision, reason?: string) => void
+  readonly blockers?: ReadonlyArray<BlockerCode>
+  readonly resolution?: UseResolutionReturn
 }
 
 const PRIORITY_DOT: Readonly<Record<string, string>> = {
@@ -38,21 +45,31 @@ const PRIORITY_LABEL_KEYS = {
   low: 'action.priorityLow',
 } as const
 
-export function ActionItemCard({ item, decision, onDecide }: ActionItemCardProps) {
+export function ActionItemCard({ item, decision, onDecide, blockers, resolution }: ActionItemCardProps) {
   const { t } = useTranslation()
   const [cautionsOpen, setCautionsOpen] = useState(false)
   const [reasonText, setReasonText] = useState('')
   const [pendingDecision, setPendingDecision] = useState<'defer' | 'not_applicable' | null>(null)
+  const [resolutionOpen, setResolutionOpen] = useState(false)
 
   const isDecided = decision !== 'undecided'
+  const isResolvable = blockers ? hasResolvableBlockers(blockers) : false
+  const resolvableBlocker = blockers?.find((b) => {
+    const cat = BLOCKER_CODE_CATEGORY[b]
+    return cat === 'ACCESS' || cat === 'TRANSITION' || cat === 'PATIENT'
+  })
 
   const handleToggleCautions = useCallback(() => {
     setCautionsOpen((prev) => !prev)
   }, [])
 
   const handleAddressNow = useCallback(() => {
+    if (isResolvable && resolvableBlocker && resolution) {
+      resolution.openResolution(resolvableBlocker, item.pillar)
+      setResolutionOpen(true)
+    }
     onDecide(item.id, 'address_now')
-  }, [item.id, onDecide])
+  }, [item.id, onDecide, isResolvable, resolvableBlocker, resolution, item.pillar])
 
   const handleDeferOrNA = useCallback((type: 'defer' | 'not_applicable') => {
     setPendingDecision(type)
@@ -147,6 +164,20 @@ export function ActionItemCard({ item, decision, onDecide }: ActionItemCardProps
             >
               {t('action.decided')}
             </button>
+            {isResolvable && !resolutionOpen && (
+              <button
+                type="button"
+                onClick={() => {
+                  if (resolvableBlocker && resolution) {
+                    resolution.openResolution(resolvableBlocker, item.pillar)
+                    setResolutionOpen(true)
+                  }
+                }}
+                className="ml-auto rounded border border-teal-200 bg-teal-50 px-2 py-0.5 text-[10px] font-medium text-teal-700 hover:bg-teal-100"
+              >
+                {t('action.resolveBarrier')}
+              </button>
+            )}
           </div>
         ) : pendingDecision ? (
           <div className="space-y-2">
@@ -170,7 +201,7 @@ export function ActionItemCard({ item, decision, onDecide }: ActionItemCardProps
                 onClick={handleCancelPending}
                 className="rounded px-3 py-1 text-xs text-gray-400 hover:text-gray-600"
               >
-                Cancel
+                {t('common.cancel')}
               </button>
             </div>
           </div>
@@ -200,6 +231,14 @@ export function ActionItemCard({ item, decision, onDecide }: ActionItemCardProps
           </div>
         )}
       </div>
+
+      {resolutionOpen && resolution && resolvableBlocker && (
+        <ResolutionPanel
+          blockerCode={resolvableBlocker}
+          pillar={item.pillar}
+          resolution={resolution}
+        />
+      )}
     </div>
   )
 }

@@ -2,11 +2,14 @@ import { useTranslation } from 'react-i18next'
 import { PILLAR_LABELS, type PillarStatus } from '../types/pillar'
 import { BlockerLabel } from './labels/BlockerLabel'
 import type { PillarResult } from '../types/audit'
+import { ResolutionProgressIndicator } from './ResolutionProgressIndicator.tsx'
 
 interface PillarCardProps {
   readonly result: PillarResult
   readonly isSelected?: boolean
   readonly onClick?: () => void
+  readonly resolutionStatus?: 'in_progress' | 'completed' | 'none'
+  readonly resolutionPercent?: number
 }
 
 const STATUS_STYLES: Readonly<Record<PillarStatus, string>> = {
@@ -17,7 +20,7 @@ const STATUS_STYLES: Readonly<Record<PillarStatus, string>> = {
   UNKNOWN: 'bg-purple-100 text-purple-800 border-purple-300',
 }
 
-export function PillarCard({ result, isSelected = false, onClick }: PillarCardProps) {
+export function PillarCard({ result, isSelected = false, onClick, resolutionStatus = 'none', resolutionPercent }: PillarCardProps) {
   const { t } = useTranslation('clinical')
   const { pillar, status, doseTier, blockers } = result
   const pillarLabel = PILLAR_LABELS[pillar]
@@ -49,6 +52,12 @@ export function PillarCard({ result, isSelected = false, onClick }: PillarCardPr
         <p className="mt-2 text-sm text-gray-600">
           {t(`doseTier.${doseTier}`)}
         </p>
+      )}
+
+      {resolutionStatus !== 'none' && (
+        <div className="mt-2">
+          <ResolutionProgressIndicator status={resolutionStatus} percentComplete={resolutionPercent} />
+        </div>
       )}
 
       {blockers.length > 0 && (

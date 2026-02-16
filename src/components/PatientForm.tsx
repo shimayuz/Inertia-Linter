@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { PatientSnapshot } from '../types/patient.ts'
 import type { ExtractionResult } from '../types/vision.ts'
@@ -6,12 +6,6 @@ import type { PatientTimeline } from '../types/timeline.ts'
 import { PILLAR_LABELS } from '../types/pillar.ts'
 import { DOSE_TIERS } from '../types/dose-tier.ts'
 import { usePatientForm } from '../hooks/usePatientForm.ts'
-import { case1Patient } from '../data/cases/case1.ts'
-import { case2Patient } from '../data/cases/case2.ts'
-import { case3Patient } from '../data/cases/case3.ts'
-import { case1Timeline } from '../data/timelines/case1-timeline.ts'
-import { case2Timeline } from '../data/timelines/case2-timeline.ts'
-import { case3Timeline } from '../data/timelines/case3-timeline.ts'
 import { VisionExtractedLabel } from './labels/VisionExtractedLabel.tsx'
 
 interface PatientFormProps {
@@ -19,6 +13,7 @@ interface PatientFormProps {
   readonly isLoading?: boolean
   readonly extractionResult?: ExtractionResult | null
   readonly onTimelineSelect?: (timeline: PatientTimeline | null) => void
+  readonly preloadedPatient?: PatientSnapshot | null
 }
 
 function FormField({
@@ -95,7 +90,7 @@ const PILLAR_DOT: Readonly<Record<string, string>> = {
   SGLT2i: 'bg-emerald-500',
 }
 
-export function PatientForm({ onSubmit, isLoading = false, extractionResult, onTimelineSelect }: PatientFormProps) {
+export function PatientForm({ onSubmit, isLoading = false, extractionResult, onTimelineSelect, preloadedPatient }: PatientFormProps) {
   const { t } = useTranslation()
   const { t: tc } = useTranslation('clinical')
   const {
@@ -117,6 +112,17 @@ export function PatientForm({ onSubmit, isLoading = false, extractionResult, onT
     }
   }, [extractionResult, loadPartialSnapshot])
 
+  const [medsOpen, setMedsOpen] = useState(true)
+
+  const prevPatientRef = useRef<PatientSnapshot | null>(null)
+  useEffect(() => {
+    if (preloadedPatient && preloadedPatient !== prevPatientRef.current) {
+      loadCase(preloadedPatient)
+      prevPatientRef.current = preloadedPatient
+      setMedsOpen(false)
+    }
+  }, [preloadedPatient, loadCase])
+
   const inputBase = 'w-full px-3 py-2 text-sm bg-gray-50 border border-gray-200 rounded-lg transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-teal-600/30 focus:border-teal-500 focus:bg-white placeholder:text-gray-300'
 
   const inputClass = (field: string) =>
@@ -135,45 +141,6 @@ export function PatientForm({ onSubmit, isLoading = false, extractionResult, onT
 
   return (
     <form onSubmit={onFormSubmit} className="space-y-0 pb-4">
-      {/* Demo Presets */}
-      <div className="bg-white rounded-lg border border-gray-200 p-3 mb-3">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-bold uppercase tracking-widest text-gray-400">
-            {t('form.demoPresets')}
-          </span>
-          <button
-            type="button"
-            onClick={() => { resetForm(); onTimelineSelect?.(null) }}
-            className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
-          >
-            {t('form.reset')}
-          </button>
-        </div>
-        <div className="flex gap-2">
-          <button
-            type="button"
-            onClick={() => { loadCase(case1Patient); onTimelineSelect?.(case1Timeline) }}
-            className="flex-1 px-3 py-2 text-xs font-medium bg-teal-50 text-teal-700 rounded-lg hover:bg-teal-100 transition-colors border border-teal-100"
-          >
-            {t('form.case1')}
-          </button>
-          <button
-            type="button"
-            onClick={() => { loadCase(case2Patient); onTimelineSelect?.(case2Timeline) }}
-            className="flex-1 px-3 py-2 text-xs font-medium bg-emerald-50 text-emerald-700 rounded-lg hover:bg-emerald-100 transition-colors border border-emerald-100"
-          >
-            {t('form.case2')}
-          </button>
-          <button
-            type="button"
-            onClick={() => { loadCase(case3Patient); onTimelineSelect?.(case3Timeline) }}
-            className="flex-1 px-3 py-2 text-xs font-medium bg-amber-50 text-amber-700 rounded-lg hover:bg-amber-100 transition-colors border border-amber-100"
-          >
-            {t('form.case3')}
-          </button>
-        </div>
-      </div>
-
       {extractionResult?.confidence && (
         <div className="mb-3 flex items-center gap-2">
           <VisionExtractedLabel />
@@ -186,7 +153,7 @@ export function PatientForm({ onSubmit, isLoading = false, extractionResult, onT
       {/* Patient Vitals */}
       <SectionCard title={t('form.vitals')}>
         <div className="grid grid-cols-2 gap-3">
-          <FormField label={<>EF<FieldConfidenceBadge fieldName="ef" confidence={extractionResult?.confidence} /></>} error={errors['ef']} suffix="%">
+          <FormField label={<>{t('common.ef')}<FieldConfidenceBadge fieldName="ef" confidence={extractionResult?.confidence} /></>} error={errors['ef']} suffix="%">
             <input
               type="number"
               value={formState.ef}
@@ -315,7 +282,7 @@ export function PatientForm({ onSubmit, isLoading = false, extractionResult, onT
 
       {/* Comorbidities */}
       <SectionCard title={t('form.comorbidities')}>
-        <FormField label={<>Diabetes<FieldConfidenceBadge fieldName="dmType" confidence={extractionResult?.confidence} /></>} error={errors['dmType']}>
+        <FormField label={<>{t('form.diabetes')}<FieldConfidenceBadge fieldName="dmType" confidence={extractionResult?.confidence} /></>} error={errors['dmType']}>
           <select
             value={formState.dmType}
             onChange={(e) => { handleChange('dmType', e.target.value) }}
@@ -329,8 +296,26 @@ export function PatientForm({ onSubmit, isLoading = false, extractionResult, onT
       </SectionCard>
 
       {/* Current Medications */}
-      <SectionCard title={t('form.medications')}>
-        <div className="space-y-2">
+      <div className="bg-white rounded-lg border border-gray-200 p-4 mb-3">
+        <button
+          type="button"
+          onClick={() => { setMedsOpen((prev) => !prev) }}
+          className="w-full flex items-center justify-between group"
+        >
+          <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400">
+            {t('form.medications')}
+          </h3>
+          <svg
+            className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${medsOpen ? 'rotate-180' : ''}`}
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={2}
+            stroke="currentColor"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+          </svg>
+        </button>
+        {medsOpen && <div className="space-y-2 mt-3">
           {formState.medications.map((med, index) => {
             const pillarKey = med.pillar as keyof typeof PILLAR_LABELS
             const accent = PILLAR_ACCENT[med.pillar] ?? 'border-l-gray-300'
@@ -392,7 +377,7 @@ export function PatientForm({ onSubmit, isLoading = false, extractionResult, onT
                       className="sr-only peer"
                     />
                     <div className="w-7 h-4 bg-gray-200 peer-focus:ring-2 peer-focus:ring-teal-400 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border after:border-gray-300 after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-red-400" />
-                    <span className="ms-1.5 text-[11px] text-gray-500">ADR</span>
+                    <span className="ms-1.5 text-[11px] text-gray-500">{t('form.adr')}</span>
                   </label>
                   <label className="relative inline-flex items-center cursor-pointer">
                     <input
@@ -418,24 +403,33 @@ export function PatientForm({ onSubmit, isLoading = false, extractionResult, onT
               </div>
             )
           })}
-        </div>
-      </SectionCard>
+        </div>}
+      </div>
 
-      {/* Submit */}
-      <button
-        type="submit"
-        disabled={isLoading}
-        className="w-full px-6 py-3 text-sm font-bold text-white bg-teal-700 rounded-lg shadow-sm shadow-teal-700/20 hover:bg-teal-800 hover:shadow-teal-800/25 active:scale-[0.98] disabled:bg-gray-300 disabled:shadow-none disabled:cursor-not-allowed transition-all duration-150"
-      >
-        {isLoading ? (
-          <span className="flex items-center justify-center gap-2">
-            <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-            {t('form.runningAudit')}
-          </span>
-        ) : (
-          t('form.runAudit')
-        )}
-      </button>
+      {/* Submit + Reset */}
+      <div className="flex items-center gap-3">
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="flex-1 px-6 py-3 text-sm font-bold text-white bg-teal-700 rounded-lg shadow-sm shadow-teal-700/20 hover:bg-teal-800 hover:shadow-teal-800/25 active:scale-[0.98] disabled:bg-gray-300 disabled:shadow-none disabled:cursor-not-allowed transition-all duration-150"
+        >
+          {isLoading ? (
+            <span className="flex items-center justify-center gap-2">
+              <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              {t('form.runningAudit')}
+            </span>
+          ) : (
+            t('form.runAudit')
+          )}
+        </button>
+        <button
+          type="button"
+          onClick={() => { resetForm(); onTimelineSelect?.(null) }}
+          className="text-xs text-gray-400 hover:text-gray-600 transition-colors whitespace-nowrap"
+        >
+          {t('form.reset')}
+        </button>
+      </div>
     </form>
   )
 }

@@ -46,6 +46,13 @@ interface LabTooltipProps {
   readonly label?: string
 }
 
+const UNIT_MAP: Readonly<Record<string, string>> = {
+  egfr: 'mL/min',
+  potassium: 'mEq/L',
+  sbp: 'mmHg',
+  hr: 'bpm',
+}
+
 function LabTooltipContent({ active, payload, label }: LabTooltipProps) {
   if (!active || !payload || payload.length === 0) return null
 
@@ -54,13 +61,7 @@ function LabTooltipContent({ active, payload, label }: LabTooltipProps) {
       <p className="mb-1 text-xs font-medium text-gray-500">{label}</p>
       {payload.map((item) => {
         if (item.value === null || item.value === undefined) return null
-        const unit = item.dataKey === 'egfr'
-          ? ' mL/min'
-          : item.dataKey === 'potassium'
-            ? ' mEq/L'
-            : item.dataKey === 'sbp'
-              ? ' mmHg'
-              : ' bpm'
+        const unit = ` ${UNIT_MAP[item.dataKey] ?? 'bpm'}`
 
         return (
           <div key={item.dataKey} className="text-xs">

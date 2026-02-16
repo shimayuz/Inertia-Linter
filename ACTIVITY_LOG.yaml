@@ -12,16 +12,17 @@ meta:
   hackathon: cerebral-valley-ai-2026
   creator: "Yusuke Fukushima MD"
   generated_at: "2026-02-14T22:30:00Z"
-  total_tasks: 16
-  total_tests: 160
+  updated_at: "2026-02-15T09:45:00Z"
+  total_tasks: 25
+  total_tests: 323
   engine_coverage: "100% statements, 96.81% branches"
 
 # ===== TAG NETWORK =====
-# 18 tags forming a dense, navigable knowledge graph.
+# 24 tags forming a dense, navigable knowledge graph.
 # Level 0: project
 # Level 1: engine, ui, safety, data, testing, deployment
-# Level 2: clinical-logic, visualization, phi-protection, no-blame, guidelines, blockers, tdd, immutability
-# Level 3: hfref, hfpef, gdmt-score, inertia-buster
+# Level 2: clinical-logic, visualization, phi-protection, no-blame, guidelines, blockers, tdd, immutability, i18n, fhir, design
+# Level 3: hfref, hfpef, gdmt-score, inertia-buster, mascot, pre-visit-note
 
 tags:
   - id: project
@@ -36,8 +37,8 @@ tags:
 
   - id: ui
     label: "User Interface"
-    description: "React 19 + Tailwind 4 three-pane dashboard — form, pillar cards, detail panel"
-    connects_to: [project, visualization, safety, no-blame]
+    description: "React 19 + Tailwind 4 three-pane dashboard — form, pillar cards, detail panel, top nav, mascot, pre-visit note"
+    connects_to: [project, visualization, safety, no-blame, i18n, design, mascot, pre-visit-note]
 
   - id: safety
     label: "Safety Design"
@@ -51,13 +52,13 @@ tags:
 
   - id: testing
     label: "Testing"
-    description: "160 Vitest tests, TDD workflow (RED-GREEN-REFACTOR), integration tests for 3 demo cases"
+    description: "323 Vitest tests across 25 files, TDD workflow (RED-GREEN-REFACTOR), integration tests for 3 demo cases"
     connects_to: [project, engine, tdd, immutability]
 
   - id: deployment
     label: "Deployment"
-    description: "Vite build, Vercel deploy target, LLM integration, export formats"
-    connects_to: [project, safety, phi-protection]
+    description: "Vite build, Vercel deploy target, LLM integration, export formats, FHIR CarePlan export"
+    connects_to: [project, safety, phi-protection, fhir, i18n]
 
   - id: clinical-logic
     label: "Clinical Logic"
@@ -119,9 +120,35 @@ tags:
     description: "Barrier-specific clinical information for physician consideration — NOT counter-arguments or recommendations"
     connects_to: [visualization, blockers, no-blame, data]
 
+  - id: i18n
+    label: "Internationalization"
+    description: "i18next + react-i18next. EN/JA dual language with runtime switching. TypeScript strict literal key types."
+    connects_to: [ui, project, deployment]
+
+  - id: fhir
+    label: "FHIR R4"
+    description: "HL7 FHIR R4 integration — mock Patient bundles, CarePlan export, LOINC-coded observations"
+    connects_to: [data, deployment, phi-protection, pre-visit-note]
+
+  - id: design
+    label: "Clinical Design Profile"
+    description: "Humanist typography (Lato + Noto Sans JP), teal primary palette, border-over-shadow, Roboto Mono for tabular numbers"
+    connects_to: [ui, visualization, project]
+
+  - id: mascot
+    label: "Mascot (Rive)"
+    description: "Duolingo-style animated character via Rive. State-machine driven emotions reacting to audit state."
+    connects_to: [ui, engine, visualization]
+
+  - id: pre-visit-note
+    label: "Pre-Visit Planning Note"
+    description: "Auto-generated medication adjustment plan + patient explanation memo → FHIR CarePlan export to EHR"
+    connects_to: [engine, fhir, phi-protection, ui]
+
 # ===== ACTIVITY LOG =====
 # Each activity maps to a team task with full traceability.
-# Tasks numbered TASK-01 through TASK-16 correspond to the 16 completed team tasks.
+# Tasks numbered TASK-01 through TASK-24 correspond to the 24 completed team tasks.
+# TASK-01~16: MVP (Session 1) | TASK-17~24: Enhancement (Session 2-3)
 
 activities:
   - id: "TASK-01"
@@ -573,6 +600,269 @@ activities:
     summary: "LLM integration with PHI-safe context (only abstract codes sent to Claude API). Graceful degradation if API unavailable. Three export formats (SOAP, problem-list, JSON) all include DRAFT watermark and SYNTHETIC DATA notice."
     decisions: []
 
+  - id: "TASK-17"
+    title: "i18n + ARNI/ACEi_ARB Pillar Merge + Domain Architecture"
+    agent: "multi-feature"
+    team_task_ids: [17]
+    status: "completed"
+    duration_estimate: "90min"
+    tags: [i18n, engine, ui, data, clinical-logic, fhir]
+    artifacts:
+      - path: "src/i18n/"
+        type: "i18n"
+        description: "i18next setup with EN/JA locales, runtime language switching"
+      - path: "src/i18n/locales/en/ui.json"
+        type: "i18n"
+        description: "English UI translations"
+      - path: "src/i18n/locales/ja/ui.json"
+        type: "i18n"
+        description: "Japanese UI translations"
+      - path: "src/components/LanguageSwitcher.tsx"
+        type: "component"
+        description: "EN/JA toggle button"
+      - path: "src/types/pillar.ts"
+        type: "types"
+        description: "Merged ARNI + ACEi_ARB into single ARNI_ACEi_ARB pillar"
+      - path: "src/fhir/"
+        type: "fhir"
+        description: "FHIR R4 mock bundles + fhir-to-snapshot converter"
+      - path: "src/engine/parse-vision-response.ts"
+        type: "engine-function"
+        description: "Zod-validated vision API response parser"
+      - path: "src/domain/"
+        type: "architecture"
+        description: "ClinicalDomain + registry pattern for extensibility"
+    depends_on: ["TASK-09", "TASK-13"]
+    enables: ["TASK-18", "TASK-20", "TASK-21", "TASK-22", "TASK-23", "TASK-24"]
+    summary: "Major multi-feature commit: i18next with EN/JA, ARNI+ACEi/ARB pillar merge (5→4), FHIR R4 mock bundles, vision API response parser, ClinicalDomain registry, patient timeline, stale data alerts. All tests updated for pillar merge."
+    decisions: []
+
+  - id: "TASK-18"
+    title: "InertiaActionPlan + Visit Summary"
+    agent: "feat-action"
+    team_task_ids: [18]
+    status: "completed"
+    duration_estimate: "45min"
+    tags: [ui, engine, clinical-logic, no-blame]
+    artifacts:
+      - path: "src/components/InertiaActionPlan.tsx"
+        type: "component"
+        description: "Action item cards with Accept/Defer/N-A decision buttons + visit summary"
+      - path: "src/components/ActionItemCard.tsx"
+        type: "component"
+        description: "Individual action item with decision state management"
+      - path: "src/components/VisitSummary.tsx"
+        type: "component"
+        description: "Decision summary after all items resolved"
+      - path: "src/engine/generate-action-plan.ts"
+        type: "engine-function"
+        description: "Generates prioritized action items from audit result"
+      - path: "src/engine/__tests__/generate-action-plan.test.ts"
+        type: "test"
+        description: "Action plan generation tests"
+    depends_on: ["TASK-09", "TASK-17"]
+    enables: ["TASK-24"]
+    summary: "InertiaActionPlan with per-pillar action items (Accept/Defer/N-A decisions), free-text reason input for Defer, visit summary showing all decisions. Drives the Pre-Visit Note generation workflow."
+    decisions: []
+
+  - id: "TASK-19"
+    title: "Dose Tier Label Rename (Low→Minimum, High→Max)"
+    agent: "refactor-labels"
+    team_task_ids: [19]
+    status: "completed"
+    duration_estimate: "10min"
+    tags: [ui, data, clinical-logic, gdmt-score]
+    artifacts:
+      - path: "src/types/dose-tier.ts"
+        type: "types"
+        description: "Label map updated: Low→Minimum dose, Medium→Intermediate, High→Maximum (target)"
+    depends_on: ["TASK-02"]
+    enables: []
+    summary: "Renamed dose tier UI labels for clinical accuracy: Low→Minimum dose, Medium→Intermediate, High→Maximum (target). Internal enum values unchanged."
+    decisions: []
+
+  - id: "TASK-20"
+    title: "Rive Mascot Character (Duolingo-style)"
+    agent: "feat-mascot"
+    team_task_ids: [20]
+    status: "completed"
+    duration_estimate: "60min"
+    tags: [ui, engine, mascot, visualization]
+    artifacts:
+      - path: "src/types/mascot.ts"
+        type: "types"
+        description: "MascotEmotion type (IDLE/THINKING/CELEBRATING/CONCERNED/POINTING/HAPPY)"
+      - path: "src/engine/derive-mascot-emotion.ts"
+        type: "engine-function"
+        description: "Pure function: audit state → MascotEmotion with priority system"
+      - path: "src/engine/__tests__/derive-mascot-emotion.test.ts"
+        type: "test"
+        description: "9 test cases covering all emotions and priority overrides"
+      - path: "src/hooks/useMascotState.ts"
+        type: "hook"
+        description: "Mascot visibility, dismiss/restore, hover state management"
+      - path: "src/components/Mascot.tsx"
+        type: "component"
+        description: "Rive animated character with speech bubbles, dismiss button"
+      - path: "src/components/MascotRestoreButton.tsx"
+        type: "component"
+        description: "Small restore button shown after mascot dismissed"
+      - path: "public/mascot.riv"
+        type: "asset"
+        description: "Little Fella Rive animation (CC BY 4.0)"
+    depends_on: ["TASK-09", "TASK-17"]
+    enables: []
+    summary: "Duolingo-style mascot using Rive (@rive-app/react-canvas-lite, ~44kB). State-machine driven emotions reacting to audit state. Speech bubbles with i18n messages. Dismiss/restore functionality. Hidden on mobile."
+    decisions:
+      - "DEC-07"
+
+  - id: "TASK-21"
+    title: "Clinical Professional Design Profile"
+    agent: "design-updater"
+    team_task_ids: [21]
+    status: "completed"
+    duration_estimate: "45min"
+    tags: [ui, design, visualization]
+    artifacts:
+      - path: "index.html"
+        type: "config"
+        description: "Google Fonts changed: Inter → Lato + Noto Sans JP + Roboto Mono"
+      - path: "src/index.css"
+        type: "styles"
+        description: "Font theme updated to Lato/Noto Sans JP/Roboto Mono"
+    depends_on: ["TASK-13"]
+    enables: []
+    summary: "Applied Clinical Professional design profile across ~22 component files. Font: Lato+Noto Sans JP (humanist). Color: blue→teal primary interactive. Radius: rounded-xl→rounded-lg. Depth: shadow removed, border-gray-200 as separator. Numbers: font-mono on scores. Preserved semantic blues for pillar identity."
+    decisions:
+      - "DEC-08"
+
+  - id: "TASK-22"
+    title: "Top Navigation Bar (AppHeader)"
+    agent: "ui-nav"
+    team_task_ids: [22]
+    status: "completed"
+    duration_estimate: "30min"
+    tags: [ui, design, safety]
+    artifacts:
+      - path: "src/components/AppHeader.tsx"
+        type: "component"
+        description: "Fixed top nav: heartbeat icon, app title, Dashboard/Patients/Reports tabs, DemoModeBadge, LanguageSwitcher"
+      - path: "src/components/Dashboard.tsx"
+        type: "component"
+        description: "Modified: moved DemoModeBadge/LanguageSwitcher to AppHeader, added pt-14 offset"
+    depends_on: ["TASK-13", "TASK-17", "TASK-21"]
+    enables: []
+    summary: "Top navigation bar with heartbeat icon, 'Clinical Audit v2.4' title, tab navigation (Dashboard/Patients/Reports), integrated DemoModeBadge and LanguageSwitcher. z-50 fixed positioning."
+    decisions: []
+
+  - id: "TASK-23"
+    title: "BNP/NT-proBNP Biomarker Switcher"
+    agent: "feat-biomarker"
+    team_task_ids: [23]
+    status: "completed"
+    duration_estimate: "30min"
+    tags: [ui, data, clinical-logic, fhir]
+    artifacts:
+      - path: "src/types/patient.ts"
+        type: "types"
+        description: "Added ntProBnp optional field to PatientSnapshot"
+      - path: "src/types/form-schema.ts"
+        type: "types"
+        description: "Added ntProBnp Zod validation"
+      - path: "src/hooks/usePatientForm.ts"
+        type: "hook"
+        description: "Added biomarkerType toggle, clearing logic on switch"
+      - path: "src/components/PatientForm.tsx"
+        type: "component"
+        description: "Combined biomarker selector dropdown + value input"
+      - path: "src/fhir/types.ts"
+        type: "types"
+        description: "Added NT_PRO_BNP LOINC code (33762-6)"
+      - path: "src/fhir/fhir-to-snapshot.ts"
+        type: "fhir"
+        description: "Added NT-proBNP observation lookup"
+      - path: "src/engine/parse-vision-response.ts"
+        type: "engine-function"
+        description: "Added ntProBnp to vision schema and mapping"
+    depends_on: ["TASK-10", "TASK-17"]
+    enables: []
+    summary: "BNP/NT-proBNP biomarker type switcher. Dropdown selects biomarker type with reference range hints (BNP >100, NT-proBNP >300 pg/mL). Switching clears both values. Integrated across form, vision parser, FHIR converter."
+    decisions: []
+
+  - id: "TASK-24"
+    title: "Pre-Visit Planning Note + FHIR CarePlan Export"
+    agent: "feat-previsit"
+    team_task_ids: [24]
+    status: "completed"
+    duration_estimate: "60min"
+    tags: [engine, ui, fhir, pre-visit-note, phi-protection, clinical-logic]
+    artifacts:
+      - path: "src/types/pre-visit-note.ts"
+        type: "types"
+        description: "MedicationChangeType, MedicationPlan, PatientExplanation, PreVisitNote types"
+      - path: "src/engine/generate-pre-visit-note.ts"
+        type: "engine-function"
+        description: "Pure function: audit + actions + decisions + medications → PreVisitNote"
+      - path: "src/engine/__tests__/generate-pre-visit-note.test.ts"
+        type: "test"
+        description: "19 tests: INITIATE, UPTITRATE, defer, N/A, monitoring, side effects, immutability"
+      - path: "src/fhir/build-careplan.ts"
+        type: "fhir"
+        description: "PreVisitNote → FHIR R4 CarePlan with MedicationRequest activities"
+      - path: "src/components/PreVisitNotePanel.tsx"
+        type: "component"
+        description: "Preview panel: med plans, patient explanations, deferred items, copy+send buttons"
+      - path: "src/components/InertiaActionPlan.tsx"
+        type: "component"
+        description: "Modified: added Generate Pre-Visit Note button + mock FHIR POST"
+    depends_on: ["TASK-09", "TASK-17", "TASK-18"]
+    enables: ["TASK-25"]
+    summary: "Pre-visit planning note (予習カルテ): generates medication adjustment plan (INITIATE/UPTITRATE) + patient explanations with side effects/monitoring + deferred items. Exports as FHIR R4 CarePlan with MedicationRequest activities. PHI-safe: only drug names and status codes, no patient values."
+    decisions: []
+    error_patterns:
+      - "i18n type error: CHANGE_LABEL_KEYS typed as Record widened values to string. Fix: as const satisfies Readonly<Record<K, string>> preserves literal types."
+      - "i18n TranslateFn: t() function type from useTranslation() incompatible with (key: string) => string. Fix: type alias TranslateFn + cast (t as unknown as TranslateFn)."
+
+  - id: "TASK-25"
+    title: "Patient List Sidebar + Layout Restructuring"
+    agent: "layout-restructure"
+    team_task_ids: [25]
+    status: "completed"
+    duration_estimate: "45min"
+    tags: [ui, fhir, data, design]
+    artifacts:
+      - path: "src/types/appointment.ts"
+        type: "types"
+        description: "AppointmentPatient interface + PatientSource type for sidebar patient list"
+      - path: "src/data/mock-appointments.ts"
+        type: "data"
+        description: "getAppointmentList() (demo+FHIR), getDemoCaseData() lookup for sidebar"
+      - path: "src/components/PatientListSidebar.tsx"
+        type: "component"
+        description: "Persistent left sidebar: demo cases (teal), EHR patients (blue), manual entry + image upload buttons"
+      - path: "src/components/Dashboard.tsx"
+        type: "component"
+        description: "Major rewrite: 3-pane layout (LEFT 20% sidebar | CENTER flex-1 form+results | RIGHT 30% detail)"
+      - path: "src/components/PatientForm.tsx"
+        type: "component"
+        description: "Modified: added preloadedPatient prop, collapsible medications, removed demo presets"
+      - path: "src/components/AppHeader.tsx"
+        type: "component"
+        description: "Modified: nav.patients tab set to active"
+    deleted_files:
+      - path: "src/components/FHIRPatientList.tsx"
+        reason: "Replaced by PatientListSidebar"
+      - path: "src/hooks/useFHIRConnect.ts"
+        reason: "Replaced by direct fetchPatientEverything in Dashboard"
+      - path: "src/components/EHRConnectButton.tsx"
+        reason: "Integrated into PatientListSidebar footer"
+    depends_on: ["TASK-17", "TASK-22"]
+    enables: []
+    summary: "Layout restructuring from modal-based EHR workflow to persistent 3-pane layout. LEFT sidebar (20%) shows today's patients (demo cases + FHIR EHR patients) with one-click selection. CENTER pane contains PatientForm (now with preloadedPatient auto-fill + collapsible medications) and audit results (GDMTScore, ActionPlan, PillarDashboard). RIGHT pane unchanged (DetailPanel + Timeline). Demo case selection triggers instant load + auto-audit. FHIR patient selection triggers async fetch + auto-audit. Deleted 3 deprecated files (FHIRPatientList, useFHIRConnect, EHRConnectButton)."
+    decisions: ["DEC-10"]
+    error_patterns:
+      - "Unused state variable: dataSource declared but never read after removing EHRConnectButton. Fix: removed dataSource state and all setDataSource calls entirely."
+
 # ===== DECISIONS LOG =====
 # Key decisions and items requiring MD review
 
@@ -625,17 +915,49 @@ decisions:
     tags: [project, deployment]
     related_tasks: ["TASK-01"]
 
+  - id: "DEC-07"
+    title: "Rive over Three.js for Mascot Animation"
+    context: "Duolingo-style mascot needed 2D animation with state machine control. Options: Three.js (~400kB), Lottie (~60kB), Rive (~44kB)."
+    resolution: "Chose Rive (@rive-app/react-canvas-lite). Same tech as Duolingo. Smallest bundle, native state machine support, community assets available (Little Fella CC BY 4.0). Three.js overkill for 2D character."
+    status: "implemented"
+    tags: [ui, mascot, visualization]
+    related_tasks: ["TASK-20"]
+
+  - id: "DEC-08"
+    title: "Teal over Blue for Primary Interactive Color"
+    context: "Clinical Professional design profile requires differentiation from generic tech-blue UI. Teal conveys clinical competence without the aggressive blue common in SaaS apps."
+    resolution: "Primary interactive: teal-600/700. Preserved semantic blues: ARNI pillar accent (blue-500), low priority badges (blue-100), citation badges (blue-50). Font changed to Lato + Noto Sans JP (humanist). Roboto Mono for tabular numbers."
+    status: "implemented"
+    tags: [ui, design, visualization]
+    related_tasks: ["TASK-21"]
+
+  - id: "DEC-09"
+    title: "FHIR R4 CarePlan as Pre-Visit Note Export Target"
+    context: "Pre-visit planning note needs to be exportable to EHR systems. Options: plain text, HL7v2 message, FHIR R4 CarePlan, CDA document."
+    resolution: "Chose FHIR R4 CarePlan with MedicationRequest activities. Modern standard, widely supported by EHR vendors. Activities map naturally to medication adjustment plans. Notes field carries patient explanations."
+    status: "implemented"
+    tags: [fhir, pre-visit-note, deployment]
+    related_tasks: ["TASK-24"]
+
+  - id: "DEC-10"
+    title: "Persistent Left Sidebar over Modal for Patient Selection"
+    context: "Previous design used FHIRPatientList modal for EHR patient browsing, requiring open/close clicks. Clinical workflow is sequential: select patient → review GDMT → act. A persistent sidebar better matches the exam-room workflow."
+    resolution: "Replaced modal with persistent PatientListSidebar (20% width). Demo cases and FHIR patients displayed in unified list with section headers. One click loads patient data and auto-runs audit. Three deprecated components deleted."
+    status: "implemented"
+    tags: [ui, design, fhir]
+    related_tasks: ["TASK-25"]
+
 # ===== METRICS =====
 metrics:
   tasks:
-    total: 16
-    completed: 16
+    total: 25
+    completed: 25
     blocked: 0
   tests:
-    total: 160
-    passing: 160
+    total: 323
+    passing: 323
     failing: 0
-    test_files: 13
+    test_files: 25
   coverage:
     engine_statements: "100%"
     engine_branches: "96.81%"
@@ -645,14 +967,16 @@ metrics:
     overall_branches: "95.59%"
     overall_functions: "89.58%"
   files:
-    types: 10
-    engine: 15
-    engine_tests: 13
-    components: 19
-    data: 15
-    hooks: 2
+    types: 17
+    engine: 24
+    engine_tests: 25
+    components: 39
+    data: 21
+    hooks: 8
+    fhir: 7
+    i18n: 8
     config: 4
-    total_src: 61
+    total_src: 148
   tech_stack:
     react: "19.2"
     typescript: "5.9"
@@ -661,14 +985,17 @@ metrics:
     vitest: "4.0"
     zod: "4.3"
     recharts: "3.7"
+    i18next: "25.8"
+    react-i18next: "16.5"
+    rive: "4.27"
   safety_elements:
     count: 6
     list:
-      - "DemoModeBadge (yellow, always visible)"
+      - "DemoModeBadge (yellow, always visible, in AppHeader)"
       - "DisclaimerBanner (sticky top)"
       - "AIGeneratedLabel (on LLM text)"
       - "RuleDerivedLabel (on engine output)"
-      - "DraftWatermark (on reports/exports)"
+      - "DraftWatermark (on reports/exports/pre-visit notes)"
       - "No-blame CLINICAL_INERTIA label"
   demo_cases:
     count: 3
@@ -676,7 +1003,7 @@ metrics:
     case2: "75F HFpEF EF 58% — SGLT2i MISSING, AHA 2a vs ESC I, finerenone ESC IIa"
     case3: "72M HFrEF EF 25% — GDMT 49/100, BP_LOW + K_HIGH, appropriate non-escalation"
   agents_used:
-    total: 16
+    total: 24
     list:
       - "scaffolder"
       - "type-architect"
@@ -694,27 +1021,74 @@ metrics:
       - "feat-inertia"
       - "feat-visual"
       - "feat-deploy"
+      - "multi-feature"
+      - "feat-action"
+      - "refactor-labels"
+      - "feat-mascot"
+      - "design-updater"
+      - "ui-nav"
+      - "feat-biomarker"
+      - "feat-previsit"
+      - "layout-restructure"
+
+# ===== ERROR PATTERNS =====
+# Recurring issues and their solutions, to prevent repeat mistakes.
+error_patterns:
+  - id: "ERR-01"
+    title: "i18next strict TypeScript literal key types"
+    trigger: "Using mapped i18n keys (e.g., t(KEYS[variable])) with const record objects"
+    symptom: "TS2345: Argument of type 'string' is not assignable to parameter of type literal union"
+    cause: "Readonly<Record<K, string>> widens values to 'string', losing literal types"
+    fix: "Use 'as const satisfies Readonly<Record<K, string>>' to preserve literal types"
+    affected_files: ["Mascot.tsx", "ActionItemCard.tsx", "PreVisitNotePanel.tsx"]
+    occurrences: 3
+    tags: [i18n, ui]
+
+  - id: "ERR-02"
+    title: "i18next t() function type incompatibility in helper functions"
+    trigger: "Passing useTranslation().t to a helper function typed as (key: string) => string"
+    symptom: "TS2345: t function type not assignable to simpler function signature"
+    cause: "react-i18next t() has complex overloaded signature with literal key unions"
+    fix: "Define TranslateFn = (key: string, options?: Record<string, unknown>) => string, cast with (t as unknown as TranslateFn)"
+    affected_files: ["PreVisitNotePanel.tsx"]
+    occurrences: 1
+    tags: [i18n, ui]
+
+  - id: "ERR-03"
+    title: "Unused state variable after component deletion"
+    trigger: "Removing a component that was the sole consumer of a state variable"
+    symptom: "TS6133: 'dataSource' is declared but its value is never read"
+    cause: "State was set in handlers but only read by the deleted EHRConnectButton component"
+    fix: "Remove the useState declaration and all setter calls when the reader is deleted"
+    affected_files: ["Dashboard.tsx"]
+    occurrences: 1
+    tags: [ui]
 
 # ===== TAG INDEX =====
 # Reverse index: for each tag, which tasks and decisions reference it.
 # Enables "show me everything related to [X]" queries.
 tag_index:
   project: { tasks: ["TASK-01"], decisions: ["DEC-06"] }
-  engine: { tasks: ["TASK-04", "TASK-05", "TASK-06", "TASK-07", "TASK-08", "TASK-09", "TASK-16"], decisions: [] }
-  ui: { tasks: ["TASK-10", "TASK-11", "TASK-13", "TASK-14", "TASK-15"], decisions: [] }
-  safety: { tasks: ["TASK-10", "TASK-12", "TASK-13", "TASK-16"], decisions: [] }
-  data: { tasks: ["TASK-02", "TASK-03", "TASK-14", "TASK-15"], decisions: ["DEC-05"] }
+  engine: { tasks: ["TASK-04", "TASK-05", "TASK-06", "TASK-07", "TASK-08", "TASK-09", "TASK-16", "TASK-17", "TASK-20", "TASK-24"], decisions: [] }
+  ui: { tasks: ["TASK-10", "TASK-11", "TASK-13", "TASK-14", "TASK-15", "TASK-17", "TASK-18", "TASK-19", "TASK-20", "TASK-21", "TASK-22", "TASK-23", "TASK-24", "TASK-25"], decisions: ["DEC-07", "DEC-08", "DEC-10"], errors: ["ERR-03"] }
+  safety: { tasks: ["TASK-10", "TASK-12", "TASK-13", "TASK-16", "TASK-22"], decisions: [] }
+  data: { tasks: ["TASK-02", "TASK-03", "TASK-14", "TASK-15", "TASK-17", "TASK-19", "TASK-23", "TASK-25"], decisions: ["DEC-05"] }
   testing: { tasks: ["TASK-01", "TASK-04", "TASK-09"], decisions: [] }
-  deployment: { tasks: ["TASK-01", "TASK-16"], decisions: ["DEC-06"] }
-  clinical-logic: { tasks: ["TASK-02", "TASK-03", "TASK-04", "TASK-05", "TASK-06", "TASK-07", "TASK-08", "TASK-09"], decisions: ["DEC-01", "DEC-02", "DEC-03", "DEC-04"] }
-  visualization: { tasks: ["TASK-11", "TASK-13", "TASK-15"], decisions: ["DEC-05"] }
-  phi-protection: { tasks: ["TASK-12", "TASK-16"], decisions: [] }
-  no-blame: { tasks: ["TASK-06", "TASK-11", "TASK-12", "TASK-14"], decisions: [] }
+  deployment: { tasks: ["TASK-01", "TASK-16"], decisions: ["DEC-06", "DEC-09"] }
+  clinical-logic: { tasks: ["TASK-02", "TASK-03", "TASK-04", "TASK-05", "TASK-06", "TASK-07", "TASK-08", "TASK-09", "TASK-17", "TASK-18", "TASK-19", "TASK-23", "TASK-24"], decisions: ["DEC-01", "DEC-02", "DEC-03", "DEC-04"] }
+  visualization: { tasks: ["TASK-11", "TASK-13", "TASK-15", "TASK-20", "TASK-21"], decisions: ["DEC-05", "DEC-07", "DEC-08"] }
+  phi-protection: { tasks: ["TASK-12", "TASK-16", "TASK-24"], decisions: [] }
+  no-blame: { tasks: ["TASK-06", "TASK-11", "TASK-12", "TASK-14", "TASK-18"], decisions: [] }
   guidelines: { tasks: ["TASK-03", "TASK-15"], decisions: ["DEC-04"] }
   blockers: { tasks: ["TASK-06", "TASK-11", "TASK-14"], decisions: ["DEC-02", "DEC-03"] }
   tdd: { tasks: ["TASK-04", "TASK-05", "TASK-06", "TASK-07", "TASK-08"], decisions: [] }
   immutability: { tasks: ["TASK-02", "TASK-04", "TASK-09"], decisions: [] }
   hfref: { tasks: ["TASK-04", "TASK-07", "TASK-08", "TASK-09"], decisions: ["DEC-01", "DEC-02", "DEC-03", "DEC-05"] }
   hfpef: { tasks: ["TASK-03", "TASK-07", "TASK-08", "TASK-15"], decisions: ["DEC-04"] }
-  gdmt-score: { tasks: ["TASK-05", "TASK-08", "TASK-11"], decisions: ["DEC-01"] }
+  gdmt-score: { tasks: ["TASK-05", "TASK-08", "TASK-11", "TASK-19"], decisions: ["DEC-01"] }
   inertia-buster: { tasks: ["TASK-14"], decisions: [] }
+  i18n: { tasks: ["TASK-17"], decisions: [], errors: ["ERR-01", "ERR-02"] }
+  fhir: { tasks: ["TASK-17", "TASK-23", "TASK-24", "TASK-25"], decisions: ["DEC-09", "DEC-10"] }
+  design: { tasks: ["TASK-21", "TASK-22", "TASK-25"], decisions: ["DEC-08", "DEC-10"] }
+  mascot: { tasks: ["TASK-20"], decisions: ["DEC-07"] }
+  pre-visit-note: { tasks: ["TASK-24"], decisions: ["DEC-09"] }

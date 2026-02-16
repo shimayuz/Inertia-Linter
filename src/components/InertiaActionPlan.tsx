@@ -2,12 +2,13 @@ import { useState, useMemo, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { AuditResult } from '../types/audit.ts'
 import type { ActionDecision, ActionDecisionRecord } from '../types/action-plan.ts'
-import type { Medication } from '../types/patient.ts'
+import type { Medication, PatientSnapshot } from '../types/patient.ts'
 import type { PreVisitNote } from '../types/pre-visit-note.ts'
 import type { LLMContext } from '../engine/prepare-llm-context.ts'
 import { generateActionPlan } from '../engine/generate-action-plan.ts'
 import { generatePreVisitNote } from '../engine/generate-pre-visit-note.ts'
 import { buildFHIRCarePlan } from '../fhir/build-careplan.ts'
+import { useResolution } from '../hooks/useResolution.ts'
 import { ActionItemCard } from './ActionItemCard.tsx'
 import { VisitSummaryPanel } from './VisitSummaryPanel.tsx'
 import { PreVisitNotePanel } from './PreVisitNotePanel.tsx'
@@ -18,15 +19,18 @@ interface InertiaActionPlanProps {
   readonly auditResult: AuditResult | null
   readonly llmContext: LLMContext | null
   readonly medications?: ReadonlyArray<Medication>
+  readonly snapshot?: PatientSnapshot | null
 }
 
-export function InertiaActionPlan({ auditResult, llmContext, medications }: InertiaActionPlanProps) {
+export function InertiaActionPlan({ auditResult, llmContext, medications, snapshot }: InertiaActionPlanProps) {
   const { t } = useTranslation()
   const [decisions, setDecisions] = useState<ReadonlyArray<ActionDecisionRecord>>([])
   const [chatOpen, setChatOpen] = useState(false)
   const [preVisitNote, setPreVisitNote] = useState<PreVisitNote | null>(null)
   const [isSending, setIsSending] = useState(false)
   const [sendResult, setSendResult] = useState<{ success: boolean; careplanId?: string } | null>(null)
+
+  const resolution = useResolution(snapshot ?? null, auditResult)
 
   const actions = useMemo(
     () => (auditResult ? generateActionPlan(auditResult) : []),
@@ -150,15 +154,20 @@ export function InertiaActionPlan({ auditResult, llmContext, medications }: Iner
             <p className="text-sm text-gray-400">{t('action.noActions')}</p>
           </div>
         ) : (
-          <div className="p-3 space-y-3 max-h-[400px] overflow-y-auto">
-            {actions.map((action) => (
-              <ActionItemCard
-                key={action.id}
-                item={action}
-                decision={decisionMap[action.id]?.decision ?? 'undecided'}
-                onDecide={handleDecide}
-              />
-            ))}
+          <div className="p-3 space-y-3 overflow-y-auto" style={{ maxHeight: resolution.state.isOpen ? 'none' : '400px' }}>
+            {actions.map((action) => {
+              const pillarResult = auditResult?.pillarResults.find((r) => r.pillar === action.pillar)
+              return (
+                <ActionItemCard
+                  key={action.id}
+                  item={action}
+                  decision={decisionMap[action.id]?.decision ?? 'undecided'}
+                  onDecide={handleDecide}
+                  blockers={pillarResult?.blockers}
+                  resolution={resolution}
+                />
+              )
+            })}
           </div>
         )}
       </div>

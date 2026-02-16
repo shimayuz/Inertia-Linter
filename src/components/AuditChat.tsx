@@ -208,7 +208,7 @@ export function AuditChat({ auditResult, llmContext }: AuditChatProps) {
           className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden"
         >
           <span className="text-3xl font-bold text-gray-400/15 -rotate-12 select-none whitespace-nowrap">
-            DRAFT
+            {t('common.draftBadge')}
           </span>
         </div>
       </div>

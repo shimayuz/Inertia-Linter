@@ -12,19 +12,23 @@ function PositionCell({
   loe,
   year,
   note,
+  classLabel,
+  loeLabel,
 }: {
   readonly source: string
   readonly cls: string
   readonly loe: string
   readonly year: number
   readonly note?: string
+  readonly classLabel: string
+  readonly loeLabel: string
 }) {
   return (
     <div className="text-sm">
       <span className="font-semibold text-gray-700">{source}</span>
       <span className="text-gray-500"> ({year})</span>
       <div className="text-gray-600">
-        Class {cls}, LOE {loe}
+        {classLabel} {cls}, {loeLabel} {loe}
       </div>
       {note && (
         <div className="text-xs text-gray-400 mt-0.5">{note}</div>
@@ -38,7 +42,7 @@ function ComparisonCard({
 }: {
   readonly comparison: GuidelineComparisonType
 }) {
-  const { t } = useTranslation('ui')
+  const { t } = useTranslation()
   const borderClass = comparison.hasDifference
     ? 'border-amber-300 bg-amber-50/50'
     : 'border-gray-200 bg-white'
@@ -65,6 +69,8 @@ function ComparisonCard({
             loe={pos.loe}
             year={pos.year}
             note={pos.note}
+            classLabel={t('guideline.class')}
+            loeLabel={t('guideline.loe')}
           />
         ))}
       </div>
@@ -75,7 +81,7 @@ function ComparisonCard({
 export function GuidelineComparisonPanel({
   comparisons,
 }: GuidelineComparisonProps) {
-  const { t } = useTranslation('ui')
+  const { t } = useTranslation()
 
   if (comparisons.length === 0) return null
 

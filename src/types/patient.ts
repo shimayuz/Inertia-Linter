@@ -1,5 +1,13 @@
 import type { Pillar } from './pillar.ts'
 import type { DoseTier } from './dose-tier.ts'
+import type { PatientResolutionContext } from './resolution.ts'
+
+export type AccessBarrierType = 'pa_pending' | 'pa_denied' | 'step_therapy' | 'copay_prohibitive' | 'formulary_excluded'
+
+export interface AccessBarrier {
+  readonly type: AccessBarrierType
+  readonly description?: string
+}
 
 export interface Medication {
   readonly pillar: Pillar
@@ -10,6 +18,7 @@ export interface Medication {
   readonly hasAllergy?: boolean
   readonly patientRefusal?: boolean
   readonly costBarrier?: boolean
+  readonly accessBarrier?: AccessBarrier
 }
 
 export interface PatientHistory {
@@ -32,4 +41,6 @@ export interface PatientSnapshot {
   readonly dmType?: 'none' | 'type1' | 'type2'
   readonly medications: ReadonlyArray<Medication>
   readonly history?: PatientHistory
+  readonly surgeryDate?: string
+  readonly resolutionContext?: PatientResolutionContext
 }

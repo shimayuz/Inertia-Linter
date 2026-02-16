@@ -5,6 +5,7 @@ import { ARNI_BARRIERS } from '../data/inertia-buster-arni'
 import { ACEI_ARB_BARRIERS } from '../data/inertia-buster-acei-arb'
 import { BB_BARRIERS } from '../data/inertia-buster-bb'
 import { MRA_BARRIERS } from '../data/inertia-buster-mra'
+import { ACCESS_BARRIERS } from '../data/inertia-buster-access'
 
 const ALL_BARRIERS: ReadonlyArray<BarrierInfo> = [
   ...SGLT2I_BARRIERS,
@@ -12,6 +13,7 @@ const ALL_BARRIERS: ReadonlyArray<BarrierInfo> = [
   ...ACEI_ARB_BARRIERS,
   ...BB_BARRIERS,
   ...MRA_BARRIERS,
+  ...ACCESS_BARRIERS,
 ]
 
 export function getInertiaInfo(

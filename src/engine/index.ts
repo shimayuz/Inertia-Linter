@@ -25,3 +25,5 @@ export type {
   LabDataPoint,
 } from './timeline-transforms.ts'
 export { deriveMascotEmotion } from './derive-mascot-emotion.ts'
+export { detectTransitionGaps } from './detect-transition-gaps.ts'
+export type { TransitionGap } from './detect-transition-gaps.ts'
